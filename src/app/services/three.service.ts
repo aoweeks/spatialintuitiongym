@@ -8,4 +8,9 @@ import * as THREE from 'Three';
 export class ThreeService {
 
   constructor() { }
+
+
+  public setCanvas(canvas: HTMLElement) {
+    console.log(canvas);
+  }
 }

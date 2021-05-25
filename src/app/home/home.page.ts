@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ThreeService } from '../services/three.service'
 
 @Component({
@@ -6,11 +6,19 @@ import { ThreeService } from '../services/three.service'
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit{
 
-  constructor(threeService: ThreeService) {
 
-    console.log(threeService);
+  constructor(
+    private threeService: ThreeService
+  ) {  }
+
+  ngOnInit(){
+    const canvas = document.getElementById('cubeStackCanvas');
+    this.threeService.setCanvas(canvas);
   }
+
+
+
 
 }

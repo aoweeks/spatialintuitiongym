@@ -8,10 +8,10 @@ import * as THREE from 'three';
 export class ThreeService {
  
   viewportSizes = {
-    height: new Number,
-    width: new Number
+    height: 0,
+    width: 0
   };
-  orthographicCamera: boolean;
+  orthographicCamera: boolean = true;
 
 
   canvas: HTMLCanvasElement;
@@ -27,11 +27,19 @@ export class ThreeService {
     this.canvas = canvas;
 
     // Get screen dimensions
-    this.viewportSizes.height = window.innerHeight; 
-    this.viewportSizes.width = window.innerWidth;
+    this.viewportSizes.height = 600//window.innerHeight; 
+    this.viewportSizes.width = 800 //window.innerWidth;
     console.log(this.viewportSizes, window.innerWidth);
 
+    this.initialSetup();
+
   }
+
+
+
+  /**
+   * Initial Setup for Three.js scene, camera, renderer
+   */
 
   
   private initialSetup() {
@@ -48,18 +56,43 @@ export class ThreeService {
     {
       this.camera = new THREE.PerspectiveCamera(
         75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
+        this.viewportSizes.width / this.viewportSizes.height
+        // 0.1,
+        // 1000
       );
     }
+    this.camera.position.z = 3;
     this.scene.add(this.camera);
 
-    // Renderer initialSetup
+
+    // Test Cube
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
+    const cubeMaterial = new THREE.MeshBasicMaterial({
+        color: '#ff0000'
+    })
+    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial)
+    this.scene.add(cubeMesh)
+    console.log(cubeMesh)
+
+
+
+
+    // Renderer setup
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas
     });
+    this.renderer.setSize(
+      this.viewportSizes.width,
+      this.viewportSizes.height
+    )
+    this.renderer.render(
+      this.scene,
+      this.camera
+    )
 
+    this.camera.lookAt(cubeMesh.position)
+
+    console.log(cubeMesh.position, this.camera.position)
 
 
   }

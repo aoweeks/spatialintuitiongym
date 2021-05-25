@@ -14,7 +14,7 @@ export class HomePage implements OnInit{
   ) {  }
 
   ngOnInit(){
-    const canvas = document.getElementById('cubeStackCanvas');
+    const canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('cubeStackCanvas');
     this.threeService.setCanvas(canvas);
   }
 

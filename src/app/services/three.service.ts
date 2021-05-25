@@ -14,14 +14,15 @@ export class ThreeService {
   orthographicCamera: boolean;
 
 
-  canvas: HTMLElement;
+  canvas: HTMLCanvasElement;
   scene: THREE.Scene;
   camera: THREE.Camera;
+  renderer: THREE.WebGLRenderer;
 
   constructor() { }
 
 
-  public setCanvas(canvas: HTMLElement) {
+  public setCanvas(canvas: HTMLCanvasElement) {
 
     this.canvas = canvas;
 
@@ -29,18 +30,16 @@ export class ThreeService {
     this.viewportSizes.height = window.innerHeight; 
     this.viewportSizes.width = window.innerWidth;
     console.log(this.viewportSizes, window.innerWidth);
-    
+
   }
 
   
   private initialSetup() {
 
-    /**
-     * Scene Setup
-     */
-
+    // Scene setup
     this.scene = new THREE.Scene();
 
+    // Camera setup
     if (this.orthographicCamera)
     {
       this.camera = new THREE.OrthographicCamera(1,1,1,1);
@@ -54,5 +53,14 @@ export class ThreeService {
         1000
       );
     }
+    this.scene.add(this.camera);
+
+    // Renderer initialSetup
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas
+    });
+
+
+
   }
 }

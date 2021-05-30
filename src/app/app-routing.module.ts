@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { BaseExercisePage } from './exercises/base-exercise/base-exercise.page';
+
 import { ExercisesPage } from './exercises/exercises.page';
+import { BaseExercisePage } from './exercises/base-exercise/base-exercise.page';
 
 const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'exercises',
+    redirectTo: 'base-exercise',
     pathMatch: 'full'
   },
   {

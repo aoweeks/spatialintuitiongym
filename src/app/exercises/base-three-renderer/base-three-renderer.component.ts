@@ -9,6 +9,8 @@ export class BaseThreeRendererComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('renderer initialised');
+  }
 
 }

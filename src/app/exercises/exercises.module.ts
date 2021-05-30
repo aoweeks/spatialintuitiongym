@@ -4,17 +4,20 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ExercisesPageRoutingModule } from './exercises-routing.module';
-
 import { ExercisesPage } from './exercises.page';
+import { BaseThreeRendererComponent } from './base-three-renderer/base-three-renderer.component';
+import { BaseExercisePage } from './base-exercise/base-exercise.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
-    ExercisesPageRoutingModule
+    IonicModule
   ],
-  declarations: [ExercisesPage]
+  declarations: [
+    ExercisesPage,
+    BaseExercisePage,
+    BaseThreeRendererComponent
+  ]
 })
 export class ExercisesPageModule {}

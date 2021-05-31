@@ -18,7 +18,11 @@ const routes: Routes = [
   {
     path: 'base-exercise',
     component: BaseExercisePage
+  },  {
+    path: 'test',
+    loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
   }
+
 
 ];
 

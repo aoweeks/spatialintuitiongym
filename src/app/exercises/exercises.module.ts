@@ -5,9 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { ExercisesPage } from './exercises.page';
-import { BaseThreeRendererComponent } from './base-three-renderer/base-three-renderer.component';
 import { BaseExercisePage } from './base-exercise/base-exercise.page';
 import { AppRoutingModule } from '../app-routing.module';
+import { ComponentsModule } from '../components.module';
 
 @NgModule({
   imports: [
@@ -15,15 +15,11 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     FormsModule,
     IonicModule,
+    ComponentsModule
   ],
   declarations: [
     ExercisesPage,
-    BaseExercisePage,
-    BaseThreeRendererComponent
-  ],
-  exports: [
-    BaseExercisePage,
-    BaseThreeRendererComponent
+    BaseExercisePage
   ]
 })
-export class ExercisesPageModule {}
+export class ExercisesModule {}

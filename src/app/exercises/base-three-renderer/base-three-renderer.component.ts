@@ -30,7 +30,6 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.updateViewportSizes();
     this.updateCanvasSizes();
 
-    this.camera.aspect = this.viewportSizes.height / this.viewportSizes.width;
     console.log(this.camera);
   }
 
@@ -48,6 +47,12 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   }
 
   private updateCanvasSizes(): void {
+
+    if(!this.orthographicCamera) {
+      this.camera.aspect = this.viewportSizes.width / this.viewportSizes.height;
+      this.camera.updateProjectionMatrix();
+    }
+
     this.renderer.setSize(
       this.viewportSizes.width,
       this.viewportSizes.height

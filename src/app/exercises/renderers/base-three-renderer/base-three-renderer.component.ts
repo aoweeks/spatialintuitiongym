@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from '@angular/core';
 import * as THREE from 'three';
+import CANNON from 'cannon';
+
 
 @Component({
   selector: 'app-base-three-renderer',
@@ -18,10 +20,13 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   orthographicCamera = false;
 
   scene: THREE.Scene;
-  camera;
+  camera; //: THREE.OrthographicCamera | THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
 
-  constructor() {}
+  world: CANNON.World;
+
+  constructor() {
+  }
 
 
   @HostListener('window:resize')
@@ -101,6 +106,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     });
     this.updateCanvasSizes();
 
+    this.physicsInitialSetup();
 
     this.animate();
   }
@@ -115,5 +121,17 @@ export class BaseThreeRendererComponent implements AfterViewInit {
       this.scene,
       this.camera
     );
+  }
+
+
+
+  /**
+   * Physics Stuff
+   */
+
+  private physicsInitialSetup(): void {
+
+    this.world = new CANNON.World();
+    this.world.gravity.set( 0, -9.82, 0 );
   }
 }

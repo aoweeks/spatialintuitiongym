@@ -111,12 +111,12 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     controls.maxPolarAngle = (Math.PI / 2) - 0.1;
 
     // Test Cube
-    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubeMaterial = new THREE.MeshBasicMaterial({
-        color: '#ff0000'
-    });
-    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    this.scene.add(cubeMesh);
+    // const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    // const cubeMaterial = new THREE.MeshBasicMaterial({
+    //     color: '#ff0000'
+    // });
+    // const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    // this.scene.add(cubeMesh);
 
 
     // Renderer setup

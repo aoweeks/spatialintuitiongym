@@ -20,6 +20,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   ngAfterViewInit() {
     super.ngAfterViewInit();
     this.setUpEnvironment();
+
+    this.addCube();
+    this.addCube(new THREE.Vector3(0, 1, 0));
     this.animate();
   }
 
@@ -57,5 +60,24 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       console.log(this.scene);
 
     console.log(floorShape);
+  }
+
+
+  private addCube(
+    surfacePosition: THREE.Vector3 = new THREE.Vector3(),
+    surfaceTilt: THREE.Vector3 = new THREE.Vector3()
+  ): void {
+
+    //Create Three.js cube
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const cubeMaterial = new THREE.MeshBasicMaterial({
+        color: '#ff0000'
+    });
+    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cubeMesh.position.y = surfacePosition.y + .5;
+    cubeMesh.rotation.y = Math.random() * Math.PI * 2;
+    this.scene.add(cubeMesh);
+
+    //Create Cannon.js cube
   }
 }

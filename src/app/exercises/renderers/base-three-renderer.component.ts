@@ -1,5 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from '@angular/core';
+
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 import CANNON from 'cannon';
 
 
@@ -18,7 +21,9 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     width: 0
   };
   orthographicCamera = false;
+
   physicsEnabled = false;
+  controlsEnabled = true;
 
   scene = new THREE.Scene();
   camera; //: THREE.OrthographicCamera | THREE.PerspectiveCamera;
@@ -51,8 +56,6 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   public animate(): void {
 
     requestAnimationFrame(() => this.animate());
-
-    this.camera.position.x = this.camera.position.x + 0.003;
 
     this.renderer.render(
       this.scene,
@@ -102,6 +105,10 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.camera.position.set(0, 1, 3);
     this.scene.add(this.camera);
 
+    // Controls setup
+
+    const controls = new OrbitControls(this.camera, this.canvasRef.nativeElement);
+    controls.maxPolarAngle = (Math.PI / 2) - 0.1;
 
     // Test Cube
     const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);

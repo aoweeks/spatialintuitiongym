@@ -18,12 +18,15 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     width: 0
   };
   orthographicCamera = false;
+  physicsEnabled = false;
 
-  scene: THREE.Scene;
+  scene = new THREE.Scene();
   camera; //: THREE.OrthographicCamera | THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
 
   world: CANNON.World;
+  clock = new THREE.Clock();
+
 
   constructor() {
   }
@@ -43,6 +46,18 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.updateViewportSizes();
 
     this.initialSetup();
+  }
+
+  public animate(): void {
+
+    requestAnimationFrame(() => this.animate());
+
+    this.camera.position.x = this.camera.position.x + 0.003;
+
+    this.renderer.render(
+      this.scene,
+      this.camera
+    );
   }
 
   // Get screen dimensions
@@ -70,9 +85,6 @@ export class BaseThreeRendererComponent implements AfterViewInit {
    */
   private initialSetup(): void {
 
-    // Scene setup
-    this.scene = new THREE.Scene();
-
     // Camera setup
     if (this.orthographicCamera)
     {
@@ -87,7 +99,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
         // 1000
       );
     }
-    this.camera.position.z = 3;
+    this.camera.position.set(0, 1, 3);
     this.scene.add(this.camera);
 
 
@@ -107,27 +119,9 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.updateCanvasSizes();
 
     this.physicsInitialSetup();
-
-    this.animate();
-  }
-
-  private animate(): void {
-
-    requestAnimationFrame(() => this.animate());
-
-    this.camera.position.x = this.camera.position.x + 0.003;
-
-    this.renderer.render(
-      this.scene,
-      this.camera
-    );
   }
 
 
-
-  /**
-   * Physics Stuff
-   */
 
   private physicsInitialSetup(): void {
 

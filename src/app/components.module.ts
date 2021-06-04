@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BaseThreeRendererComponent } from './exercises/renderers/base-three-renderer/base-three-renderer.component';
+import { BaseThreeRendererComponent } from './exercises/renderers/base-three-renderer.component';
 import { CubeStackComponent } from './exercises/renderers/cube-stack/cube-stack.component';
 
 

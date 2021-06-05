@@ -30,6 +30,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   scene = new THREE.Scene();
   camera; //: THREE.OrthographicCamera | THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
+  cameraPointLight: THREE.PointLight;
 
   world: CANNON.World;
   clock = new THREE.Clock();
@@ -46,7 +47,6 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.updateViewportSizes();
     this.updateCanvasSizes();
 
-    console.log(this.camera);
   }
 
   ngAfterViewInit() {
@@ -59,6 +59,13 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   public animate(): void {
 
     requestAnimationFrame(() => this.animate());
+
+    // if ( this.camera && this.cameraPointLight ) {
+    // this.cameraPointLight.position.set(
+    //   this.camera.postion.x + 1,
+    //   this.camera.postion.y + 1,
+    //   this.camera.position.z);
+    // }
 
     this.renderer.render(
       this.scene,
@@ -87,7 +94,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
 
   /**
-   * Initial Setup for Three.js scene, camera, renderer
+   * Initial Setup for Three.js scene
    */
   private initialSetup(): void {
 
@@ -108,18 +115,18 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.camera.position.set(0, 1, 3);
     this.scene.add(this.camera);
 
-    // Controls setup
+    //Lights setup
+    const ambientLight = new THREE.AmbientLight( 0xffffff, 0.333 );
 
+    const directionalLight = new THREE.DirectionalLight( 0xffffff );
+    directionalLight.position.set(1, 1, 1);
+
+    this.cameraPointLight = new THREE.PointLight( 0xffffff, 1, 10 );
+    this.scene.add( ambientLight, directionalLight );
+
+    // Controls setup
     const controls = new OrbitControls(this.camera, this.canvasRef.nativeElement);
     controls.maxPolarAngle = (Math.PI / 2) - 0.1;
-
-    // Test Cube
-    // const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    // const cubeMaterial = new THREE.MeshBasicMaterial({
-    //     color: '#ff0000'
-    // });
-    // const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    // this.scene.add(cubeMesh);
 
 
     // Renderer setup

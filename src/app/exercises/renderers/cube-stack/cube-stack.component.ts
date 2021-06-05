@@ -36,7 +36,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private setUpEnvironment() {
 
-    const backgroundMaterial = new THREE.MeshBasicMaterial( {
+    const backgroundMaterial = new THREE.MeshStandardMaterial( {
       color: 0xffffff
     });
 
@@ -57,9 +57,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const floorMesh = new THREE.Mesh( floorGeometry, backgroundMaterial);
     floorMesh.rotation.x = - Math.PI / 2;
     this.scene.add(floorMesh);
-      console.log(this.scene);
-
-    console.log(floorShape);
   }
 
 
@@ -71,7 +68,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     //Create Three.js cube
     const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubeMaterial = new THREE.MeshBasicMaterial({
+    const cubeMaterial = new THREE.MeshStandardMaterial({
         color: ratingColour
     });
     const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);

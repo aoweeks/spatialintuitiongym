@@ -5,6 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import CANNON from 'cannon';
 
+import { RatingFeedbackService } from '../../services/rating-feedback.service';
+
 
 @Component({
   selector: 'app-base-three-renderer',
@@ -33,8 +35,9 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   clock = new THREE.Clock();
 
 
-  constructor() {
-  }
+  constructor(
+    public ratingFeedback: RatingFeedbackService
+  ) {}
 
 
   @HostListener('window:resize')

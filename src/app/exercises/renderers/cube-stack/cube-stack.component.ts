@@ -67,11 +67,12 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     surfacePosition: THREE.Vector3 = new THREE.Vector3(),
     surfaceTilt: THREE.Vector3 = new THREE.Vector3()
   ): void {
+    const ratingColour = this.ratingFeedback.getRatingColour(Math.random());
 
     //Create Three.js cube
     const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
     const cubeMaterial = new THREE.MeshBasicMaterial({
-        color: '#ff0000'
+        color: ratingColour
     });
     const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cubeMesh.position.y = surfacePosition.y + .5;

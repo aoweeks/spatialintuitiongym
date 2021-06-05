@@ -60,12 +60,16 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
     requestAnimationFrame(() => this.animate());
 
-    // if ( this.camera && this.cameraPointLight ) {
-    // this.cameraPointLight.position.set(
-    //   this.camera.postion.x + 1,
-    //   this.camera.postion.y + 1,
-    //   this.camera.position.z);
-    // }
+    /**
+     * TODO: Only update light on camera move
+     */
+    if ( this.camera.position.x != null && this.cameraPointLight ) {
+      this.cameraPointLight.position.set(
+        this.camera.position.x + 2,
+        this.camera.position.y + 2,
+        this.camera.position.z);
+    }
+    // console.log(this.camera);
 
     this.renderer.render(
       this.scene,
@@ -121,8 +125,8 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     const directionalLight = new THREE.DirectionalLight( 0xffffff );
     directionalLight.position.set(1, 1, 1);
 
-    this.cameraPointLight = new THREE.PointLight( 0xffffff, 1, 10 );
-    this.scene.add( ambientLight, directionalLight );
+    this.cameraPointLight = new THREE.PointLight( 0xffffff, 1, 100, 10 );
+    this.scene.add( ambientLight, directionalLight, this.cameraPointLight );
 
     // Controls setup
     const controls = new OrbitControls(this.camera, this.canvasRef.nativeElement);

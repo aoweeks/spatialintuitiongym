@@ -17,12 +17,18 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   //   color: 0x000000
   // });
 
+  private cubeMaterial = new THREE.MeshStandardMaterial({
+    color: 0x000000
+  });
+
   ngAfterViewInit() {
     super.ngAfterViewInit();
     this.setUpEnvironment();
 
     this.addCube();
     this.addCube(new THREE.Vector3(0, 1, 0));
+    this.addCube(new THREE.Vector3(0, 2, 0));
+
     this.animate();
   }
 
@@ -36,9 +42,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private setUpEnvironment() {
 
-    const backgroundMaterial = new THREE.MeshStandardMaterial( {
-      color: 0xffffff
-    });
+    const backgroundMaterial = new THREE.MeshStandardMaterial();
 
     // Floor Plane
     // Cannon.js Plane
@@ -68,10 +72,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     //Create Three.js cube
     const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubeMaterial = new THREE.MeshStandardMaterial({
-        color: ratingColour
-    });
-    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    const cubeMesh = new THREE.Mesh(cubeGeometry, this.cubeMaterial.clone());
+    cubeMesh.material.color = new THREE.Color(ratingColour);
     cubeMesh.position.y = surfacePosition.y + .5;
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);

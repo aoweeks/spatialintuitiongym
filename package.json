@@ -22,6 +22,7 @@
     "@ionic/angular": "^5.5.2",
     "cannon": "^0.6.2",
     "rxjs": "~6.6.0",
+    "soundtouchjs": "^0.1.27",
     "three": "^0.128.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

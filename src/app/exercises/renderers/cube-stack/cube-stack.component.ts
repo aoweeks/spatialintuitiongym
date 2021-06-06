@@ -27,7 +27,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     this.addCube();
     this.addCube(new THREE.Vector3(0, 1, 0));
-    this.addCube(new THREE.Vector3(0, 2, 0));
+    setTimeout(  () => { this.addCube(new THREE.Vector3(0, 2, 0));
+      this.ratingFeedback.playRatingSound( 1 ); }, 4000);
 
     this.animate();
   }

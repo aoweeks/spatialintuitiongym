@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+// import { Filesystem } from '@capacitor/filesystem';
 
 import { PitchShifter } from 'soundtouchjs';
 
@@ -8,15 +9,15 @@ import { PitchShifter } from 'soundtouchjs';
 export class RatingFeedbackService {
 
   // Set up audio/SoundTouchJS
-  private audioCtx = new window.AudioContext();
+  private audioCtx =  new window.AudioContext(); //|| new window.webkitAudioContext() ;
   private gainNode = this.audioCtx.createGain();
   private shifter: PitchShifter;
 
   constructor() {
-    console.log('colour');
+    this.loadSoundfile();
   }
 
-  public getRatingColour(rating: number): string {
+  public getRatingColour( rating: number ): string {
 
     let red: number;
     let green: number;
@@ -44,9 +45,14 @@ export class RatingFeedbackService {
   }
 
   // Play a sound at a particular pitch to indicate accuracy rating
-  public playRatingSound() {
-      this.shifter.connect(this.gainNode); // connect it to a GainNode to control the volume
-      this.gainNode.connect(this.audioCtx.destination); // attach the GainNode to the 'destination' to begin playback
+  public playRatingSound( rating: number ) {
+    this.audioCtx.resume();
+    if ( this.shifter ) {
+      console.log(this.audioCtx);
+      // this.shifter.pitch = rating;
+      this.shifter.connect(this.gainNode);
+      this.gainNode.connect(this.audioCtx.destination);
+    }
   }
 
   // Convert a colour value from decimal to hexadecimal
@@ -59,5 +65,26 @@ export class RatingFeedbackService {
     return hexValue;
   }
 
+  private async loadSoundfile() {
+
+    // Load file and convert to buffer
+    const soundFile = await fetch( 'assets/sounds/feedback-sound.mp3' );
+    const buffer = await soundFile.arrayBuffer();
+
+    if ( this.shifter) {
+      this.shifter.off(); // remove any current listeners
+    }
+    this.audioCtx.decodeAudioData(buffer, (audioBuffer) => {
+      this.shifter = new PitchShifter(this.audioCtx, audioBuffer, 1024);
+      this.shifter.on('play', (detail) => {
+        // do something with detail.timePlayed;
+        // do something with detail.formattedTimePlayed;
+        // do something with detail.percentagePlayed
+        console.log( 'shifter play' );
+      });
+      this.shifter.tempo = 1;
+      this.shifter.pitch = 1;
+    });
+  }
 
 }

@@ -90,6 +90,5 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.ratingFeedback.playRatingSound( tempRandomRating );
 
     //Create Cannon.js cube
-
   }
 }

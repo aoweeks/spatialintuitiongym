@@ -94,6 +94,8 @@ export class BaseThreeRendererComponent implements AfterViewInit {
       this.viewportSizes.width,
       this.viewportSizes.height
     );
+
+    this.renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
   }
 
 

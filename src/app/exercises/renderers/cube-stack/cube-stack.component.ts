@@ -17,24 +17,24 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   //   color: 0x000000
   // });
 
+  guiParams = {
+    addCube: () => this.addCube(new THREE.Vector3(Math.random() * 50, Math.random() * 50, Math.random() * 50 ) )
+  };
+
   private cubeMaterial = new THREE.MeshStandardMaterial({
     color: 0x000000
   });
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
+
+    //Dat.GUI tweaks
+    this.gui.add(this.guiParams, 'addCube');
+
     this.setUpEnvironment();
 
-
-    setTimeout(  () => this.addCube(new THREE.Vector3(0, 0, 0)), 1500);
-
-    setTimeout(  () => this.addCube(new THREE.Vector3(0, 1, 0)), 2500);
-
-    setTimeout(  () => this.addCube(new THREE.Vector3(0, 2, 0)), 3500);
-
-    setTimeout(  () => this.addCube(new THREE.Vector3(0, 3, 0)), 4500);
-
-    setTimeout(  () => this.addCube(new THREE.Vector3(0, 4, 0)), 5500);
+    // setTimeout(  () => this.addCube(new THREE.Vector3(0, 0, 0)), 1500);
+    // setTimeout(  () => this.addCube(new THREE.Vector3(0, 1, 0)), 2500);
 
 
     this.animate();
@@ -90,5 +90,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.ratingFeedback.playRatingSound( tempRandomRating );
 
     //Create Cannon.js cube
+
   }
 }

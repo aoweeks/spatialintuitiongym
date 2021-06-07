@@ -2,8 +2,9 @@ import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from '@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 import CANNON from 'cannon';
+import * as dat from 'dat.gui';
+
 
 import { RatingFeedbackService } from '../../services/rating-feedback.service';
 
@@ -35,6 +36,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   world: CANNON.World;
   clock = new THREE.Clock();
 
+  gui = new dat.GUI();
 
   constructor(
     public ratingFeedback: RatingFeedbackService

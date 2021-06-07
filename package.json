@@ -21,6 +21,7 @@
     "@angular/router": "~11.2.0",
     "@ionic/angular": "^5.5.2",
     "cannon": "^0.6.2",
+    "dat.gui": "^0.7.7",
     "rxjs": "~6.6.0",
     "soundtouchjs": "^0.1.27",
     "three": "^0.128.0",

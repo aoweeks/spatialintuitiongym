@@ -3,6 +3,7 @@ import { BaseThreeRendererComponent } from '../base-three-renderer.component';
 
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
+import { templateJitUrl } from '@angular/compiler';
 
 @Component({
   selector: 'app-cube-stack',
@@ -18,12 +19,13 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   // });
 
   guiParams = {
-    addCube: () => this.addCube(new THREE.Vector3(Math.random() * 50, Math.random() * 50, Math.random() * 50 ) )
+    addCube: () => this.addCube(new THREE.Vector3( 0, Math.random() * 50, 0 ))
   };
 
   private cubeMaterial = new THREE.MeshStandardMaterial({
     color: 0x000000
   });
+  private cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
@@ -35,7 +37,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     // setTimeout(  () => this.addCube(new THREE.Vector3(0, 0, 0)), 1500);
     // setTimeout(  () => this.addCube(new THREE.Vector3(0, 1, 0)), 2500);
-
 
     this.animate();
   }
@@ -76,19 +77,32 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     surfacePosition: THREE.Vector3 = new THREE.Vector3(),
     surfaceTilt: THREE.Vector3 = new THREE.Vector3()
   ): void {
+
     const tempRandomRating = Math.random();
     const ratingColour = this.ratingFeedback.getRatingColour(tempRandomRating);
 
     //Create Three.js cube
-    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-    const cubeMesh = new THREE.Mesh(cubeGeometry, this.cubeMaterial.clone());
+    const cubeMesh = new THREE.Mesh(this.cubeGeometry, this.cubeMaterial.clone());
     cubeMesh.material.color = new THREE.Color(ratingColour);
-    cubeMesh.position.y = surfacePosition.y + .5;
+    cubeMesh.position.copy( surfacePosition );
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);
 
     this.ratingFeedback.playRatingSound( tempRandomRating );
 
-    //Create Cannon.js cube
+    //Create Cannon.js cube, set to Three.js cube position and rotation
+    const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5));
+    const cubeBody = new CANNON.Body({
+      mass: 1,
+      shape: cubeShape
+    });
+    cubeBody.position.copy( surfacePosition as any );
+    cubeBody.quaternion.copy( cubeMesh.quaternion as any );
+    this.world.addBody(cubeBody);
+
+    this.objectsToUpdate.push({
+      mesh: cubeMesh,
+      body: cubeBody
+    });
   }
 }

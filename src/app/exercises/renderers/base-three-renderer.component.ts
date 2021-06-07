@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from '@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import CANNON from 'cannon';
+import * as CANNON from 'cannon';
 import * as dat from 'dat.gui';
 
 
@@ -35,8 +35,11 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
   world: CANNON.World;
   clock = new THREE.Clock();
+  oldElapsedTime = 0;
+  objectsToUpdate = [];
 
   gui = new dat.GUI();
+
 
   constructor(
     public ratingFeedback: RatingFeedbackService
@@ -60,24 +63,36 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
   public animate(): void {
 
-    requestAnimationFrame(() => this.animate());
-
-    /**
-     * TODO: Only update light on camera move
-     */
+    // TODO: Only update light on camera move
     if ( this.camera.position.x != null && this.cameraPointLight ) {
       this.cameraPointLight.position.set(
         this.camera.position.x + 2,
         this.camera.position.y + 2,
         this.camera.position.z);
-    }
-    // console.log(this.camera);
+      }
 
-    this.renderer.render(
-      this.scene,
-      this.camera
-    );
-  }
+      // Find time elapsed since last frame
+      const elapsedTime = this.clock.getElapsedTime();
+      const deltaTime = elapsedTime - this.oldElapsedTime;
+      this.oldElapsedTime = elapsedTime;
+
+      // Update physics
+      this.world.step( 1 / 60 , deltaTime, 3 );
+
+      // Sync Three.js objects to physics objects
+      for(const object of this.objectsToUpdate) {
+        object.mesh.position.copy( object.body.position );
+        object.mesh.quaternion.copy( object.body.quaternion );
+      }
+
+      this.renderer.render(
+        this.scene,
+        this.camera
+        );
+
+      // Request next frame
+      requestAnimationFrame(() => this.animate());
+    }
 
   // Get screen dimensions
   private updateViewportSizes(): void {
@@ -101,9 +116,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   }
 
 
-  /**
-   * Initial Setup for Three.js scene
-   */
+  // Initial Setup for Three.js scene
   private initialSetup(): void {
 
     // Camera setup
@@ -148,6 +161,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
 
 
+  // Initial Setup for Cannon.js scene
   private physicsInitialSetup(): void {
 
     this.world = new CANNON.World();

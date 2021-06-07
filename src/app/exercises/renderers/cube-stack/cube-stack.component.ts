@@ -25,10 +25,17 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     super.ngAfterViewInit();
     this.setUpEnvironment();
 
-    this.addCube();
-    this.addCube(new THREE.Vector3(0, 1, 0));
-    setTimeout(  () => { this.addCube(new THREE.Vector3(0, 2, 0));
-      this.ratingFeedback.playRatingSound( 1 ); }, 4000);
+
+    setTimeout(  () => this.addCube(new THREE.Vector3(0, 0, 0)), 1500);
+
+    setTimeout(  () => this.addCube(new THREE.Vector3(0, 1, 0)), 2500);
+
+    setTimeout(  () => this.addCube(new THREE.Vector3(0, 2, 0)), 3500);
+
+    setTimeout(  () => this.addCube(new THREE.Vector3(0, 3, 0)), 4500);
+
+    setTimeout(  () => this.addCube(new THREE.Vector3(0, 4, 0)), 5500);
+
 
     this.animate();
   }
@@ -69,7 +76,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     surfacePosition: THREE.Vector3 = new THREE.Vector3(),
     surfaceTilt: THREE.Vector3 = new THREE.Vector3()
   ): void {
-    const ratingColour = this.ratingFeedback.getRatingColour(Math.random());
+    const tempRandomRating = Math.random();
+    const ratingColour = this.ratingFeedback.getRatingColour(tempRandomRating);
 
     //Create Three.js cube
     const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -78,6 +86,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     cubeMesh.position.y = surfacePosition.y + .5;
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);
+
+    this.ratingFeedback.playRatingSound( tempRandomRating );
 
     //Create Cannon.js cube
   }

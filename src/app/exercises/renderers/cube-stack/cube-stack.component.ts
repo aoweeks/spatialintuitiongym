@@ -19,7 +19,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   // });
 
   guiParams = {
-    addCube: () => this.addCube()
+    addCube: () => this.addCube(),
+    clearAllCubes: () => this.removeAllPhysicsObjects()
   };
 
   private cubeMaterial = new THREE.MeshStandardMaterial({
@@ -27,17 +28,21 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   });
   private cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 
+  private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
+
   ngAfterViewInit() {
     super.ngAfterViewInit();
 
     //Dat.GUI tweaks
     this.gui.add(this.guiParams, 'addCube');
+    this.gui.add(this.guiParams, 'clearAllCubes');
 
     this.setUpEnvironment();
 
     // setTimeout(  () => this.addCube(new THREE.Vector3(0, 0, 0)), 1500);
     // setTimeout(  () => this.addCube(new THREE.Vector3(0, 1, 0)), 2500);
 
+    this.physicsEnabled = true;
     this.animate();
   }
 
@@ -49,7 +54,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     super.animate();
   }
 
-  private setUpEnvironment() {
+  private setUpEnvironment(): void {
 
     const backgroundMaterial = new THREE.MeshStandardMaterial();
 
@@ -78,7 +83,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const tempRandomRating = Math.random();
     const ratingColour = this.ratingFeedback.getRatingColour(tempRandomRating);
     const previousCubeMesh = this.objectsToUpdate[this.objectsToUpdate.length - 1]?.mesh;
-    console.log(previousCubeMesh);
 
     //Create Three.js cube
     const cubeMesh = new THREE.Mesh(this.cubeGeometry, this.cubeMaterial.clone());
@@ -107,4 +111,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       body: cubeBody
     });
   }
+
+
+
 }

@@ -26,6 +26,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   orthographicCamera = false;
 
   physicsEnabled = false;
+  physicsPaused = false;
   controlsEnabled = true;
 
   scene = new THREE.Scene();
@@ -71,11 +72,12 @@ export class BaseThreeRendererComponent implements AfterViewInit {
         this.camera.position.z);
       }
 
-      // Find time elapsed since last frame
-      const elapsedTime = this.clock.getElapsedTime();
-      const deltaTime = elapsedTime - this.oldElapsedTime;
-      this.oldElapsedTime = elapsedTime;
+    // Find time elapsed since last frame
+    const elapsedTime = this.clock.getElapsedTime();
+    const deltaTime = elapsedTime - this.oldElapsedTime;
+    this.oldElapsedTime = elapsedTime;
 
+    if( this.physicsEnabled && !this.physicsPaused ) {
       // Update physics
       this.world.step( 1 / 60 , deltaTime, 3 );
 
@@ -84,15 +86,31 @@ export class BaseThreeRendererComponent implements AfterViewInit {
         object.mesh.position.copy( object.body.position );
         object.mesh.quaternion.copy( object.body.quaternion );
       }
-
-      this.renderer.render(
-        this.scene,
-        this.camera
-        );
-
-      // Request next frame
-      requestAnimationFrame(() => this.animate());
     }
+
+    this.renderer.render(
+      this.scene,
+      this.camera
+    );
+
+    // Request next frame
+    requestAnimationFrame(() => this.animate());
+  }
+
+
+  // Clear scene of all physics objects
+  public removeAllPhysicsObjects(): void {
+
+    for(const object of this.objectsToUpdate) {
+      this.scene.remove(object.mesh);
+      object.mesh.geometry.dispose();
+      object.mesh.material.dispose();
+
+      this.world.remove(object.body);
+    }
+    this.objectsToUpdate = [];
+  }
+
 
   // Get screen dimensions
   private updateViewportSizes(): void {
@@ -166,5 +184,13 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
     this.world = new CANNON.World();
     this.world.gravity.set( 0, -9.82, 0 );
+  }
+
+  private pausePhysics(): void {
+    this.physicsPaused = true;
+  }
+
+  private resumePhysics(): void {
+    this.physicsPaused = false;
   }
 }

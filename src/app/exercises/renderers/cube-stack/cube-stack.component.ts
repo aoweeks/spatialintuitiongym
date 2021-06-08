@@ -19,7 +19,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   // });
 
   guiParams = {
-    addCube: () => this.addCube(new THREE.Vector3( 0, Math.random() * 50, 0 ))
+    addCube: () => this.addCube()
   };
 
   private cubeMaterial = new THREE.MeshStandardMaterial({
@@ -73,18 +73,20 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
 
-  private addCube(
-    surfacePosition: THREE.Vector3 = new THREE.Vector3(),
-    surfaceTilt: THREE.Vector3 = new THREE.Vector3()
-  ): void {
+  private addCube(): void {
 
     const tempRandomRating = Math.random();
     const ratingColour = this.ratingFeedback.getRatingColour(tempRandomRating);
+    const previousCubeMesh = this.objectsToUpdate[this.objectsToUpdate.length - 1]?.mesh;
+    console.log(previousCubeMesh);
 
     //Create Three.js cube
     const cubeMesh = new THREE.Mesh(this.cubeGeometry, this.cubeMaterial.clone());
     cubeMesh.material.color = new THREE.Color(ratingColour);
-    cubeMesh.position.copy( surfacePosition );
+    cubeMesh.position.copy( previousCubeMesh?.position || new THREE.Vector3(0, .5, 0) );
+    if(previousCubeMesh){
+      cubeMesh.translateY(1.001);
+    }
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);
 
@@ -96,7 +98,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       mass: 1,
       shape: cubeShape
     });
-    cubeBody.position.copy( surfacePosition as any );
+    cubeBody.position.copy( cubeMesh.position as any );
     cubeBody.quaternion.copy( cubeMesh.quaternion as any );
     this.world.addBody(cubeBody);
 

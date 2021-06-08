@@ -12,16 +12,16 @@ import { templateJitUrl } from '@angular/compiler';
 })
 export class CubeStackComponent extends BaseThreeRendererComponent implements AfterViewInit {
 
-  physicsEnabled = true;
-
-  // backgroundMaterial = new THREE.MeshStandardMaterial( {
-  //   color: 0x000000
-  // });
-
   guiParams = {
     addCube: () => this.addCube(),
     clearAllCubes: () => this.removeAllPhysicsObjects()
   };
+
+  physicsEnabled = true;
+
+  backgroundMaterial = new THREE.MeshStandardMaterial( {
+    color: 0x660066
+  });
 
   private cubeMaterial = new THREE.MeshStandardMaterial({
     color: 0x000000
@@ -29,6 +29,23 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   private cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 
   private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
+  private cubesContactMaterial = new CANNON.ContactMaterial(
+    this.cubePhysicsMaterial,
+    this.cubePhysicsMaterial,
+    {
+      friction: 5,
+      restitution: 0
+    }
+  );
+  private backgroundPhysicsMaterial = new CANNON.Material('backgroundPhysicsMaterial');
+  private backgroundCubeContactMaterial = new CANNON.ContactMaterial(
+    this.backgroundPhysicsMaterial,
+    this.cubePhysicsMaterial,
+    {
+      friction: 1,
+      restitution: 0
+    }
+  );
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
@@ -37,33 +54,30 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.gui.add(this.guiParams, 'addCube');
     this.gui.add(this.guiParams, 'clearAllCubes');
 
-    this.setUpEnvironment();
 
-    // setTimeout(  () => this.addCube(new THREE.Vector3(0, 0, 0)), 1500);
-    // setTimeout(  () => this.addCube(new THREE.Vector3(0, 1, 0)), 2500);
+    this.setUpEnvironment();
 
     this.physicsEnabled = true;
     this.animate();
   }
 
-
-  public animate() {
-
-
-
-    super.animate();
-  }
+  // public animate() {
+  //   super.animate();
+  // }
 
   private setUpEnvironment(): void {
 
-    const backgroundMaterial = new THREE.MeshStandardMaterial();
+    this.world.addContactMaterial(this.cubesContactMaterial);
+    this.world.addContactMaterial(this.backgroundCubeContactMaterial);
 
     // Floor Plane
     // Cannon.js Plane
     const floorShape = new CANNON.Plane();
-    const floorBody = new CANNON.Body();
-    floorBody.mass = 0;
-    floorBody.addShape(floorShape);
+    const floorBody = new CANNON.Body({
+      mass: 0,
+      material: this.backgroundPhysicsMaterial,
+      shape: floorShape
+    });
     floorBody.quaternion.setFromAxisAngle(
       new CANNON.Vec3(-1, 0, 0),
       Math.PI * 0.5
@@ -72,7 +86,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     // Three.js Plane
     const floorGeometry = new THREE.PlaneGeometry( 50, 50);
-    const floorMesh = new THREE.Mesh( floorGeometry, backgroundMaterial);
+    const floorMesh = new THREE.Mesh( floorGeometry, this.backgroundMaterial);
     floorMesh.rotation.x = - Math.PI / 2;
     this.scene.add(floorMesh);
   }
@@ -100,7 +114,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5));
     const cubeBody = new CANNON.Body({
       mass: 1,
-      shape: cubeShape
+      shape: cubeShape,
+      material: this.cubePhysicsMaterial
     });
     cubeBody.position.copy( cubeMesh.position as any );
     cubeBody.quaternion.copy( cubeMesh.quaternion as any );

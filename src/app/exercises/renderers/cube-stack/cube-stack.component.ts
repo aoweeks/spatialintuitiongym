@@ -128,6 +128,4 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     });
   }
 
-
-
 }

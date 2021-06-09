@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -8,6 +8,7 @@ import * as dat from 'dat.gui';
 
 import { RatingFeedbackService } from '../../services/rating-feedback.service';
 import { SoundsService } from 'src/app/services/sounds.service';
+import { BaseCanvasComponent } from '../base-canvas.component';
 
 
 @Component({
@@ -15,15 +16,10 @@ import { SoundsService } from 'src/app/services/sounds.service';
   templateUrl: './base-three-renderer.component.html',
   styleUrls: ['./base-three-renderer.component.scss'],
 })
-export class BaseThreeRendererComponent implements AfterViewInit {
-
+export class BaseThreeRendererComponent extends BaseCanvasComponent implements AfterViewInit {
 
   @ViewChild('threeCanvas') canvasRef: ElementRef;
 
-  viewportSizes = {
-    height: 0,
-    width: 0
-  };
   orthographicCamera = false;
 
   physicsEnabled = false;
@@ -46,15 +42,8 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   constructor(
     public ratingFeedback: RatingFeedbackService,
     public soundsService: SoundsService
-  ) {}
-
-
-  @HostListener('window:resize')
-  onResize() {
-
-    this.updateViewportSizes();
-    this.updateCanvasSizes();
-
+  ) {
+    super();
   }
 
   ngAfterViewInit() {
@@ -62,6 +51,21 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.updateViewportSizes();
 
     this.initialSetup();
+  }
+
+  public updateCanvasSizes(): void {
+
+    if(!this.orthographicCamera) {
+      this.camera.aspect = this.viewportSizes.width / this.viewportSizes.height;
+      this.camera.updateProjectionMatrix();
+    }
+
+    this.renderer.setSize(
+      this.viewportSizes.width,
+      this.viewportSizes.height
+    );
+
+    this.renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
   }
 
   public animate(): void {
@@ -107,6 +111,7 @@ export class BaseThreeRendererComponent implements AfterViewInit {
       this.physicsPaused = pausePhysics;
     }
   }
+
   // Clear scene of all physics objects
   public removeAllPhysicsObjects(): void {
 
@@ -118,28 +123,6 @@ export class BaseThreeRendererComponent implements AfterViewInit {
       this.world.remove(object.body);
     }
     this.objectsToUpdate = [];
-  }
-
-
-  // Get screen dimensions
-  private updateViewportSizes(): void {
-    this.viewportSizes.height = window.innerHeight;
-    this.viewportSizes.width = window.innerWidth;
-  }
-
-  private updateCanvasSizes(): void {
-
-    if(!this.orthographicCamera) {
-      this.camera.aspect = this.viewportSizes.width / this.viewportSizes.height;
-      this.camera.updateProjectionMatrix();
-    }
-
-    this.renderer.setSize(
-      this.viewportSizes.width,
-      this.viewportSizes.height
-    );
-
-    this.renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) );
   }
 
 

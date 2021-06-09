@@ -109,7 +109,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);
 
-    this.ratingFeedback.playRatingSound( tempRandomRating );
+    this.soundsService.playRatingSound( tempRandomRating );
 
     //Create Cannon.js cube, set to Three.js cube position and rotation
     const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5));

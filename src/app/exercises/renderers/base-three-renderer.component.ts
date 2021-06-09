@@ -7,6 +7,7 @@ import * as dat from 'dat.gui';
 
 
 import { RatingFeedbackService } from '../../services/rating-feedback.service';
+import { SoundsService } from 'src/app/services/sounds.service';
 
 
 @Component({
@@ -43,7 +44,8 @@ export class BaseThreeRendererComponent implements AfterViewInit {
 
 
   constructor(
-    public ratingFeedback: RatingFeedbackService
+    public ratingFeedback: RatingFeedbackService,
+    public soundsService: SoundsService
   ) {}
 
 

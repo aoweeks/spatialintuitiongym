@@ -7,7 +7,7 @@ import * as THREE from 'three';
 @Component({
   selector: 'app-cube-stack',
   templateUrl: '../base-three-renderer.component.html',
-  styleUrls: ['./cube-stack.component.scss'],
+  styleUrls: ['../base-three-renderer.component.scss'],
 })
 export class CubeStackComponent extends BaseThreeRendererComponent implements AfterViewInit {
 

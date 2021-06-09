@@ -1,10 +1,10 @@
-import { Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-base-canvas',
   template: ''
 })
-export class BaseCanvasComponent{
+export class BaseCanvasComponent implements AfterViewInit{
 
   viewportSizes = {
     height: 0,
@@ -17,6 +17,10 @@ export class BaseCanvasComponent{
   onResize() {
     this.updateViewportSizes();
     this.updateCanvasSizes();
+  }
+
+  ngAfterViewInit() {
+    this.updateViewportSizes();
   }
 
   // Get screen dimensions

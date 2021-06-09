@@ -10,10 +10,9 @@ import { RatingFeedbackService } from '../../services/rating-feedback.service';
 import { SoundsService } from 'src/app/services/sounds.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 
-
 @Component({
   selector: 'app-base-three-renderer',
-  templateUrl: './base-three-renderer.component.html',
+  template: '<canvas #threeCanvas></canvas>',
   styleUrls: ['./base-three-renderer.component.scss'],
 })
 export class BaseThreeRendererComponent extends BaseCanvasComponent implements AfterViewInit {
@@ -47,10 +46,9 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   }
 
   ngAfterViewInit() {
-
-    this.updateViewportSizes();
-
+    super.ngAfterViewInit();
     this.initialSetup();
+    this.updateCanvasSizes();
   }
 
   public updateCanvasSizes(): void {

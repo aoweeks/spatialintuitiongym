@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { Base2dCanvasComponent } from './base2d-canvas.component';
+import { Base2dCanvasComponent } from './base-2d-canvas.component';
 
 describe('Base2dCanvasComponent', () => {
   let component: Base2dCanvasComponent;

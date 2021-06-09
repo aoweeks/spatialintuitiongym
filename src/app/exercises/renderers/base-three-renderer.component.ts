@@ -98,6 +98,13 @@ export class BaseThreeRendererComponent implements AfterViewInit {
   }
 
 
+  public togglePausePhysics(pausePhysics: boolean = null) {
+    if(pausePhysics === null) {
+      this.physicsPaused = !this.physicsPaused;
+    } else {
+      this.physicsPaused = pausePhysics;
+    }
+  }
   // Clear scene of all physics objects
   public removeAllPhysicsObjects(): void {
 
@@ -186,11 +193,4 @@ export class BaseThreeRendererComponent implements AfterViewInit {
     this.world.gravity.set( 0, -9.82, 0 );
   }
 
-  private pausePhysics(): void {
-    this.physicsPaused = true;
-  }
-
-  private resumePhysics(): void {
-    this.physicsPaused = false;
-  }
 }

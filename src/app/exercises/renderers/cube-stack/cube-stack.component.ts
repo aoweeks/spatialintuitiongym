@@ -3,7 +3,6 @@ import { BaseThreeRendererComponent } from '../base-three-renderer.component';
 
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
-import { templateJitUrl } from '@angular/compiler';
 
 @Component({
   selector: 'app-cube-stack',
@@ -14,7 +13,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   guiParams = {
     addCube: () => this.addCube(),
-    clearAllCubes: () => this.removeAllPhysicsObjects()
+    clearAllCubes: () => this.removeAllPhysicsObjects(),
+    togglePausePhysics: () => this.togglePausePhysics()
   };
 
   physicsEnabled = true;
@@ -53,6 +53,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     //Dat.GUI tweaks
     this.gui.add(this.guiParams, 'addCube');
     this.gui.add(this.guiParams, 'clearAllCubes');
+    this.gui.add(this.guiParams, 'togglePausePhysics');
 
 
     this.setUpEnvironment();

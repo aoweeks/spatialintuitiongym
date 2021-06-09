@@ -6,11 +6,12 @@ import { PitchShifter } from 'soundtouchjs';
 })
 export class SoundsService {
 
+  private soundsEnabled = 'all';
+
   // Set up audio/SoundTouchJS
   private audioContext =  new window.AudioContext(); //|| new window.webkitAudioContext() ;
   // private gainNode = this.audioContext.createGain();
   private shifter: PitchShifter;
-
   private decodedAudio;
 
   constructor() {
@@ -23,9 +24,11 @@ export class SoundsService {
     if ( this.audioContext.state === 'suspended') {
       await this.audioContext.resume();
     }
-    this.shifter = new PitchShifter(this.audioContext, this.decodedAudio, 1024);
-    this.shifter.pitch = rating * 2;
-    this.shifter.connect(this.audioContext.destination);
+    if(this.soundsEnabled !== 'none') {
+      this.shifter = new PitchShifter(this.audioContext, this.decodedAudio, 1024);
+      this.shifter.pitch = rating * 2;
+      this.shifter.connect(this.audioContext.destination);
+    }
   }
 
   // Load mp3, conver to buffer and save result in this.decodedAudio

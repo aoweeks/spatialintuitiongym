@@ -6,7 +6,7 @@ import { PitchShifter } from 'soundtouchjs';
 })
 export class SoundsService {
 
-  private soundsEnabled = 'all';
+  private soundsEnabled = 'none'; //'all';
 
   // Set up audio/SoundTouchJS
   private audioContext =  new window.AudioContext(); //|| new window.webkitAudioContext() ;

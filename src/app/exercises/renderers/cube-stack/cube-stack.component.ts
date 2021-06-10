@@ -26,7 +26,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   private cubeMaterial = new THREE.MeshStandardMaterial({
     color: 0x000000
   });
-  private cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
 
   private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
   private cubesContactMaterial = new CANNON.ContactMaterial(

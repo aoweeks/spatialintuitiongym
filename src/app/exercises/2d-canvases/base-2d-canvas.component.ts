@@ -94,17 +94,27 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseUp( event: MouseEvent ): void {
     this.mouseIsDown = false;
 
-    // Save line
-    this.lines.push({
-      start: {
-        x: this.mouseDownPos.x,
-        y: this.mouseDownPos.y
-      },
-      end: {
-        x: event.clientX,
-        y: event.clientY
-      }
-    });
+    if ( this.mouseDownPos.x !== event.clientX
+        && this.mouseDownPos.y !== event.clientY) {
+
+      // Save line
+      this.lines.push({
+        start: {
+          x: this.mouseDownPos.x,
+          y: this.mouseDownPos.y
+        },
+        end: {
+          x: event.clientX,
+          y: event.clientY
+        }
+      });
+
+      // Clear redo history
+      this.undoneLines = [];
+    } else {
+      this.clearCanvas();
+      this.drawPreviousLines();
+    }
   }
 
   /**
@@ -118,6 +128,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context.beginPath();
 
     this.context.lineWidth = 5;
+    this.context.lineCap = 'round';
 
     this.context.moveTo(start.x, start.y);
     this.context.lineTo(end.x, end.y);

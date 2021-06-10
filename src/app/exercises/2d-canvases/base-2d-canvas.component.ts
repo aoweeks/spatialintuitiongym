@@ -14,6 +14,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private mouseDownPos = { x: 0, y : 0};
   private mouseIsDown = false;
 
+  private lines = [];
+
   ngAfterViewInit() {
     this.context = this.canvasRef.nativeElement.getContext('2d');
     super.ngAfterViewInit();
@@ -29,8 +31,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    *  Mouse Event Handlers
    */
 
-  public mouseDown(event: MouseEvent) {
-    this.context.restore();
+  public mouseDown( event: MouseEvent ): void {
 
     this.mouseDownPos.x = event.clientX;
     this.mouseDownPos.y = event.clientY;
@@ -38,29 +39,59 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.mouseIsDown = true;
   }
 
-  public mouseMove(event: MouseEvent) {
+  public mouseMove( event: MouseEvent ): void {
 
-    if(this.mouseIsDown) {
+    if( this.mouseIsDown ) {
 
+      //Clear canvas
       this.context.clearRect(
         0,
         0,
         this.canvasRef.nativeElement.width,
         this.canvasRef.nativeElement.height
       );
-      this.context.beginPath();
 
-      this.context.lineWidth = 5;
+      // Redraw previous lines
+      for(const line of this.lines) {
+        this.drawLine(line.start, line.end);
+      }
 
-      this.context.moveTo(this.mouseDownPos.x, this.mouseDownPos.y);
-      this.context.lineTo(event.clientX, event.clientY);
-      this.context.stroke();
+      // Draw current line
+      const currentPos = {
+        x: event.clientX,
+        y: event.clientY
+      };
+      this.drawLine(this.mouseDownPos, currentPos);
     }
   }
 
-  public mouseUp(event: MouseEvent) {
+  public mouseUp( event: MouseEvent ): void {
     this.mouseIsDown = false;
-    this.context.save();
+
+    // Save line
+    this.lines.push({
+      start: {
+        x: this.mouseDownPos.x,
+        y: this.mouseDownPos.y
+      },
+      end: {
+        x: event.clientX,
+        y: event.clientY
+      }
+    });
+  }
+
+  drawLine(
+    start: any,
+    end: any
+  ): void {
+    this.context.beginPath();
+
+    this.context.lineWidth = 5;
+
+    this.context.moveTo(start.x, start.y);
+    this.context.lineTo(end.x, end.y);
+    this.context.stroke();
   }
 
 }

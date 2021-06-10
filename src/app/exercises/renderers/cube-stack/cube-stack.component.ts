@@ -51,9 +51,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     super.ngAfterViewInit();
 
     //Dat.GUI tweaks
-    this.gui.add(this.guiParams, 'addCube');
-    this.gui.add(this.guiParams, 'clearAllCubes');
-    this.gui.add(this.guiParams, 'togglePausePhysics');
+    this.debugService.gui.add(this.guiParams, 'addCube');
+    this.debugService.gui.add(this.guiParams, 'clearAllCubes');
+    this.debugService.gui.add(this.guiParams, 'togglePausePhysics');
 
 
     this.setUpEnvironment();

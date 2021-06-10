@@ -1,14 +1,13 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injector, ViewChild } from '@angular/core';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as CANNON from 'cannon';
-import * as dat from 'dat.gui';
-
 
 import { RatingFeedbackService } from '../../services/rating-feedback.service';
 import { SoundsService } from 'src/app/services/sounds.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
+import { DebugService } from 'src/app/services/debug.service';
 
 @Component({
   selector: 'app-base-three-renderer',
@@ -37,14 +36,13 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   oldElapsedTime = 0;
   objectsToUpdate = [];
 
-  gui = new dat.GUI();
-
 
   constructor(
     public ratingFeedback: RatingFeedbackService,
-    public soundsService: SoundsService
+    public soundsService: SoundsService,
+    injector: Injector
   ) {
-    super();
+    super(injector);
   }
 
   ngAfterViewInit() {

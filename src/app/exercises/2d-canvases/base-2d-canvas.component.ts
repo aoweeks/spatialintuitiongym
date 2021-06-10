@@ -9,6 +9,19 @@ import { BaseCanvasComponent } from '../base-canvas.component';
 export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterViewInit{
 
   @ViewChild('2dCanvas') canvasRef: ElementRef;
+
+  guiParams = {
+    clearCanvas: () => {
+      this.lines = [];
+      this.context.clearRect(
+        0,
+        0,
+        this.canvasRef.nativeElement.width,
+        this.canvasRef.nativeElement.height
+      );
+    }
+  };
+
   private context;
 
   private mouseDownPos = { x: 0, y : 0};
@@ -16,10 +29,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private lines = [];
 
+
   ngAfterViewInit() {
     this.context = this.canvasRef.nativeElement.getContext('2d');
     super.ngAfterViewInit();
     this.updateCanvasSizes();
+
+    this.debugService.gui.add(this.guiParams, 'clearCanvas');
   }
 
   public updateCanvasSizes(): void {

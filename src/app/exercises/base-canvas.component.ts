@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Injector } from '@angular/core';
+import { DebugService } from '../services/debug.service';
+
 
 @Component({
   selector: 'app-base-canvas',
@@ -11,7 +13,11 @@ export class BaseCanvasComponent implements AfterViewInit{
     width: 0
   };
 
-  constructor() { }
+  protected debugService: DebugService;
+
+  constructor(injector: Injector) {
+    this.debugService = injector.get(DebugService);
+  }
 
   @HostListener('window:resize')
   onResize() {

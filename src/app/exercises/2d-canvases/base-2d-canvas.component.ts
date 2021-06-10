@@ -20,7 +20,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         this.canvasRef.nativeElement.height
       );
     },
-    undoLastLine: () => this.undoLastLine()
+    undoLastLine: () => this.undoLastLine(),
+    redoLine: () => this.redoLine()
   };
 
   private context;
@@ -29,6 +30,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private mouseIsDown = false;
 
   private lines = [];
+  private undoneLines = [];
 
 
   ngAfterViewInit() {
@@ -39,6 +41,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     // dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'clearCanvas');
     this.debugService.gui.add(this.guiParams, 'undoLastLine');
+    this.debugService.gui.add(this.guiParams, 'redoLine');
   }
 
   public updateCanvasSizes(): void {
@@ -52,8 +55,22 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseDown( event: MouseEvent ): void {
 
-    this.mouseDownPos.x = event.clientX;
-    this.mouseDownPos.y = event.clientY;
+    const pointsArray = [];
+    let nearestPoint = null;
+
+    for ( const line of this.lines ) {
+      pointsArray.push( line.start );
+      pointsArray.push( line.end );
+    }
+    nearestPoint = this.getNearestPoint(event.clientX, event.clientY, pointsArray);
+
+    if ( nearestPoint ){
+      this.mouseDownPos.x = nearestPoint.x;
+      this.mouseDownPos.y = nearestPoint.y;
+    } else {
+      this.mouseDownPos.x = event.clientX;
+      this.mouseDownPos.y = event.clientY;
+    }
 
     this.mouseIsDown = true;
   }
@@ -107,17 +124,31 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context.stroke();
   }
 
-  private drawPreviousLines() {
-    for(const line of this.lines) {
+  private drawPreviousLines(): void {
+    for ( const line of this.lines ) {
       this.drawLine(line.start, line.end);
     }
   }
 
   private undoLastLine(): void {
-    this.lines.pop();
-    this.clearCanvas();
-    this.drawPreviousLines();
+    if ( this.lines.length ) {
+      this.undoneLines.push( this.lines.pop() );
+      this.clearCanvas();
+      this.drawPreviousLines();
+    }
   }
+
+  private redoLine(): void {
+    if ( this.undoneLines.length ) {
+      this.lines.push( this.undoneLines.pop() );
+      this.clearCanvas();
+      this.drawPreviousLines();
+    }
+  }
+
+  /**
+   * Other canvas based functions
+   */
 
   private clearCanvas(): void {
     this.context.clearRect(
@@ -126,6 +157,29 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.canvasRef.nativeElement.width,
       this.canvasRef.nativeElement.height
     );
+  }
+
+  // Given a point A, and a list of other points, returns either the nearest
+  // point to A, or null if none are within a given radius
+  private getNearestPoint(
+    originPointX: number,
+    originPointY: number,
+    pointsToCompare,
+    radius: number = 50) {
+
+    let nearestPoint = null;
+
+    for ( const pointToCompare of pointsToCompare ) {
+      const x = originPointX - pointToCompare.x;
+      const y = originPointY - pointToCompare.y;
+      const hypot = Math.hypot(x, y);
+      if( hypot < radius) {
+        nearestPoint = pointToCompare;
+        radius = hypot;
+      }
+    }
+
+    return nearestPoint;
   }
 
 }

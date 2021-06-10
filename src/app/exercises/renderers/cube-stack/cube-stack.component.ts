@@ -11,13 +11,13 @@ import * as THREE from 'three';
 })
 export class CubeStackComponent extends BaseThreeRendererComponent implements AfterViewInit {
 
-  guiParams = {
-    addCube: () => this.addCube(),
-    clearAllCubes: () => this.removeAllPhysicsObjects(),
-    togglePausePhysics: () => this.togglePausePhysics()
-  };
-
   physicsEnabled = true;
+
+    guiParams = {
+      addCube: () => this.addCube(),
+      clearAllCubes: () => this.removeAllPhysicsObjects(),
+      togglePausePhysics: () => this.togglePausePhysics()
+    };
 
   backgroundMaterial = new THREE.MeshStandardMaterial( {
     color: this.baseColour

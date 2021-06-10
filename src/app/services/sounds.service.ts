@@ -31,8 +31,13 @@ export class SoundsService {
     }
   }
 
+  // Enable/disable all sounds, or feedback sounds only
+  public setSoundsEnabled( setSoundsEnabledTo: string ): void {
+    this.soundsEnabled = setSoundsEnabledTo;
+  }
+
   // Load mp3, conver to buffer and save result in this.decodedAudio
-  private loadSoundfile() {
+  private loadSoundfile(): void {
 
     fetch( 'assets/sounds/beep.mp3' )
     .then(response => response.arrayBuffer())

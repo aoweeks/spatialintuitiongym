@@ -36,6 +36,14 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   oldElapsedTime = 0;
   objectsToUpdate = [];
 
+  guiBaseParams = {
+    soundOff: () => {
+      this.soundsService.setSoundsEnabled('none');
+    },
+    soundOn: () => {
+      this.soundsService.setSoundsEnabled('all');
+    }
+  };
 
   constructor(
     public ratingFeedback: RatingFeedbackService,
@@ -43,6 +51,10 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     injector: Injector
   ) {
     super(injector);
+
+    // dat.GUI tweaks
+    this.debugService.gui.add(this.guiBaseParams, 'soundOff');
+    this.debugService.gui.add(this.guiBaseParams, 'soundOn');
   }
 
   ngAfterViewInit() {

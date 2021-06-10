@@ -55,22 +55,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseDown( event: MouseEvent ): void {
 
-    const pointsArray = [];
-    let nearestPoint = null;
+    const snapPoint = this.checkForSnapPoint(event.clientX, event.clientY );
 
-    for ( const line of this.lines ) {
-      pointsArray.push( line.start );
-      pointsArray.push( line.end );
-    }
-    nearestPoint = this.getNearestPoint(event.clientX, event.clientY, pointsArray);
-
-    if ( nearestPoint ){
-      this.mouseDownPos.x = nearestPoint.x;
-      this.mouseDownPos.y = nearestPoint.y;
-    } else {
-      this.mouseDownPos.x = event.clientX;
-      this.mouseDownPos.y = event.clientY;
-    }
+    this.mouseDownPos.x = snapPoint.x;
+    this.mouseDownPos.y = snapPoint.y;
 
     this.mouseIsDown = true;
   }
@@ -97,6 +85,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     if ( this.mouseDownPos.x !== event.clientX
         && this.mouseDownPos.y !== event.clientY) {
 
+      const snapPoint = this.checkForSnapPoint(event.clientX, event.clientY );
+
       // Save line
       this.lines.push({
         start: {
@@ -104,17 +94,17 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
           y: this.mouseDownPos.y
         },
         end: {
-          x: event.clientX,
-          y: event.clientY
+          x: snapPoint.x,
+          y: snapPoint.y
         }
       });
 
       // Clear redo history
       this.undoneLines = [];
-    } else {
-      this.clearCanvas();
-      this.drawPreviousLines();
     }
+
+    this.clearCanvas();
+    this.drawPreviousLines();
   }
 
   /**
@@ -178,7 +168,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     pointsToCompare,
     radius: number = 50) {
 
-    let nearestPoint = null;
+    let nearestPoint = {x: originPointX, y: originPointY};
 
     for ( const pointToCompare of pointsToCompare ) {
       const x = originPointX - pointToCompare.x;
@@ -192,5 +182,19 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     return nearestPoint;
   }
+
+  private checkForSnapPoint(x: number, y: number) {
+    const pointsArray = [];
+    let nearestPoint = null;
+
+    for ( const line of this.lines ) {
+      pointsArray.push( line.start );
+      pointsArray.push( line.end );
+    }
+    nearestPoint = this.getNearestPoint(x, y, pointsArray);
+
+    return nearestPoint;
+  }
+
 
 }

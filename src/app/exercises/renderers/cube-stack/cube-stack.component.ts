@@ -20,7 +20,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   physicsEnabled = true;
 
   backgroundMaterial = new THREE.MeshStandardMaterial( {
-    color: 0x660066
+    color: this.baseColour
   });
 
   private cubeMaterial = new THREE.MeshStandardMaterial({
@@ -126,6 +126,18 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       mesh: cubeMesh,
       body: cubeBody
     });
+
+    this.moveCamera();
+  }
+
+  private moveCamera(): void {
+
+    console.log(this.objectsToUpdate);
+    const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1];
+    console.log(lastCube.mesh.position.y);
+    this.camera.position.y = lastCube.mesh.position.y;
+    this.camera.lookAt(lastCube.mesh.position);
+
   }
 
 }

@@ -19,6 +19,8 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   @ViewChild('threeCanvas') canvasRef: ElementRef;
 
+  baseColour = new THREE.Color(0x660066);
+
   orthographicCamera = false;
 
   physicsEnabled = false;
@@ -126,6 +128,8 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   // Initial Setup for Three.js scene
   private initialSetup(): void {
+
+    this.scene.background = this.baseColour;
 
     // Camera setup
     if (this.orthographicCamera)

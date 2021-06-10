@@ -19,7 +19,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         this.canvasRef.nativeElement.width,
         this.canvasRef.nativeElement.height
       );
-    }
+    },
+    undoLastLine: () => this.undoLastLine()
   };
 
   private context;
@@ -35,7 +36,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     super.ngAfterViewInit();
     this.updateCanvasSizes();
 
+    // dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'clearCanvas');
+    this.debugService.gui.add(this.guiParams, 'undoLastLine');
   }
 
   public updateCanvasSizes(): void {
@@ -59,18 +62,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     if( this.mouseIsDown ) {
 
-      //Clear canvas
-      this.context.clearRect(
-        0,
-        0,
-        this.canvasRef.nativeElement.width,
-        this.canvasRef.nativeElement.height
-      );
-
-      // Redraw previous lines
-      for(const line of this.lines) {
-        this.drawLine(line.start, line.end);
-      }
+      this.clearCanvas();
+      this.drawPreviousLines();
 
       // Draw current line
       const currentPos = {
@@ -97,7 +90,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     });
   }
 
-  drawLine(
+  /**
+   * Line Drawing Functions
+   */
+
+  private drawLine(
     start: any,
     end: any
   ): void {
@@ -108,6 +105,27 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context.moveTo(start.x, start.y);
     this.context.lineTo(end.x, end.y);
     this.context.stroke();
+  }
+
+  private drawPreviousLines() {
+    for(const line of this.lines) {
+      this.drawLine(line.start, line.end);
+    }
+  }
+
+  private undoLastLine(): void {
+    this.lines.pop();
+    this.clearCanvas();
+    this.drawPreviousLines();
+  }
+
+  private clearCanvas(): void {
+    this.context.clearRect(
+      0,
+      0,
+      this.canvasRef.nativeElement.width,
+      this.canvasRef.nativeElement.height
+    );
   }
 
 }

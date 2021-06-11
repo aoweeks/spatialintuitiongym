@@ -109,6 +109,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);
 
+
     this.soundsService.playRatingSound( tempRandomRating );
 
     // Create Cannon.js cube, set to Three.js cube position and rotation
@@ -127,6 +128,10 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       body: cubeBody
     });
 
+    // Edge indicators need to be placed on next frame due to Three.js
+    // not updating object => world coordinates until then
+    requestAnimationFrame( () => this.addEdgeIndicator() );
+
     this.moveCamera();
   }
 
@@ -134,6 +139,21 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1];
     this.camera.position.y = lastCube.mesh.position.y;
     this.camera.lookAt(lastCube.mesh.position);
+  }
+
+  private addEdgeIndicator(): void {
+    const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh;
+    const posAttribute = lastCube.geometry.getAttribute( 'position' );
+
+    const firstVertex = new THREE.Vector3();
+    const topVertex = new THREE.Vector3();
+    const sideVertex = new THREE.Vector3();
+
+    firstVertex.fromBufferAttribute( posAttribute, 0 );
+    topVertex.fromBufferAttribute( posAttribute, 1 );
+    sideVertex.fromBufferAttribute( posAttribute, 2 );
+
+    console.log( lastCube.localToWorld( firstVertex ) );
   }
 
 }

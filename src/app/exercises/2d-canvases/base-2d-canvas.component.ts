@@ -27,7 +27,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private context;
 
   private mouseDownPos = { x: 0, y : 0};
-  private mouseIsDown = false;
+  private lastCursorPos = null;
 
   private lines = [];
   private undoneLines = [];
@@ -44,6 +44,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.debugService.gui.add(this.guiParams, 'redoLine');
   }
 
+  public log(event){
+    console.log(event);
+  }
+
   public updateCanvasSizes(): void {
     this.canvasRef.nativeElement.height = this.viewportSizes.height;
     this.canvasRef.nativeElement.width = this.viewportSizes.width;
@@ -53,39 +57,40 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    *  Mouse Event Handlers
    */
 
-  public mouseDown( event: MouseEvent ): void {
+  public mouseDown( event: MouseEvent | TouchEvent ): void {
 
-    const snapPoint = this.checkForSnapPoint(event.clientX, event.clientY );
+    const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
 
-    this.mouseDownPos.x = snapPoint.x;
-    this.mouseDownPos.y = snapPoint.y;
+    const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
-    this.mouseIsDown = true;
+    this.mouseDownPos = snapPoint;
+    this.lastCursorPos = snapPoint;
   }
 
-  public mouseMove( event: MouseEvent ): void {
+  public mouseMove( event: MouseEvent | TouchEvent ): void {
 
-    if( this.mouseIsDown ) {
+    if( this.lastCursorPos ) {
+
+      const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
 
       this.clearCanvas();
       this.drawPreviousLines();
 
       // Draw current line
-      const currentPos = {
-        x: event.clientX,
-        y: event.clientY
-      };
-      this.drawLine(this.mouseDownPos, currentPos);
+      this.drawLine(this.mouseDownPos, cursorPos );
+
+      this.lastCursorPos = cursorPos;
     }
   }
 
-  public mouseUp( event: MouseEvent ): void {
-    this.mouseIsDown = false;
+  public mouseUp( event: MouseEvent | TouchEvent): void {
 
-    if ( this.mouseDownPos.x !== event.clientX
-        && this.mouseDownPos.y !== event.clientY) {
+    const cursorPos = this.lastCursorPos || this.extractPosFromMouseOrTouchEvent( event );
 
-      const snapPoint = this.checkForSnapPoint(event.clientX, event.clientY );
+    if ( this.mouseDownPos.x !== cursorPos.x
+        && this.mouseDownPos.y !== cursorPos.y) {
+
+      const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
       // Save line
       this.lines.push({
@@ -105,6 +110,25 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     this.clearCanvas();
     this.drawPreviousLines();
+
+    this.lastCursorPos = false;
+  }
+
+  extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent) {
+
+    let x: number;
+    let y: number;
+
+    if (event instanceof MouseEvent) {
+      x = event.clientX;
+      y = event.clientY;
+    } else {
+      x = event.touches[0].clientX;
+      y = event.touches[0].clientY;
+    }
+
+    return { x, y };
+
   }
 
   /**

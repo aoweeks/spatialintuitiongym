@@ -111,7 +111,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     this.soundsService.playRatingSound( tempRandomRating );
 
-    //Create Cannon.js cube, set to Three.js cube position and rotation
+    // Create Cannon.js cube, set to Three.js cube position and rotation
     const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5));
     const cubeBody = new CANNON.Body({
       mass: 1,

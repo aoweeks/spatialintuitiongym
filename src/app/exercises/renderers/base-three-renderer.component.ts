@@ -93,6 +93,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     const deltaTime = elapsedTime - this.oldElapsedTime;
     this.oldElapsedTime = elapsedTime;
 
+    // If physics is enabled and not paused
     if( this.physicsEnabled && !this.physicsPaused ) {
       // Update physics
       this.world.step( 1 / 60 , deltaTime, 3 );

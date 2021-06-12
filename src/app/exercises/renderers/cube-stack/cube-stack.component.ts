@@ -12,6 +12,7 @@ import * as THREE from 'three';
 export class CubeStackComponent extends BaseThreeRendererComponent implements AfterViewInit {
 
   physicsEnabled = true;
+  physicsPaused = true;
 
     guiParams = {
       addCube: () => this.addCube(),
@@ -19,12 +20,18 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       togglePausePhysics: () => this.togglePausePhysics()
     };
 
-  backgroundMaterial = new THREE.MeshStandardMaterial( {
+  private backgroundMaterial = new THREE.MeshStandardMaterial( {
     color: this.baseColour
   });
 
+  private edgeIndicatorMaterial = new THREE.LineBasicMaterial({
+    color: 0x000000,
+    linewidth: 5
+  });
+
   private cubeMaterial = new THREE.MeshStandardMaterial({
-    color: 0x000000
+    transparent: true,
+    opacity: 0.1
   });
   private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
 
@@ -57,8 +64,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
 
     this.setUpEnvironment();
-
-    this.physicsEnabled = true;
     this.animate();
   }
 
@@ -143,17 +148,69 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private addEdgeIndicator(): void {
     const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh;
-    const posAttribute = lastCube.geometry.getAttribute( 'position' );
 
-    const firstVertex = new THREE.Vector3();
-    const topVertex = new THREE.Vector3();
-    const sideVertex = new THREE.Vector3();
+    const firstVertex = new THREE.Vector3(-.5, -.5, -.5);
 
-    firstVertex.fromBufferAttribute( posAttribute, 0 );
-    topVertex.fromBufferAttribute( posAttribute, 1 );
-    sideVertex.fromBufferAttribute( posAttribute, 2 );
+    const verticalLength = this.randomLength();
+    const verticalVertex = new THREE.Vector3(-.5, verticalLength, -.5);
 
-    console.log( lastCube.localToWorld( firstVertex ) );
+    const horizontalLength = this.randomLength();
+    let horizontalVertex = new THREE.Vector3();
+
+    // 50/50 chance of line being on the X or Z axes
+    if( Math.random() < .5) {
+      horizontalVertex = new THREE.Vector3(horizontalLength, -.5, -.5);
+    } else {
+      horizontalVertex = new THREE.Vector3(-.5, -.5, horizontalLength);
+    }
+
+    const worldFirstVertex = lastCube.localToWorld( firstVertex );;
+    const worldVerticalVertex = lastCube.localToWorld( verticalVertex );
+    const worldHorizontalVertex = lastCube.localToWorld( horizontalVertex );
+
+
+    this.createLine(worldFirstVertex, worldVerticalVertex);
+    this.createLine(worldFirstVertex, worldHorizontalVertex);
+
+
+    // const posAttribute = lastCube.geometry.getAttribute( 'position' );
+
+    // let firstVertex = new THREE.Vector3();
+    // let topVertex = new THREE.Vector3();
+    // let sideVertex = new THREE.Vector3();
+    // firstVertex.fromBufferAttribute( posAttribute, 0 );
+    // firstVertex = lastCube.localToWorld( firstVertex );
+    // topVertex.fromBufferAttribute( posAttribute, 1 );
+    // topVertex = lastCube.localToWorld( topVertex );
+    // sideVertex.fromBufferAttribute( posAttribute, 2 );
+    // sideVertex = lastCube.localToWorld( sideVertex );
+
+    // const verticalLine = new THREE.Line3( firstVertex, topVertex );
+    // const verticalLineEnd =  new THREE.Vector3();
+    // verticalLine.at(0.5, verticalLineEnd);
+    // console.log(verticalLineEnd);
+    // const horizontalLine = new THREE.Line3( firstVertex, sideVertex );
+    // console.log(verticalLine);
+
+  //  this.scene.add( verticalLine );
+  }
+
+  private randomLength(): number {
+    return (Math.random() * .25) - .4;
+  }
+
+  private createLine(start: THREE.Vector3, end: THREE.Vector3) {
+
+    const lineVertexPositions = new Float32Array([
+      start.x, start.y, start.z,
+      end.x, end.y, end.z
+    ]);
+    const positionsAttribute = new THREE.BufferAttribute( lineVertexPositions, 3);
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute('position', positionsAttribute);
+
+    const line = new THREE.Line( lineGeometry, this.edgeIndicatorMaterial );
+    this.scene.add( line );
   }
 
 }

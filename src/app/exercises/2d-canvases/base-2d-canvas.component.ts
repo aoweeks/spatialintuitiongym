@@ -29,6 +29,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private mouseDownPos = { x: 0, y : 0};
   private lastCursorPos = null;
 
+  private pointsToMove = [];
+
   private lines = [];
   private undoneLines = [];
 
@@ -69,6 +71,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseMove( event: MouseEvent | TouchEvent ): void {
 
+    // If a line is being drawn
     if( this.lastCursorPos ) {
 
       const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
@@ -80,6 +83,17 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.drawLine(this.mouseDownPos, cursorPos );
 
       this.lastCursorPos = cursorPos;
+    }
+
+    // If a point is being moved
+    if ( this.pointsToMove.length ) {
+
+      for(const point in this.pointsToMove) {
+
+      }
+
+      this.clearCanvas();
+      this.drawPreviousLines();
     }
   }
 
@@ -111,10 +125,26 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.clearCanvas();
     this.drawPreviousLines();
 
+    this.pointsToMove = [];
+
     this.lastCursorPos = false;
   }
 
-  extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent) {
+  public movePoint(event: MouseEvent ) {
+
+    const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
+    const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+
+    for( const [index, line] of this.lines.entries() ) {
+      if( line.start === snapPoint ) {
+        this.pointsToMove.push( { index, pos: 'start' } );
+      } else if ( line.end === snapPoint ) {
+        this.pointsToMove.push( { index, pos: 'end' } );
+      }
+    }
+  }
+
+  private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent) {
 
     let x: number;
     let y: number;
@@ -171,6 +201,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
+
   /**
    * Other canvas based functions
    */
@@ -208,17 +239,22 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   private checkForSnapPoint(x: number, y: number) {
-    const pointsArray = [];
+    const pointsArray = this.arrayOfLinePoints();
     let nearestPoint = null;
-
-    for ( const line of this.lines ) {
-      pointsArray.push( line.start );
-      pointsArray.push( line.end );
-    }
     nearestPoint = this.getNearestPoint(x, y, pointsArray);
 
     return nearestPoint;
   }
+
+  private arrayOfLinePoints() {
+    const pointsArray = [];
+    for ( const line of this.lines ) {
+      pointsArray.push( line.start );
+      pointsArray.push( line.end );
+    }
+    return pointsArray;
+  }
+
 
 
 }

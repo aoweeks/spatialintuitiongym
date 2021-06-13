@@ -55,6 +55,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     }
   );
 
+  private edgeIndicators = { vertical: null, horizontal: null};
+
   ngAfterViewInit() {
     super.ngAfterViewInit();
 
@@ -110,7 +112,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     cubeMesh.material.color = new THREE.Color(ratingColour);
     cubeMesh.position.copy( previousCubeMesh?.position || new THREE.Vector3(0, .5, 0) );
     if(previousCubeMesh){
-      cubeMesh.translateY(1.001);
+      cubeMesh.translateY(1);
     }
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
     this.scene.add(cubeMesh);
@@ -148,6 +150,11 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
   private addEdgeIndicator(): void {
+
+    if( this.edgeIndicators.horizontal !== null) {
+      this.scene.remove(this.edgeIndicators.horizontal, this.edgeIndicators.vertical );
+    }
+
     const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh;
 
     const firstVertex = new THREE.Vector3(-.5, -.5, -.5);
@@ -170,37 +177,17 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const worldHorizontalVertex = lastCube.localToWorld( horizontalVertex );
 
 
-    this.createLine(worldFirstVertex, worldVerticalVertex);
-    this.createLine(worldFirstVertex, worldHorizontalVertex);
+    this.edgeIndicators.vertical = this.createLine(worldFirstVertex, worldVerticalVertex);
+    this.edgeIndicators.horizontal = this.createLine(worldFirstVertex, worldHorizontalVertex);
 
-
-    // const posAttribute = lastCube.geometry.getAttribute( 'position' );
-
-    // let firstVertex = new THREE.Vector3();
-    // let topVertex = new THREE.Vector3();
-    // let sideVertex = new THREE.Vector3();
-    // firstVertex.fromBufferAttribute( posAttribute, 0 );
-    // firstVertex = lastCube.localToWorld( firstVertex );
-    // topVertex.fromBufferAttribute( posAttribute, 1 );
-    // topVertex = lastCube.localToWorld( topVertex );
-    // sideVertex.fromBufferAttribute( posAttribute, 2 );
-    // sideVertex = lastCube.localToWorld( sideVertex );
-
-    // const verticalLine = new THREE.Line3( firstVertex, topVertex );
-    // const verticalLineEnd =  new THREE.Vector3();
-    // verticalLine.at(0.5, verticalLineEnd);
-    // console.log(verticalLineEnd);
-    // const horizontalLine = new THREE.Line3( firstVertex, sideVertex );
-    // console.log(verticalLine);
-
-  //  this.scene.add( verticalLine );
+    console.log(this.edgeIndicators);
   }
 
   private randomLength(): number {
     return (Math.random() * .25) - .4;
   }
 
-  private createLine(start: THREE.Vector3, end: THREE.Vector3) {
+  private createLine(start: THREE.Vector3, end: THREE.Vector3): THREE.Line {
 
     const lineVertexPositions = new Float32Array([
       start.x, start.y, start.z,
@@ -212,6 +199,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     const line = new THREE.Line( lineGeometry, this.edgeIndicatorMaterial );
     this.scene.add( line );
+    return line;
   }
 
 }

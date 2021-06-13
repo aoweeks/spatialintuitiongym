@@ -59,22 +59,28 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    *  Mouse Event Handlers
    */
 
-  public mouseDown( event: MouseEvent | TouchEvent ): void {
+  public mouseDown( event: MouseEvent ): void {
 
-    const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
+    if( event.button === 0 ) {
+      const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
 
-    const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+      const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
-    this.mouseDownPos = snapPoint;
-    this.lastCursorPos = snapPoint;
+      this.mouseDownPos = snapPoint;
+      this.lastCursorPos = snapPoint;
+    } else if ( event.button === 2 ) {
+      this.movePoint(event);
+    }
   }
 
   public mouseMove( event: MouseEvent | TouchEvent ): void {
 
+
+    const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
+
     // If a line is being drawn
     if( this.lastCursorPos ) {
 
-      const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
 
       this.clearCanvas();
       this.drawPreviousLines();
@@ -88,8 +94,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     // If a point is being moved
     if ( this.pointsToMove.length ) {
 
-      for(const point in this.pointsToMove) {
-
+      for(const point of this.pointsToMove ) {
+        if ( point.pos === 'start') {
+          this.lines[point.index].start = cursorPos;
+        } else {
+          this.lines[point.index].end = cursorPos;
+        }
       }
 
       this.clearCanvas();
@@ -97,51 +107,68 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  public mouseUp( event: MouseEvent | TouchEvent): void {
+  public mouseUp( event: MouseEvent ) {
 
     const cursorPos = this.lastCursorPos || this.extractPosFromMouseOrTouchEvent( event );
 
-    if ( this.mouseDownPos.x !== cursorPos.x
-        && this.mouseDownPos.y !== cursorPos.y) {
+    if ( event.button === 0 ) {
 
       const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
-      // Save line
-      this.lines.push({
-        start: {
-          x: this.mouseDownPos.x,
-          y: this.mouseDownPos.y
-        },
-        end: {
-          x: snapPoint.x,
-          y: snapPoint.y
-        }
-      });
+      if ( this.mouseDownPos !== snapPoint ) {
 
-      // Clear redo history
-      this.undoneLines = [];
+
+        // Save line
+        this.lines.push({
+          start: {
+            x: this.mouseDownPos.x,
+            y: this.mouseDownPos.y
+          },
+          end: {
+            x: snapPoint.x,
+            y: snapPoint.y
+          }
+        });
+      }
+
+
+    this.lastCursorPos = false;
+    } else if ( event.button === 2) {
+      this.pointsToMove = [];
     }
+
+    // Clear redo history
+    this.undoneLines = [];
 
     this.clearCanvas();
     this.drawPreviousLines();
-
-    this.pointsToMove = [];
-
-    this.lastCursorPos = false;
   }
 
   public movePoint(event: MouseEvent ) {
 
+    // Prevent right click menu
+
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
     const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
-    for( const [index, line] of this.lines.entries() ) {
-      if( line.start === snapPoint ) {
+    console.log(this.lines);
+    // for( const [index, line] of this.lines.entries() ) {
+    this.lines.forEach( (line, index) => {
+
+      // ? Workaround: line.start === snappoint was only firing once per loop?!
+      if ( line.start.x === snapPoint.x && line.start.y === snapPoint.y) {
         this.pointsToMove.push( { index, pos: 'start' } );
-      } else if ( line.end === snapPoint ) {
+      } else if ( line.end.x === snapPoint.x && line.end.y === snapPoint.y ) {
         this.pointsToMove.push( { index, pos: 'end' } );
       }
-    }
+    });
+
+  }
+
+  public rightClick(event: MouseEvent) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    return false;
   }
 
   private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent) {

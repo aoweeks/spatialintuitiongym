@@ -3,6 +3,7 @@ import { BaseThreeRendererComponent } from '../base-three-renderer.component';
 
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
+import { MeshLine, MeshLineMaterial } from 'three.meshline'; // MeshLineRaycast
 
 @Component({
   selector: 'app-cube-stack',

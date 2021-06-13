@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { BaseCanvasComponent } from '../base-canvas.component';
 
 @Component({
@@ -20,8 +20,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         this.canvasRef.nativeElement.height
       );
     },
-    undoLastLine: () => this.undoLastLine(),
-    redoLine: () => this.redoLine()
+    undo: () => this.undo(),
+    redo: () => this.redo()
   };
 
   private context;
@@ -34,6 +34,16 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private lines = [];
   private undoneLines = [];
 
+  // Keyboard events
+  @HostListener('window:keydown',['$event'])
+  public keyDown(event: KeyboardEvent) {
+
+    if( (event.ctrlKey || event.metaKey) && (event.key === 'z' || event.key === 'Z') ) {
+      this.undo();
+    } else if( (event.ctrlKey || event.metaKey) && (event.key === 'y' || event.key === 'Y') ) {
+      this.redo();
+    }
+  }
 
   ngAfterViewInit() {
     this.context = this.canvasRef.nativeElement.getContext('2d');
@@ -42,8 +52,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     // dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'clearCanvas');
-    this.debugService.gui.add(this.guiParams, 'undoLastLine');
-    this.debugService.gui.add(this.guiParams, 'redoLine');
+    this.debugService.gui.add(this.guiParams, 'undo');
+    this.debugService.gui.add(this.guiParams, 'redo');
   }
 
   public log(event){
@@ -53,6 +63,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public updateCanvasSizes(): void {
     this.canvasRef.nativeElement.height = this.viewportSizes.height;
     this.canvasRef.nativeElement.width = this.viewportSizes.width;
+
+    this.drawPreviousLines();
   }
 
   /**
@@ -212,7 +224,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  private undoLastLine(): void {
+  private undo(): void {
     if ( this.lines.length ) {
       this.undoneLines.push( this.lines.pop() );
       this.clearCanvas();
@@ -220,7 +232,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  private redoLine(): void {
+  private redo(): void {
     if ( this.undoneLines.length ) {
       this.lines.push( this.undoneLines.pop() );
       this.clearCanvas();

@@ -5,9 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { ExercisesPage } from './exercises.page';
-import { BaseExercisePage } from './base-exercise/base-exercise.page';
+import { BaseExercisePage } from './pages/base-exercise.page';
 import { AppRoutingModule } from '../app-routing.module';
 import { ComponentsModule } from '../components.module';
+import { CubeStackPage } from './pages/cube-stack/cube-stack.page';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { ComponentsModule } from '../components.module';
   ],
   declarations: [
     ExercisesPage,
-    BaseExercisePage
+    BaseExercisePage,
+    CubeStackPage
   ]
 })
 export class ExercisesModule {}

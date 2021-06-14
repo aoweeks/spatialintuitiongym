@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 import { ExercisesPage } from './exercises/exercises.page';
-import { BaseExercisePage } from './exercises/base-exercise/base-exercise.page';
+import { BaseExercisePage } from './exercises/pages/base-exercise.page';
 
 const routes: Routes = [
 
@@ -18,10 +18,15 @@ const routes: Routes = [
   {
     path: 'base-exercise',
     component: BaseExercisePage
-  },  {
+  },
+  {
     path: 'test',
     loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
-  }
+  },
+  // {
+  //   path: 'cube-stack',
+  //   // loadChildren: () => import('./exercises/pages/cube-stack/cube-stack.module').then( m => m.CubeStackPageModule)
+  // }
 
 
 ];

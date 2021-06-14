@@ -87,10 +87,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.clearCanvas();
       this.drawPreviousLines();
 
-      // Draw current line
-      this.drawLine(this.mouseDownPos, cursorPos );
+      const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
-      this.lastCursorPos = cursorPos;
+      // Draw current line
+      this.drawLine(this.mouseDownPos, snapPoint );
+
+      this.lastCursorPos = snapPoint;
     }
 
     // If a point is being moved
@@ -278,12 +280,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     let nearestPoint = {x: originPointX, y: originPointY};
 
     for ( const pointToCompare of pointsToCompare ) {
-      const x = originPointX - pointToCompare.x;
-      const y = originPointY - pointToCompare.y;
-      const hypot = Math.hypot(x, y);
-      if( hypot < radius) {
+      const distance = this.distanceBetweenPoints(nearestPoint, pointToCompare);
+      if( distance < radius) {
         nearestPoint = pointToCompare;
-        radius = hypot;
+        radius = distance;
       }
     }
 
@@ -307,6 +307,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     return pointsArray;
   }
 
+  private distanceBetweenPoints(firstPoint, secondPoint) {
+    const x = firstPoint.x - secondPoint.x;
+    const y = firstPoint.y - secondPoint.y;
+    const hypot = Math.hypot(x, y);
+    return hypot;
+  }
 
 
 }

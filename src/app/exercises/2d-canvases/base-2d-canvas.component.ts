@@ -12,6 +12,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   @Output() undoHistoryEvent = new EventEmitter<boolean>();
   @Output() redoHistoryEvent = new EventEmitter<boolean>();
+  @Output() canvasEmptyEvent = new EventEmitter<boolean>();
 
   guiParams = {
     resetCanvas: () => this.resetCanvas(),
@@ -123,9 +124,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
-      // Clear redo history
-      this.redoHistory.length = 0;
-      this.redoHistoryEvent.emit(false);
+      this.clearRedoHistory();
     }
 
     this.clearCanvas();
@@ -203,6 +202,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     if ( this.mouseDownPos !== snapPoint ) {
 
       this.saveCurrentStateToUndoHistory();
+      this.canvasEmptyEvent.emit(false);
 
       // Save line
       this.lines.push({
@@ -218,10 +218,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
 
     this.lastCursorPos = false;
-
-    // Clear redo history
-    this.redoHistory.length = 0;
-    this.redoHistoryEvent.emit(false);
+    this.clearRedoHistory();
   }
 
   private drawLine(
@@ -258,6 +255,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       if ( !this.undoHistory.length ) {
         this.undoHistoryEvent.emit(false);
       }
+
+      if ( this.lines.length ) {
+        this.canvasEmptyEvent.emit(false);
+      } else {
+        this.canvasEmptyEvent.emit(true);
+      }
     }
   }
 
@@ -268,6 +271,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.lines = this.redoHistory.pop();
 
       this.undoHistoryEvent.emit(true);
+      this.canvasEmptyEvent.emit(false);
 
       this.clearCanvas();
       this.drawPreviousLines();
@@ -285,6 +289,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     };
     this.undoHistory.push(undoHistoryItem);
     this.undoHistoryEvent.emit(true);
+  }
+
+  private clearRedoHistory() {
+    this.redoHistoryEvent.emit(false);
   }
 
 
@@ -306,6 +314,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.saveCurrentStateToUndoHistory();
     this.clearCanvas();
     this.lines = [];
+    this.canvasEmptyEvent.emit(true);
+    this.clearRedoHistory();
   }
 
   // Given a point A, and a list of other points, returns either the nearest

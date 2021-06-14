@@ -11,15 +11,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   @ViewChild('2dCanvas') canvasRef: ElementRef;
 
   guiParams = {
-    clearCanvas: () => {
-      this.lines = [];
-      this.context.clearRect(
-        0,
-        0,
-        this.canvasRef.nativeElement.width,
-        this.canvasRef.nativeElement.height
-      );
-    },
+    resetCanvas: () => this.resetCanvas(),
     undo: () => this.undo(),
     redo: () => this.redo()
   };
@@ -32,7 +24,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private pointsToMove = [];
 
   private lines = [];
-  private undoneLines = [];
+
+  private undoHistory = [];
+  private redoHistory = [];
 
   // Keyboard events
   @HostListener('window:keydown',['$event'])
@@ -51,13 +45,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.updateCanvasSizes();
 
     // dat.GUI tweaks
-    this.debugService.gui.add(this.guiParams, 'clearCanvas');
+    this.debugService.gui.add(this.guiParams, 'resetCanvas');
     this.debugService.gui.add(this.guiParams, 'undo');
     this.debugService.gui.add(this.guiParams, 'redo');
-  }
-
-  public log(event){
-    console.log(event);
   }
 
   public updateCanvasSizes(): void {
@@ -81,18 +71,18 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.mouseDownPos = snapPoint;
       this.lastCursorPos = snapPoint;
     } else if ( event.button === 2 ) {
+
+      this.saveCurrentStateToUndoHistory();
       this.movePoint(event);
     }
   }
 
   public mouseMove( event: MouseEvent | TouchEvent ): void {
 
-
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
 
     // If a line is being drawn
     if( this.lastCursorPos ) {
-
 
       this.clearCanvas();
       this.drawPreviousLines();
@@ -129,6 +119,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       if ( this.mouseDownPos !== snapPoint ) {
 
+        this.saveCurrentStateToUndoHistory();
 
         // Save line
         this.lines.push({
@@ -143,14 +134,17 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         });
       }
 
+      this.lastCursorPos = false;
 
-    this.lastCursorPos = false;
-    } else if ( event.button === 2) {
+      // Clear redo history
+      this.redoHistory.length = 0;
+
+    } else if ( event.button === 2 ) {
       this.pointsToMove = [];
-    }
 
-    // Clear redo history
-    this.undoneLines = [];
+      // Clear redo history
+      this.redoHistory.length = 0;
+    }
 
     this.clearCanvas();
     this.drawPreviousLines();
@@ -158,12 +152,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public movePoint(event: MouseEvent ) {
 
-    // Prevent right click menu
-
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
     const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
 
-    console.log(this.lines);
     // for( const [index, line] of this.lines.entries() ) {
     this.lines.forEach( (line, index) => {
 
@@ -178,6 +169,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public rightClick(event: MouseEvent) {
+
     event.stopImmediatePropagation();
     event.preventDefault();
     return false;
@@ -225,19 +217,33 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   private undo(): void {
-    if ( this.lines.length ) {
-      this.undoneLines.push( this.lines.pop() );
+    if ( this.undoHistory.length ) {
+
+      this.redoHistory.push( this.lines );
+      this.lines = this.undoHistory.pop();
+
       this.clearCanvas();
       this.drawPreviousLines();
     }
   }
 
   private redo(): void {
-    if ( this.undoneLines.length ) {
-      this.lines.push( this.undoneLines.pop() );
+    if ( this.redoHistory.length ) {
+
+      this.undoHistory.push( this.lines );
+      this.lines = this.redoHistory.pop();
+
       this.clearCanvas();
       this.drawPreviousLines();
     }
+  }
+
+  private saveCurrentStateToUndoHistory() {
+    const undoHistoryItem = [];
+    for(const line of this.lines) {
+      undoHistoryItem.push( {...line} );
+    };
+    this.undoHistory.push(undoHistoryItem);
   }
 
 
@@ -246,12 +252,19 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    */
 
   private clearCanvas(): void {
+
     this.context.clearRect(
       0,
       0,
       this.canvasRef.nativeElement.width,
       this.canvasRef.nativeElement.height
     );
+  }
+
+  private resetCanvas(): void {
+    this.saveCurrentStateToUndoHistory();
+    this.clearCanvas();
+    this.lines = [];
   }
 
   // Given a point A, and a list of other points, returns either the nearest

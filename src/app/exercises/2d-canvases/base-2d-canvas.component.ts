@@ -61,20 +61,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    *  Mouse Event Handlers
    */
 
-  public mouseDown( event: MouseEvent ): void {
+  public mouseDown( event: MouseEvent): void {
 
-    if( event.button === 0 ) {
-      const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
+      if( event.button === 0 ) {
+        this.setLineStart(event.clientX, event.clientY);
+      } else if ( event.button === 2 ) {
 
-      const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
-
-      this.mouseDownPos = snapPoint;
-      this.lastCursorPos = snapPoint;
-    } else if ( event.button === 2 ) {
-
-      this.saveCurrentStateToUndoHistory();
-      this.movePoint(event);
-    }
+        this.saveCurrentStateToUndoHistory();
+        this.movePoint(event);
+      }
   }
 
   public mouseMove( event: MouseEvent | TouchEvent ): void {
@@ -113,33 +108,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseUp( event: MouseEvent ) {
 
-    const cursorPos = this.lastCursorPos || this.extractPosFromMouseOrTouchEvent( event );
-
     if ( event.button === 0 ) {
 
-      const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
-
-      if ( this.mouseDownPos !== snapPoint ) {
-
-        this.saveCurrentStateToUndoHistory();
-
-        // Save line
-        this.lines.push({
-          start: {
-            x: this.mouseDownPos.x,
-            y: this.mouseDownPos.y
-          },
-          end: {
-            x: snapPoint.x,
-            y: snapPoint.y
-          }
-        });
-      }
-
-      this.lastCursorPos = false;
-
-      // Clear redo history
-      this.redoHistory.length = 0;
+      this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
 
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
@@ -177,6 +148,18 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     return false;
   }
 
+/**
+ * Touch Handlers
+ */
+
+  public touchStart(event: TouchEvent) {
+    this.setLineStart(event.touches[0].clientX, event.touches[0].clientY);
+  }
+
+  public touchEnd(event: TouchEvent) {
+    this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
+  }
+
   private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent) {
 
     let x: number;
@@ -197,6 +180,39 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   /**
    * Line Drawing Functions
    */
+
+  private setLineStart(cursorPosX, cursorPosY) {
+
+    const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
+    this.mouseDownPos = snapPoint;
+    this.lastCursorPos = snapPoint;
+  }
+
+  private setLineEnd( cursorPosX, cursorPosY ) {
+    const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
+
+    if ( this.mouseDownPos !== snapPoint ) {
+
+      this.saveCurrentStateToUndoHistory();
+
+      // Save line
+      this.lines.push({
+        start: {
+          x: this.mouseDownPos.x,
+          y: this.mouseDownPos.y
+        },
+        end: {
+          x: snapPoint.x,
+          y: snapPoint.y
+        }
+      });
+    }
+
+    this.lastCursorPos = false;
+
+    // Clear redo history
+    this.redoHistory.length = 0;
+  }
 
   private drawLine(
     start: any,

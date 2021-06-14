@@ -1,13 +1,10 @@
 <canvas #2dCanvas
   (mousedown)="mouseDown($event)"
+  (touchstart)="touchStart($event)"
   (mousemove)="mouseMove($event)"
+  (touchmove)="mouseMove($event)"
   (mouseup)="mouseUp($event)"
+  (touchend)="touchEnd($event)"
   (contextmenu)="rightClick($event)"
 ></canvas>
 
-<!--
-(touchstart)="mouseDown($event)"
-
-(touchmove)="mouseMove($event)"
-
-(touchend)="mouseUp($event)" -->

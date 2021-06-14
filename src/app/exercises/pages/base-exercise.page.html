@@ -1,9 +1,15 @@
 <ion-content>
 
   <div id="button-layer">
-    <ion-button>Undo</ion-button>
+    <ion-button *ngIf="this.undoHistoryPresent">Undo</ion-button>
+
+    <ion-button *ngIf="this.redoHistoryPresent">Redo</ion-button>
   </div>
 
-  <app-base-2d-canvas></app-base-2d-canvas>
+
+  <app-base-2d-canvas
+    (undoHistoryEvent)="updateUndoHistory($event)"
+    (redoHistoryEvent)="updateRedoHistory($event)">
+  </app-base-2d-canvas>
   <app-cube-stack></app-cube-stack>
 </ion-content>

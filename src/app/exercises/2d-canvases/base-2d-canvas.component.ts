@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter } from '@angular/core';
 import { BaseCanvasComponent } from '../base-canvas.component';
 
 @Component({
@@ -9,6 +9,9 @@ import { BaseCanvasComponent } from '../base-canvas.component';
 export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterViewInit{
 
   @ViewChild('2dCanvas') canvasRef: ElementRef;
+
+  @Output() undoHistoryEvent = new EventEmitter<boolean>();
+  @Output() redoHistoryEvent = new EventEmitter<boolean>();
 
   guiParams = {
     resetCanvas: () => this.resetCanvas(),
@@ -122,6 +125,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       // Clear redo history
       this.redoHistory.length = 0;
+      this.redoHistoryEvent.emit(false);
     }
 
     this.clearCanvas();
@@ -217,6 +221,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     // Clear redo history
     this.redoHistory.length = 0;
+    this.redoHistoryEvent.emit(false);
   }
 
   private drawLine(
@@ -245,8 +250,14 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.redoHistory.push( this.lines );
       this.lines = this.undoHistory.pop();
 
+      this.redoHistoryEvent.emit(true);
+
       this.clearCanvas();
       this.drawPreviousLines();
+
+      if ( !this.undoHistory.length ) {
+        this.undoHistoryEvent.emit(false);
+      }
     }
   }
 
@@ -256,8 +267,14 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.undoHistory.push( this.lines );
       this.lines = this.redoHistory.pop();
 
+      this.undoHistoryEvent.emit(true);
+
       this.clearCanvas();
       this.drawPreviousLines();
+
+      if ( !this.redoHistory.length ) {
+        this.redoHistoryEvent.emit(false);
+      }
     }
   }
 
@@ -267,6 +284,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       undoHistoryItem.push( {...line} );
     };
     this.undoHistory.push(undoHistoryItem);
+    this.undoHistoryEvent.emit(true);
   }
 
 

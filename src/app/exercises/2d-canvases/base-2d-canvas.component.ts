@@ -13,10 +13,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   guiParams = {
     resetCanvas: () => this.resetCanvas(),
     undo: () => this.undo(),
-    redo: () => this.redo()
+    redo: () => this.redo(),
+    toggleSnapping: () => this.toggleSnapping(),
   };
 
   private context;
+
+  private snappingOn = true;
 
   private mouseDownPos = { x: 0, y : 0};
   private lastCursorPos = null;
@@ -48,6 +51,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.debugService.gui.add(this.guiParams, 'resetCanvas');
     this.debugService.gui.add(this.guiParams, 'undo');
     this.debugService.gui.add(this.guiParams, 'redo');
+    this.debugService.gui.add(this.guiParams, 'toggleSnapping');
   }
 
   public updateCanvasSizes(): void {
@@ -55,6 +59,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.canvasRef.nativeElement.width = this.viewportSizes.width;
 
     this.drawPreviousLines();
+  }
+
+  public toggleSnapping(): void {
+    this.snappingOn = !this.snappingOn;
   }
 
   /**
@@ -107,11 +115,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public mouseUp( event: MouseEvent ) {
-
     if ( event.button === 0 ) {
-
       this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
-
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
@@ -126,7 +131,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public movePoint(event: MouseEvent ) {
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
-    const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+    const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y, true );
 
     // for( const [index, line] of this.lines.entries() ) {
     this.lines.forEach( (line, index) => {
@@ -306,12 +311,16 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     return nearestPoint;
   }
 
-  private checkForSnapPoint(x: number, y: number) {
-    const pointsArray = this.arrayOfLinePoints();
-    let nearestPoint = null;
-    nearestPoint = this.getNearestPoint(x, y, pointsArray);
+  private checkForSnapPoint( x: number, y: number, overrideSnappingBehaviour = false ) {
 
-    return nearestPoint;
+    if(this.snappingOn || overrideSnappingBehaviour ) {
+      const pointsArray = this.arrayOfLinePoints();
+      const nearestPoint = this.getNearestPoint(x, y, pointsArray);
+
+      return nearestPoint;
+    } else{
+      return {x, y};
+    }
   }
 
   private arrayOfLinePoints() {

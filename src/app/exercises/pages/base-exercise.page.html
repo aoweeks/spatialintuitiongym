@@ -4,6 +4,7 @@
     <ion-button
       *ngIf="this.undoHistoryPresent"
       (click)="undoButtonClick()"
+      slot="icon-only"
       fill="clear"
     >
       <ion-icon
@@ -13,6 +14,7 @@
     <ion-button
       *ngIf="this.redoHistoryPresent"
       (click)="redoButtonClick()"
+      slot="icon-only"
       fill="clear"
     >
       <ion-icon
@@ -22,13 +24,16 @@
     <ion-button
       *ngIf="!this.canvasIsEmpty"
       (click)="clearCanvasButtonClick()"
+      slot="icon-only"
       fill="clear"
     >
       <ion-icon name="refresh-outline"></ion-icon>
     </ion-button>
     <ion-button
       *ngIf="this.snappable"
+      [ngClass]=" { 'inactive' : !this.snapping } "
       (click)="snappingButtonClick()"
+      slot="icon-only"
       fill="clear"
     >
       <ion-icon name="magnet-outline"></ion-icon>

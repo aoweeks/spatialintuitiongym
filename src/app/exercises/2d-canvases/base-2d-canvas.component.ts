@@ -73,7 +73,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public toggleSnapping(): void {
-    console.log('toggled');
     this.snappingOn = !this.snappingOn;
     this.snappingChangeEvent.emit(this.snappingOn);
   }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Base2dCanvasComponent } from '../2d-canvases/base-2d-canvas.component';
 
 @Component({
   selector: 'app-base-exercise',
@@ -6,6 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./base-exercise.page.scss'],
 })
 export class BaseExercisePage {
+
+  @ViewChild('drawingCanvas') drawingCanvasCmp: Base2dCanvasComponent;
 
   public undoHistoryPresent = false;
   public redoHistoryPresent = false;
@@ -43,5 +46,23 @@ export class BaseExercisePage {
     this.snapping = event;
   }
 
+  /**
+   * BUTTON CLICK HANDLERS
+   */
 
+  undoButtonClick() {
+    this.drawingCanvasCmp.undo();
+  }
+
+  redoButtonClick() {
+    this.drawingCanvasCmp.redo();
+  }
+
+  clearCanvasButtonClick() {
+    this.drawingCanvasCmp.resetCanvas();
+  }
+
+  snappingButtonClick() {
+    this.drawingCanvasCmp.toggleSnapping();
+  }
 }

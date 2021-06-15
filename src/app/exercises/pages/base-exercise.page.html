@@ -1,14 +1,42 @@
 <ion-content>
 
   <div id="button-layer">
-    <ion-button *ngIf="this.undoHistoryPresent">Undo</ion-button>
-    <ion-button *ngIf="this.redoHistoryPresent">Redo</ion-button>
-    <ion-button *ngIf="!this.canvasIsEmpty">Clear</ion-button>
-    <ion-button *ngIf="this.snappable">Snap</ion-button>
+    <ion-button
+      *ngIf="this.undoHistoryPresent"
+      (click)="undoButtonClick()"
+      fill="clear"
+    >
+      <ion-icon
+        name="arrow-undo-outline"
+      ></ion-icon>
+    </ion-button>
+    <ion-button
+      *ngIf="this.redoHistoryPresent"
+      (click)="redoButtonClick()"
+      fill="clear"
+    >
+      <ion-icon
+        name="arrow-redo-outline"
+      ></ion-icon>
+    </ion-button>
+    <ion-button
+      *ngIf="!this.canvasIsEmpty"
+      (click)="clearCanvasButtonClick()"
+      fill="clear"
+    >
+      <ion-icon name="refresh-outline"></ion-icon>
+    </ion-button>
+    <ion-button
+      *ngIf="this.snappable"
+      (click)="snappingButtonClick()"
+      fill="clear"
+    >
+      <ion-icon name="magnet-outline"></ion-icon>
+    </ion-button>
   </div>
 
 
-  <app-base-2d-canvas
+  <app-base-2d-canvas #drawingCanvas
     (undoHistoryEvent)="updateUndoHistory($event)"
     (redoHistoryEvent)="updateRedoHistory($event)"
     (canvasEmptyEvent)="updateCanvasIsEmpty($event)"

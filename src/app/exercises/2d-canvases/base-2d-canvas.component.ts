@@ -265,17 +265,31 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.saveCurrentStateToUndoHistory();
       this.canvasEmptyEvent.emit(false);
 
-      // Save line
-      this.lines.push({
-        start: {
-          x: this.mouseDownPos.x,
-          y: this.mouseDownPos.y
-        },
-        end: {
-          x: snapPoint.x,
-          y: snapPoint.y
+      // Check line doesn't already exist
+      let lineDuplicated = false;
+      for ( const line of this.lines ) {
+        if ( (    (this.mouseDownPos.x === line.start.x && this.mouseDownPos.y === line.start.y ) ||
+                  (this.mouseDownPos.x === line.end.x && this.mouseDownPos.y === line.end.y ) )
+            && (  (snapPoint.x === line.start.x && snapPoint.y === line.start.y ) ||
+                  (snapPoint.x === line.end.x && snapPoint.y === line.end.y ) )
+        ) {
+          lineDuplicated = true;
         }
-      });
+      }
+
+      if (!lineDuplicated) {
+        // Save line
+        this.lines.push({
+          start: {
+            x: this.mouseDownPos.x,
+            y: this.mouseDownPos.y
+          },
+          end: {
+            x: snapPoint.x,
+            y: snapPoint.y
+          }
+        });
+      }
     }
 
     this.lastCursorPos = false;
@@ -290,6 +304,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     this.context.lineWidth = 5;
     this.context.lineCap = 'round';
+    this.context.setLineDash([10, 10]);
+    this.context.strokeStyle = 'white';
 
     this.context.moveTo(start.x, start.y);
     this.context.lineTo(end.x, end.y);

@@ -8,8 +8,12 @@
 
   ion-button{
 
+    position: absolute;
+
     height: 60px;
     width: 60px;
+
+    margin: 20px;
 
     --border-style: solid;
     --border-color: white;
@@ -28,9 +32,28 @@
       color: white;
     }
 
-  }
+    &.inactive{
+      opacity: 0.5;
+    }
 
-  .inactive{
-    opacity: 0.5;
+    &#undo-button{
+      left: 0;
+      bottom: 0;
+    }
+
+    &#redo-button{
+      left: 0;
+      bottom: 80px;
+    }
+
+    &#snapping-button{
+      right: 0;
+      bottom: 0;
+    }
+
+    &#clear-canvas-button{
+      right: 0;
+      bottom: 80px;
+    }
   }
 }

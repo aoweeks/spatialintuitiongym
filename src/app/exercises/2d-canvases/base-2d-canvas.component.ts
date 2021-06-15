@@ -1,4 +1,6 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter } from '@angular/core';
+import { SummaryResolver } from '@angular/compiler';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter, Injector } from '@angular/core';
+import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 
 @Component({
@@ -41,6 +43,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   // undoButtonPressed() {
 
   // }
+
+  constructor(injector: Injector, mathsUtilsService: MathsUtilsService) {
+    super(injector);
+  }
 
   // Keyboard events
   @HostListener('window:keydown',['$event'])

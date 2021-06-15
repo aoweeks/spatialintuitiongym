@@ -128,6 +128,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       cubeMesh.translateY(1);
     }
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
+
+    // /cubeMesh.castShadow = true;
+    cubeMesh.receiveShadow = true;
     this.scene.add(cubeMesh);
 
 

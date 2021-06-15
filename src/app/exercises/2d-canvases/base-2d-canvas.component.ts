@@ -13,6 +13,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   @Output() undoHistoryEvent = new EventEmitter<boolean>();
   @Output() redoHistoryEvent = new EventEmitter<boolean>();
   @Output() canvasEmptyEvent = new EventEmitter<boolean>();
+  @Output() snappingChangeEvent = new EventEmitter<boolean>();
 
   guiParams = {
     resetCanvas: () => this.resetCanvas(),
@@ -67,6 +68,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public toggleSnapping(): void {
     this.snappingOn = !this.snappingOn;
+    this.snappingChangeEvent.emit(this.snappingOn);
   }
 
   /**

@@ -10,7 +10,9 @@ export class BaseExercisePage {
   public undoHistoryPresent = false;
   public redoHistoryPresent = false;
   public canvasIsEmpty = true;
+  public snapping = true;
 
+  public snappable = true;
   private undoable = true;
 
   constructor() { }
@@ -35,6 +37,10 @@ export class BaseExercisePage {
     if(this.undoable) {
       this.canvasIsEmpty = event;
     }
+  }
+
+  public updateSnapping(event: boolean) {
+    this.snapping = event;
   }
 
 

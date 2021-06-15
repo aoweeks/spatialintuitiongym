@@ -4,6 +4,7 @@
     <ion-button *ngIf="this.undoHistoryPresent">Undo</ion-button>
     <ion-button *ngIf="this.redoHistoryPresent">Redo</ion-button>
     <ion-button *ngIf="!this.canvasIsEmpty">Clear</ion-button>
+    <ion-button *ngIf="this.snappable">Snap</ion-button>
   </div>
 
 
@@ -11,6 +12,7 @@
     (undoHistoryEvent)="updateUndoHistory($event)"
     (redoHistoryEvent)="updateRedoHistory($event)"
     (canvasEmptyEvent)="updateCanvasIsEmpty($event)"
+    (snappingChangeEvent)="updateSnapping($event)"
   >
   </app-base-2d-canvas>
   <app-cube-stack></app-cube-stack>

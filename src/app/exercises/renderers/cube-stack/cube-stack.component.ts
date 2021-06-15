@@ -3,12 +3,6 @@ import { BaseThreeRendererComponent } from '../base-three-renderer.component';
 
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
-// import { MeshLine, MeshLineMaterial } from 'three.meshline'; // MeshLineRaycast
-// import { LineSegmentsGeometry } from  'three/examples/jsm/lines/LineSegmentsGeometry.js';
-// import { LineGeometry } from  'three/examples/jsm/lines/LineGeometry.js';
-// import { LineMaterial } from  'three/examples/jsm/lines/LineMaterial.js';
-// import { LineSegments2 } from  'three/examples/jsm/lines/LineSegments2.js';
-// import { Line2 } from  'three/examples/jsm/lines/Line2.js';
 import { Line2, LineGeometry, LineMaterial } from 'three-fatline';
 
 @Component({
@@ -31,14 +25,18 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     color: this.baseColour
   });
 
-  private edgeIndicatorMaterial = new THREE.LineBasicMaterial({
-    color: 0x000000,
-    linewidth: 5
-  });
 
+  private edgeIndicatorMaterial = new LineMaterial({
+    linewidth: 5,
+    resolution: new THREE.Vector2(1920, 1080),
+    dashed: true,
+    // dashScale: 1,
+    // dashSize: 2,
+    // gapSize: 2
+  });
   private cubeMaterial = new THREE.MeshStandardMaterial({
     transparent: true,
-    opacity: 0.1
+    opacity: 0
   });
   private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
 
@@ -71,9 +69,13 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.debugService.gui.add(this.guiParams, 'clearAllCubes');
     this.debugService.gui.add(this.guiParams, 'togglePausePhysics');
 
-
     this.setUpEnvironment();
     this.animate();
+  }
+
+  public updateCanvasSizes(): void {
+    super.updateCanvasSizes();
+    this.edgeIndicatorMaterial.resolution = new THREE.Vector2(this.viewportSizes.width, this.viewportSizes.height);
   }
 
   // public animate() {
@@ -108,6 +110,11 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
 
   private addCube(): void {
+
+    //! Temp test code
+    if(this.objectsToUpdate.length){
+      this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.material.transparent = false;
+    }
 
     const tempRandomRating = Math.random();
     const ratingColour = this.ratingFeedback.getRatingColour(tempRandomRating);
@@ -157,6 +164,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private addEdgeIndicator(): void {
 
+    // Clear previous edge indicators
     if( this.edgeIndicators.horizontal !== null) {
       this.scene.remove(this.edgeIndicators.horizontal, this.edgeIndicators.vertical );
     }
@@ -193,17 +201,16 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     return (Math.random() * .25) - .4;
   }
 
-  private createLine(start: THREE.Vector3, end: THREE.Vector3): THREE.Line {
+  private createLine(start: THREE.Vector3, end: THREE.Vector3): Line2 {
 
-    const lineVertexPositions = new Float32Array([
+    const lineGeometry = new LineGeometry();
+    lineGeometry.setPositions([
       start.x, start.y, start.z,
       end.x, end.y, end.z
     ]);
-    const positionsAttribute = new THREE.BufferAttribute( lineVertexPositions, 3);
-    const lineGeometry = new THREE.BufferGeometry();
-    lineGeometry.setAttribute('position', positionsAttribute);
 
-    const line = new THREE.Line( lineGeometry, this.edgeIndicatorMaterial );
+    // const line = new THREE.Line( lineGeometry, this.edgeIndicatorMaterial );
+    const line = new Line2( lineGeometry, this.edgeIndicatorMaterial );
     this.scene.add( line );
     return line;
   }

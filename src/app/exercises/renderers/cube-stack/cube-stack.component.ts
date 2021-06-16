@@ -30,6 +30,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     linewidth: 5,
     resolution: new THREE.Vector2(1920, 1080),
     dashed: true,
+    depthTest: false
     // dashScale: 1,
     // dashSize: 2,
     // gapSize: 2
@@ -131,6 +132,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     // /cubeMesh.castShadow = true;
     cubeMesh.receiveShadow = true;
+    cubeMesh.renderOrder = 1;
     this.scene.add(cubeMesh);
 
 
@@ -214,6 +216,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     // const line = new THREE.Line( lineGeometry, this.edgeIndicatorMaterial );
     const line = new Line2( lineGeometry, this.edgeIndicatorMaterial );
+    line.renderOrder = 2;
     this.scene.add( line );
     return line;
   }

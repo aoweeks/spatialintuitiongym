@@ -9,17 +9,38 @@ export class MathsUtilsService {
 
   public getLineFromPoints(point1, point2) {
     const slope = (point1.x - point2.x) / (point1.y - point2.y);
-    const intercept = point1.y - (point1.x * slope);
+    const intercept = this.calculateIntercept(slope, point1);
 
     const line = { slope, intercept };
     return line;
   }
 
+  //! Need to handle horizontal and vertical lines
   public closestPointOnLine(point, line) {
-  /**
-   * Get slope-intercept of perpendicular line by applying inverse slope to point.
-   */
-    const closestPoint = {x: 0, y: 0};
-    return closestPoint;
+
+
+    const perpSlope = (1 / line.slope) * -1;
+    const perpIntercept = this.calculateIntercept(perpSlope, point);
+    const perpLine = { slope: perpSlope, intercept: perpIntercept };
+
+    //Find x value
+    const xSlopes = line.slope - perpSlope;
+    const xIntercepts = perpIntercept - line.intercept;
+    const x = xIntercepts / xSlopes;
+
+    const y = this.yPosOnLine(line, x);
+
+    return {x,y};
+  }
+
+  private calculateIntercept(slope, point ): number {
+    const intercept = point.y - (point.x * slope);
+    return intercept;
+  }
+
+  // Return point on a given line as array, given the x value
+  private yPosOnLine(line, x) {
+    const y = (x * line.slope) + line.intercept;
+    return y;
   }
 }

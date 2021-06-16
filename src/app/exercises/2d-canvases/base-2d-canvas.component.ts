@@ -164,7 +164,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.clearCanvas();
       this.drawPreviousLines();
 
+      // const snapPoint = this.mathsUtilsService.closestPointOnLine(cursorPos, {slope: 9, intercept: 1});
       const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+
 
       // Draw current line
       this.drawLine(this.mouseDownPos, snapPoint );

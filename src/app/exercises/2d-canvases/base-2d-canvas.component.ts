@@ -297,9 +297,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     if ( this.mouseDownPos !== snapPoint ) {
 
-      this.saveCurrentStateToUndoHistory();
-      this.canvasEmptyEvent.emit(false);
-
       // Check line doesn't already exist
       let lineDuplicated = false;
       for ( const line of this.lines ) {
@@ -313,6 +310,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       }
 
       if (!lineDuplicated) {
+
+        this.saveCurrentStateToUndoHistory();
+        this.canvasEmptyEvent.emit(false);
         // Save line
         this.lines.push({
           start: {

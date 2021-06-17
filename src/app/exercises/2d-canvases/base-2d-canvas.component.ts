@@ -29,6 +29,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private context;
 
   private snappingOn = true;
+  private tempSnappingSwitch = false;
 
   private mouseDownPos = { x: 0, y : 0};
   private lastCursorPos = null;
@@ -60,6 +61,22 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.undo();
     } else if( (event.ctrlKey || event.metaKey) && (event.key === 'y' || event.key === 'Y') ) {
       this.redo();
+    } else if (event.shiftKey) {
+      if ( this.mouseDownPos.x ) {
+        this.tempSnappingSwitch = true;
+        this.emitTempSnappingEvent();
+      }
+    }
+  }
+
+  @HostListener('window:keyup',['$event'])
+  public keyUp(event: KeyboardEvent) {
+    console.log(event);
+    if (event.key === 'Shift') {
+      if ( this.mouseDownPos.x ) {
+        this.tempSnappingSwitch = false;
+        this.emitTempSnappingEvent();
+      }
     }
   }
 
@@ -198,6 +215,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseUp( event: MouseEvent ) {
     if ( event.button === 0 ) {
       this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
+
+      if (event.shiftKey) {
+        if ( this.mouseDownPos.x ) {
+          this.tempSnappingSwitch = false;
+          console.log('up');
+        }
+      }
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
@@ -391,7 +415,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private checkForSnapPoint( x: number, y: number, overrideSnappingBehaviour = false ) {
 
-    if(this.snappingOn || overrideSnappingBehaviour ) {
+    const snappingOn  = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
+    if( ( snappingOn ) || overrideSnappingBehaviour ) {
       const pointsArray = this.arrayOfLinePoints();
       const nearestPoint = this.getNearestPoint(x, y, pointsArray);
 
@@ -420,5 +445,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     return hypot;
   }
 
+  private emitTempSnappingEvent() {
+
+    const snappingOn = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
+    this.snappingChangeEvent.emit(snappingOn);
+  }
 
 }

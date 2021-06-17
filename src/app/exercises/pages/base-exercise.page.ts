@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Base2dCanvasComponent } from '../2d-canvases/base-2d-canvas.component';
 
 @Component({

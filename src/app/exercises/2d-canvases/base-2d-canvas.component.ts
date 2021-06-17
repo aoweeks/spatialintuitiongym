@@ -62,7 +62,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if( (event.ctrlKey || event.metaKey) && (event.key === 'y' || event.key === 'Y') ) {
       this.redo();
     } else if (event.shiftKey) {
-      if ( this.mouseDownPos.x ) {
+      if ( this.lastCursorPos ) {
         this.tempSnappingSwitch = true;
         this.emitTempSnappingEvent();
       }
@@ -71,9 +71,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   @HostListener('window:keyup',['$event'])
   public keyUp(event: KeyboardEvent) {
-    console.log(event);
     if (event.key === 'Shift') {
-      if ( this.mouseDownPos.x ) {
+      if ( this.lastCursorPos ) {
         this.tempSnappingSwitch = false;
         this.emitTempSnappingEvent();
       }
@@ -164,7 +163,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseDown( event: MouseEvent): void {
 
       if( event.button === 0 ) {
+        // prevent firing if right button is already clicked
+        if(event.buttons === 1) {
         this.setLineStart(event.clientX, event.clientY);
+        }
       } else if ( event.button === 2 ) {
 
         this.saveCurrentStateToUndoHistory();
@@ -216,11 +218,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     if ( event.button === 0 ) {
       this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
 
-      if (event.shiftKey) {
-        if ( this.mouseDownPos.x ) {
-          this.tempSnappingSwitch = false;
-          console.log('up');
-        }
+      if ( event.shiftKey ) {
+        this.tempSnappingSwitch = false;
+        this.emitTempSnappingEvent();
       }
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];

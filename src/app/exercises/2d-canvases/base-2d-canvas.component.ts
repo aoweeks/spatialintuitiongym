@@ -2,6 +2,7 @@ import { SummaryResolver } from '@angular/compiler';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter, Injector } from '@angular/core';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
+import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
 
 @Component({
   selector: 'app-base-2d-canvas',
@@ -31,6 +32,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private mouseDownPos = { x: 0, y : 0};
   private lastCursorPos = null;
+  private currentConstraint = null;
 
   private pointsToMove = [];
 
@@ -44,7 +46,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   // }
 
-  constructor(injector: Injector, private mathsUtilsService: MathsUtilsService) {
+  constructor(  injector: Injector,
+                private mathsUtilsService: MathsUtilsService,
+                private cubeStackCanvasesService: CubeStackCanvasesService) {
     super(injector);
   }
 
@@ -164,8 +168,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.clearCanvas();
       this.drawPreviousLines();
 
-      // const snapPoint = this.mathsUtilsService.closestPointOnLine(cursorPos, {slope: 9, intercept: 1});
-      const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+      let snapPoint;
+      if ( this.currentConstraint ) {
+        snapPoint = this.mathsUtilsService.closestPointOnLine(cursorPos, this.currentConstraint);
+      } else {
+        snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+      }
 
 
       // Draw current line
@@ -264,12 +272,16 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private setLineStart(cursorPosX, cursorPosY) {
 
     const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
+    if(snapPoint.constraint) {
+      this.currentConstraint = snapPoint.constraint;
+    }
     this.mouseDownPos = snapPoint;
     this.lastCursorPos = snapPoint;
   }
 
   private setLineEnd( cursorPosX, cursorPosY ) {
     const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
+    this.currentConstraint = null;
 
     if ( this.mouseDownPos !== snapPoint ) {
 
@@ -293,11 +305,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         this.lines.push({
           start: {
             x: this.mouseDownPos.x,
-            y: this.mouseDownPos.y
+            y: this.mouseDownPos.y,
+            constraint: null
           },
           end: {
             x: snapPoint.x,
-            y: snapPoint.y
+            y: snapPoint.y,
+            constraint: null
           }
         });
       }
@@ -365,7 +379,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     pointsToCompare,
     radius: number = 50) {
 
-    let nearestPoint = {x: originPointX, y: originPointY};
+    let nearestPoint = {x: originPointX, y: originPointY, constraint: null};
 
     for ( const pointToCompare of pointsToCompare ) {
       const distance = this.distanceBetweenPoints(nearestPoint, pointToCompare);
@@ -386,12 +400,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       return nearestPoint;
     } else{
-      return {x, y};
+      return {x, y, constraint: null};
     }
   }
 
   private arrayOfLinePoints() {
     const pointsArray = [];
+    for(  const point of this.cubeStackCanvasesService.getSnapPoints() ) {
+      pointsArray.push(point);
+    }
     for ( const line of this.lines ) {
       pointsArray.push( line.start );
       pointsArray.push( line.end );

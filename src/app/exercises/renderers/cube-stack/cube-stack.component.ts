@@ -1,9 +1,13 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, Injector } from '@angular/core';
 import { BaseThreeRendererComponent } from '../base-three-renderer.component';
 
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
 import { Line2, LineGeometry, LineMaterial } from 'three-fatline';
+import { SoundsService } from 'src/app/services/sounds.service';
+import { RatingFeedbackService } from 'src/app/services/rating-feedback.service';
+import { MathsUtilsService } from 'src/app/services/maths-utils.service';
+import { CubeStackCanvasesService } from '../../pages/cube-stack/cube-stack-canvases.service';
 
 @Component({
   selector: 'app-cube-stack',
@@ -61,6 +65,15 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   );
 
   private edgeIndicators = { vertical: null, horizontal: null};
+
+  constructor(  injector: Injector,
+                soundsService: SoundsService,
+                ratingFeedbackService: RatingFeedbackService,
+                private mathsUtilsService: MathsUtilsService,
+                private cubeStackCanvasesService: CubeStackCanvasesService
+  ) {
+    super(ratingFeedbackService, soundsService, injector);
+  }
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
@@ -170,6 +183,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   private addEdgeIndicator(): void {
 
     // Clear previous edge indicators
+    this.cubeStackCanvasesService.clearSnapPoints();
     if( this.edgeIndicators.horizontal !== null) {
       this.scene.remove(this.edgeIndicators.horizontal, this.edgeIndicators.vertical );
     }
@@ -191,9 +205,13 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       horizontalVertex = new THREE.Vector3(-.5, -.5, horizontalLength);
     }
 
-    const worldFirstVertex = lastCube.localToWorld( firstVertex );;
+    // Get vertex for line starts/ends in world coordinates, and store in canvases service
+    const worldFirstVertex = lastCube.localToWorld( firstVertex );
+    this.addSnapPoint(worldFirstVertex.clone());
     const worldVerticalVertex = lastCube.localToWorld( verticalVertex );
+    this.addSnapPoint(worldVerticalVertex.clone(), worldFirstVertex.clone());
     const worldHorizontalVertex = lastCube.localToWorld( horizontalVertex );
+    this.addSnapPoint(worldHorizontalVertex.clone(), worldFirstVertex.clone());
 
 
     this.edgeIndicators.vertical = this.createLine(worldFirstVertex, worldVerticalVertex);
@@ -221,4 +239,29 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     return line;
   }
 
+  private addSnapPoint(point: THREE.Vector3, lineOriginPoint: THREE.Vector3 = null) {
+
+    const cameraPlanePoint = point.project(this.camera);
+    const convertedCameraPlanePoint = this.convertToScreenSpace(cameraPlanePoint);
+
+    let lineConstraint = null;
+    if (lineOriginPoint) {
+
+      const cameraPlaneLineOriginPoint = lineOriginPoint.project(this.camera);
+      const convertedCameraPlaneLineOriginPoint = this.convertToScreenSpace(cameraPlaneLineOriginPoint);
+      lineConstraint = this.mathsUtilsService.getLineFromPoints(  convertedCameraPlanePoint, convertedCameraPlaneLineOriginPoint );
+    }
+    const snapPoint = {
+      x: convertedCameraPlanePoint.x,
+      y: convertedCameraPlanePoint.y,
+      constraint: lineConstraint
+    };
+    this.cubeStackCanvasesService.addSnapPoint(snapPoint);
+  }
+
+  private convertToScreenSpace(point) {
+    const x = ( point.x + 1) * this.viewportSizes.width / 2;
+    const y = - ( point.y - 1) * this.viewportSizes.height / 2;
+    return {x , y};
+  }
 }

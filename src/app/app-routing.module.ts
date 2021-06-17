@@ -23,10 +23,10 @@ const routes: Routes = [
     path: 'test',
     loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
   },
-  {
-    path: 'cube-stack',
-    // loadChildren: () => import('./exercises/pages/cube-stack/cube-stack.module').then( m => m.CubeStackPageModule)
-  }
+  // {
+  //   path: 'cube-stack',
+  //   // loadChildren: () => import('./exercises/pages/cube-stack/cube-stack.module').then( m => m.CubeStackPageModule)
+  // }
 
 
 ];

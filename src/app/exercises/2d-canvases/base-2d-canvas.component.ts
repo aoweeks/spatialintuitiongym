@@ -62,20 +62,16 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if( (event.ctrlKey || event.metaKey) && (event.key === 'y' || event.key === 'Y') ) {
       this.redo();
     } else if (event.shiftKey) {
-      if ( this.lastCursorPos ) {
-        this.tempSnappingSwitch = true;
-        this.emitTempSnappingEvent();
-      }
+      this.tempSnappingSwitch = true;
+      this.emitTempSnappingEvent();
     }
   }
 
   @HostListener('window:keyup',['$event'])
   public keyUp(event: KeyboardEvent) {
     if (event.key === 'Shift') {
-      if ( this.lastCursorPos ) {
-        this.tempSnappingSwitch = false;
-        this.emitTempSnappingEvent();
-      }
+      this.tempSnappingSwitch = false;
+      this.emitTempSnappingEvent();
     }
   }
 
@@ -217,11 +213,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseUp( event: MouseEvent ) {
     if ( event.button === 0 ) {
       this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
-
-      if ( event.shiftKey ) {
-        this.tempSnappingSwitch = false;
-        this.emitTempSnappingEvent();
-      }
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 

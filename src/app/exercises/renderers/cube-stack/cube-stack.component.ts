@@ -248,7 +248,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       const cameraPlaneLineOriginPoint = lineOriginPoint.project(this.camera);
       const convertedCameraPlaneLineOriginPoint = this.convertToScreenSpace(cameraPlaneLineOriginPoint);
       lineConstraint = this.mathsUtilsService.getLineFromPoints(  convertedCameraPlanePoint, convertedCameraPlaneLineOriginPoint );
-      console.log(lineConstraint);
     }
     const snapPoint = {
       x: convertedCameraPlanePoint.x,

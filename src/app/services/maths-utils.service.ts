@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class MathsUtilsService {
 
-  constructor() {console.log(this.getLineFromPoints({x: 1, y: 4}, {x: 1, y: 8}));};
+  constructor() {};
 
   public getLineFromPoints(point1, point2) {
     const slope = (point1.y - point2.y) / (point1.x - point2.x);

@@ -216,8 +216,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     this.edgeIndicators.vertical = this.createLine(worldFirstVertex, worldVerticalVertex);
     this.edgeIndicators.horizontal = this.createLine(worldFirstVertex, worldHorizontalVertex);
-
-    console.log(this.edgeIndicators);
   }
 
   private randomLength(): number {
@@ -250,6 +248,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       const cameraPlaneLineOriginPoint = lineOriginPoint.project(this.camera);
       const convertedCameraPlaneLineOriginPoint = this.convertToScreenSpace(cameraPlaneLineOriginPoint);
       lineConstraint = this.mathsUtilsService.getLineFromPoints(  convertedCameraPlanePoint, convertedCameraPlaneLineOriginPoint );
+      console.log(lineConstraint);
     }
     const snapPoint = {
       x: convertedCameraPlanePoint.x,

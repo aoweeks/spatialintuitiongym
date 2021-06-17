@@ -73,9 +73,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.debugService.gui.add(this.guiParams, 'undo');
     this.debugService.gui.add(this.guiParams, 'redo');
     this.debugService.gui.add(this.guiParams, 'toggleSnapping');
-
-    //! Temp
-    console.log(this.mathsUtilsService.getLineFromPoints({x: 1, y: 2}, {x: 1, y: 4}));
   }
 
   public updateCanvasSizes(): void {

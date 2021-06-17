@@ -5,10 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class MathsUtilsService {
 
-  constructor() { }
+  constructor() {console.log(this.getLineFromPoints({x: 1, y: 4}, {x: 2, y: 8}))};
 
   public getLineFromPoints(point1, point2) {
-    const slope = (point1.x - point2.x) / (point1.y - point2.y);
+    const slope = (point1.y - point2.y) / (point1.x - point2.x);
     const intercept = this.calculateIntercept(slope, point1);
 
     const line = { slope, intercept };

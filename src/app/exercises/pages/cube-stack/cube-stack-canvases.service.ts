@@ -11,7 +11,6 @@ export class CubeStackCanvasesService {
 
   public addSnapPoint(point) {
     this.snapPoints.push(point);
-    console.log(this.snapPoints);
   }
 
   public getSnapPoints() {

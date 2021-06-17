@@ -326,11 +326,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
             constraint: null
           }
         });
+        this.clearRedoHistory();
       }
     }
 
     this.lastCursorPos = false;
-    this.clearRedoHistory();
   }
 
   private drawLine(
@@ -365,6 +365,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   private clearRedoHistory() {
+    this.redoHistory = [];
     this.redoHistoryEvent.emit(false);
   }
 

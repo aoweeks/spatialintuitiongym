@@ -266,9 +266,19 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
   private projectVisibleVertices(object: THREE.Mesh): {x: number; y: number}[] {
+
+    const positionsArray = object.geometry.getAttribute( 'position' ).array;
     const finalPointsArray = [];
 
-    console.log(object.geometry.getAttribute( 'position' ).array);
+    // Iterate through cube, vertex positions, convert each to world space and
+    // project onto camera plane
+    for(let i = 0; i < positionsArray.length; i = i+3) {
+      const localPoint = new THREE.Vector3( i, i+1, i+2 );
+      const worldPoint = object.localToWorld( localPoint );
+      const projectedPoint = worldPoint.project(this.camera);
+      finalPointsArray.push( projectedPoint );
+    }
+    console.log(finalPointsArray);
     return finalPointsArray;
   }
 }

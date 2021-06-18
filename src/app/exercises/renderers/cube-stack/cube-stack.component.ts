@@ -167,6 +167,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       body: cubeBody
     });
 
+    this.cubeStackCanvasesService.saveCubeVisibleVertices( this.projectVisibleVertices( cubeMesh) );
+
     // Edge indicators need to be placed on next frame due to Three.js
     // not updating object => world coordinates until then
     requestAnimationFrame( () => this.addEdgeIndicator() );
@@ -257,9 +259,16 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.cubeStackCanvasesService.addSnapPoint(snapPoint);
   }
 
-  private convertToScreenSpace(point) {
+  private convertToScreenSpace(point): {x: number; y: number} {
     const x = ( point.x + 1) * this.viewportSizes.width / 2;
     const y = - ( point.y - 1) * this.viewportSizes.height / 2;
     return {x , y};
+  }
+
+  private projectVisibleVertices(object: THREE.Mesh): {x: number; y: number}[] {
+    const finalPointsArray = [];
+
+    console.log(object.geometry.getAttribute( 'position' ).array);
+    return finalPointsArray;
   }
 }

@@ -267,18 +267,28 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private projectVisibleVertices(object: THREE.Mesh): {x: number; y: number}[] {
 
-    const positionsArray = object.geometry.getAttribute( 'position' ).array;
+    const positionsArray = [
+      [.5, .5, .5], [-.5, .5, .5], [.5, -.5,.5], [-.5,-.5, -.5],
+      [.5,.5, -.5], [.5,-.5, -.5], [-.5,.5,-.5], [-.5, -.5, .5]
+    ];
     const finalPointsArray = [];
 
     // Iterate through cube, vertex positions, convert each to world space and
     // project onto camera plane
-    for(let i = 0; i < positionsArray.length; i = i+3) {
-      const localPoint = new THREE.Vector3( i, i+1, i+2 );
+
+    for(const position of positionsArray) {
+      const localPoint = new THREE.Vector3( position[0], position[1], position[2] );
       const worldPoint = object.localToWorld( localPoint );
-      const projectedPoint = worldPoint.project(this.camera);
-      finalPointsArray.push( projectedPoint );
+
+      const direction = new THREE.Vector3();
+      direction.subVectors( worldPoint, this.camera ).normalize();
+      this.raycaster.set( this.camera.position, direction);
+      console.log(this.raycaster);
+
+      const projectedPoint = worldPoint.project( this.camera );
+      const screenPoint = this.convertToScreenSpace( projectedPoint );
+      finalPointsArray.push( screenPoint );
     }
-    console.log(finalPointsArray);
     return finalPointsArray;
   }
 }

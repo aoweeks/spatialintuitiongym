@@ -30,6 +30,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   camera; //: THREE.OrthographicCamera | THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   cameraPointLight: THREE.PointLight;
+  raycaster = new THREE.Raycaster();
 
   world: CANNON.World;
   clock = new THREE.Clock();

@@ -9,7 +9,7 @@ export class CubeStackCanvasesService {
 
   private snapPoints = [];
 
-  constructor() { }
+  private zoomFactor = 1;
 
   /*
   *Edge indicator snap point functions
@@ -35,5 +35,15 @@ export class CubeStackCanvasesService {
 
   public getCubeVisibleVertices(): {x: number; y: number}[] {
     return this.cubeVisibleVertices;
+  }
+
+  /*
+  * Camera functions
+  */
+  public zoomCamera( delta: number ): void {
+    this.zoomFactor -= ( delta / 1000 );
+    this.zoomFactor = Math.max( this.zoomFactor, 0.5 );
+    this.zoomFactor = Math.min( this.zoomFactor, 10 );
+    console.log(this.zoomFactor);
   }
 }

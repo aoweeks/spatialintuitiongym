@@ -65,16 +65,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
 
-
-      //! Temp
-      const vertices = this.cubeStackCanvasesService.getCubeVisibleVertices();
-      console.log(vertices);
-      this.clearCanvas();
-      vertices.forEach( (vertex) => {
-        this.context.beginPath();
-        this.context.arc(vertex.x, vertex.y, 3, 0, Math.PI*2);
-        this.context.stroke();
-      });
+      // //! Temp
+      // const vertices = this.cubeStackCanvasesService.getCubeVisibleVertices();
+      // console.log(vertices);
+      // this.clearCanvas();
+      // vertices.forEach( (vertex) => {
+      //   this.context.beginPath();
+      //   this.context.arc(vertex.x, vertex.y, 3, 0, Math.PI*2);
+      //   this.context.stroke();
+      // });
     }
   }
 
@@ -84,6 +83,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.tempSnappingSwitch = false;
       this.emitTempSnappingEvent();
     }
+  }
+
+  @HostListener('window:mousewheel',['$event'])
+  public mouseWheel( event: WheelEvent ) {
+    this.zoomCamera(event.deltaY);
   }
 
   ngAfterViewInit() {
@@ -233,6 +237,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.clearCanvas();
     this.drawPreviousLines();
   }
+
 
   public movePoint(event: MouseEvent ) {
 
@@ -452,6 +457,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     const snappingOn = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
     this.snappingChangeEvent.emit(snappingOn);
+  }
+
+
+  /**
+   *  Camera Controls
+   */
+
+  private zoomCamera(delta: number) {
+    this.cubeStackCanvasesService.zoomCamera(delta);
   }
 
 }

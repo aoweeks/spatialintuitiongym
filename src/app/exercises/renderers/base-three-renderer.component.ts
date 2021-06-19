@@ -112,7 +112,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     );
 
     // Request next frame
-    requestAnimationFrame(() => this.animate());
+    requestAnimationFrame( () => this.animate() );
   }
 
 
@@ -152,9 +152,9 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     {
       this.camera = new THREE.PerspectiveCamera(
         75,
-        this.viewportSizes.width / this.viewportSizes.height
-        // 0.1,
-        // 1000
+        this.viewportSizes.width / this.viewportSizes.height,
+        0.1,
+        50
       );
     }
     this.camera.position.set(0, 1, 3);

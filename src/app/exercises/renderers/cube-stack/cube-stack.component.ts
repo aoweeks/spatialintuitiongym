@@ -69,10 +69,10 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   constructor(  injector: Injector,
                 soundsService: SoundsService,
                 ratingFeedbackService: RatingFeedbackService,
+                cubeStackCanvasesService: CubeStackCanvasesService,
                 private mathsUtilsService: MathsUtilsService,
-                private cubeStackCanvasesService: CubeStackCanvasesService
   ) {
-    super(ratingFeedbackService, soundsService, injector);
+    super(ratingFeedbackService, soundsService, cubeStackCanvasesService, injector);
   }
 
   ngAfterViewInit() {

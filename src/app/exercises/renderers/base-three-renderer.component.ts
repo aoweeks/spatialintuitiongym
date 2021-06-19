@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Injector, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Injector, ViewChild, HostListener } from '@angular/core';
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -7,7 +7,7 @@ import * as CANNON from 'cannon';
 import { RatingFeedbackService } from '../../services/rating-feedback.service';
 import { SoundsService } from 'src/app/services/sounds.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
-import { DebugService } from 'src/app/services/debug.service';
+import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
 
 @Component({
   selector: 'app-base-three-renderer',
@@ -37,7 +37,13 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   oldElapsedTime = 0;
   objectsToUpdate = [];
 
-  guiBaseParams = {
+  private cameraAdjustments = {
+    zoomFactor: 1,
+    offsets: {x: 0, y: 0 }
+  };
+
+
+  private guiBaseParams = {
     soundOff: () => {
       this.soundsService.setSoundsEnabled('none');
     },
@@ -49,6 +55,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   constructor(
     public ratingFeedback: RatingFeedbackService,
     public soundsService: SoundsService,
+    public cubeStackCanvasesService: CubeStackCanvasesService,
     injector: Injector
   ) {
     super(injector);
@@ -56,6 +63,19 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     // dat.GUI tweaks
     this.debugService.gui.add(this.guiBaseParams, 'soundOff');
     this.debugService.gui.add(this.guiBaseParams, 'soundOn');
+  }
+
+
+  @HostListener('window:mousewheel',['$event'])
+  public mouseWheel( event: WheelEvent ) {
+    this.zoomCamera(event.deltaY);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  public keyPress( event: KeyboardEvent ) {
+    if (event.ctrlKey && event.key === 'ArrowRight') {
+      this.panCamera('y', 10);
+    }
   }
 
   ngAfterViewInit() {
@@ -193,6 +213,22 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
     this.world = new CANNON.World();
     this.world.gravity.set( 0, -9.82, 0 );
+  }
+
+  /**
+   *  Camera Controls
+   */
+
+   private zoomCamera( delta: number ) {
+    this.cameraAdjustments.zoomFactor -= ( delta / 1000 );
+    this.cameraAdjustments.zoomFactor = Math.max( this.cameraAdjustments.zoomFactor, 0.5 );
+    this.cameraAdjustments.zoomFactor = Math.min( this.cameraAdjustments.zoomFactor, 10 );
+    console.log(this.cameraAdjustments.zoomFactor);
+  }
+
+  private panCamera( axis: string, distance: number ) {
+    this.cameraAdjustments.offsets[axis] += distance;
+    console.log(this.cameraAdjustments.offsets);
   }
 
 }

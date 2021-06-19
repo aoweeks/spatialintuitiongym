@@ -64,8 +64,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if (event.shiftKey) {
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
-    } else if (event.ctrlKey && event.key === 'ArrowRight') {
-      this.panCamera('y', 10);
     }
   }
 
@@ -86,11 +84,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.tempSnappingSwitch = false;
       this.emitTempSnappingEvent();
     }
-  }
-
-  @HostListener('window:mousewheel',['$event'])
-  public mouseWheel( event: WheelEvent ) {
-    this.zoomCamera(event.deltaY);
   }
 
   ngAfterViewInit() {
@@ -462,17 +455,5 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.snappingChangeEvent.emit(snappingOn);
   }
 
-
-  /**
-   *  Camera Controls
-   */
-
-  private zoomCamera( delta: number ) {
-    this.cubeStackCanvasesService.zoomCamera( delta );
-  }
-
-  private panCamera( axis: string, distance: number ) {
-    this.cubeStackCanvasesService.panCamera( axis, distance );
-  }
 
 }

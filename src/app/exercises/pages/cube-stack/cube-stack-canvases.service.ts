@@ -40,18 +40,4 @@ export class CubeStackCanvasesService {
     return this.cubeVisibleVertices;
   }
 
-  /*
-  * Camera functions
-  */
-  public zoomCamera( delta: number ): void {
-    this.cameraAdjustments.zoomFactor -= ( delta / 1000 );
-    this.cameraAdjustments.zoomFactor = Math.max( this.cameraAdjustments.zoomFactor, 0.5 );
-    this.cameraAdjustments.zoomFactor = Math.min( this.cameraAdjustments.zoomFactor, 10 );
-    console.log(this.cameraAdjustments.zoomFactor);
-  }
-
-  public panCamera( axis: string, distance: number ): void {
-    this.cameraAdjustments.offsets[axis] += distance;
-    console.log(this.cameraAdjustments.offsets);
-  }
 }

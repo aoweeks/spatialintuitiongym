@@ -9,7 +9,10 @@ export class CubeStackCanvasesService {
 
   private snapPoints = [];
 
-  private zoomFactor = 1;
+  private cameraAdjustments = {
+    zoomFactor: 1,
+    offsets: {x: 0, y: 0 }
+  };
 
   /*
   *Edge indicator snap point functions
@@ -41,9 +44,14 @@ export class CubeStackCanvasesService {
   * Camera functions
   */
   public zoomCamera( delta: number ): void {
-    this.zoomFactor -= ( delta / 1000 );
-    this.zoomFactor = Math.max( this.zoomFactor, 0.5 );
-    this.zoomFactor = Math.min( this.zoomFactor, 10 );
-    console.log(this.zoomFactor);
+    this.cameraAdjustments.zoomFactor -= ( delta / 1000 );
+    this.cameraAdjustments.zoomFactor = Math.max( this.cameraAdjustments.zoomFactor, 0.5 );
+    this.cameraAdjustments.zoomFactor = Math.min( this.cameraAdjustments.zoomFactor, 10 );
+    console.log(this.cameraAdjustments.zoomFactor);
+  }
+
+  public panCamera( axis: string, distance: number ): void {
+    this.cameraAdjustments.offsets[axis] += distance;
+    console.log(this.cameraAdjustments.offsets);
   }
 }

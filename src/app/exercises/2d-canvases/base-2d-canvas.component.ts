@@ -64,6 +64,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if (event.shiftKey) {
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
+    } else if (event.ctrlKey && event.key === 'ArrowRight') {
+      this.panCamera('y', 10);
+    }
+  }
+
 
       // //! Temp
       // const vertices = this.cubeStackCanvasesService.getCubeVisibleVertices();
@@ -74,8 +79,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       //   this.context.arc(vertex.x, vertex.y, 3, 0, Math.PI*2);
       //   this.context.stroke();
       // });
-    }
-  }
 
   @HostListener('window:keyup',['$event'])
   public keyUp(event: KeyboardEvent) {
@@ -464,8 +467,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    *  Camera Controls
    */
 
-  private zoomCamera(delta: number) {
-    this.cubeStackCanvasesService.zoomCamera(delta);
+  private zoomCamera( delta: number ) {
+    this.cubeStackCanvasesService.zoomCamera( delta );
+  }
+
+  private panCamera( axis: string, distance: number ) {
+    this.cubeStackCanvasesService.panCamera( axis, distance );
   }
 
 }

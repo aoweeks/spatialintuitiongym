@@ -167,11 +167,17 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       body: cubeBody
     });
 
-    this.cubeStackCanvasesService.saveCubeVisibleVertices( this.projectVisibleVertices( cubeMesh) );
+
 
     // Edge indicators need to be placed on next frame due to Three.js
     // not updating object => world coordinates until then
-    requestAnimationFrame( () => this.addEdgeIndicator() );
+    requestAnimationFrame( () =>  {
+      this.addEdgeIndicator();
+
+      this.cubeStackCanvasesService.saveCubeVisibleVertices(
+        this.projectVisibleVertices( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh )
+      );
+    } );
 
     this.moveCamera();
   }
@@ -280,14 +286,28 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       const localPoint = new THREE.Vector3( position[0], position[1], position[2] );
       const worldPoint = object.localToWorld( localPoint );
 
-      const direction = new THREE.Vector3();
-      direction.subVectors( worldPoint, this.camera ).normalize();
-      this.raycaster.set( this.camera.position, direction);
-      console.log(this.raycaster);
+      // const localDirection = new THREE.Vector3();
+      // localDirection.subVectors( localPoint, this.camera.position ).normalize();
+      // console.log(localDirection);
 
-      const projectedPoint = worldPoint.project( this.camera );
-      const screenPoint = this.convertToScreenSpace( projectedPoint );
-      finalPointsArray.push( screenPoint );
+      const direction = new THREE.Vector3();
+      direction.subVectors( worldPoint, this.camera.position ).normalize();
+      // console.log(direction);
+      this.raycaster.set( this.camera.position, direction);
+
+      const intersectPoint = this.raycaster.intersectObject(object)[0]?.point;
+
+      const distanceFromTarget = new THREE.Vector3();
+      if (intersectPoint) {
+        distanceFromTarget.subVectors( worldPoint, intersectPoint );
+      };
+
+      if (distanceFromTarget.length() < .01) {
+        const projectedPoint = worldPoint.project( this.camera );
+        const screenPoint = this.convertToScreenSpace( projectedPoint );
+        finalPointsArray.push( screenPoint );
+      }
+
     }
     return finalPointsArray;
   }

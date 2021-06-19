@@ -26,7 +26,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     toggleSnapping: () => this.toggleSnapping(),
   };
 
-  private context;
+  private context: CanvasRenderingContext2D;
 
   private snappingOn = true;
   private tempSnappingSwitch = false;
@@ -64,6 +64,17 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if (event.shiftKey) {
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
+
+
+      //! Temp
+      const vertices = this.cubeStackCanvasesService.getCubeVisibleVertices();
+      console.log(vertices);
+      this.clearCanvas();
+      vertices.forEach( (vertex) => {
+        this.context.beginPath();
+        this.context.arc(vertex.x, vertex.y, 3, 0, Math.PI*2);
+        this.context.stroke();
+      });
     }
   }
 

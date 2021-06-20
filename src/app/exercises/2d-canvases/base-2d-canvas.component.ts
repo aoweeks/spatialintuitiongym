@@ -291,6 +291,23 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
+  // public touchPan(event) {
+  //   console.log(event);
+  // }
+
+  public touchTap(event) {
+
+    console.log("TAP");
+    if(event.maxPointers === 2) {
+      console.log("TWO");
+      this.undo();
+    } else if(event.maxPointers === 3) {
+
+      console.log("THREE");
+      this.redo();
+    }
+  }
+
   private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent | PointerEvent ) {
 
     let x: number;

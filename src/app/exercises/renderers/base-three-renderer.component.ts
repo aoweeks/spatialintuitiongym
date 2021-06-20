@@ -37,7 +37,8 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   oldElapsedTime = 0;
   objectsToUpdate = [];
 
-  private cameraAdjustments = {
+  private cameraSettings = {
+    originalFov: 45,
     zoomFactor: 1,
     offsets: {x: 0, y: 0 }
   };
@@ -73,8 +74,14 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   @HostListener('window:keydown', ['$event'])
   public keyPress( event: KeyboardEvent ) {
-    if (event.ctrlKey && event.key === 'ArrowRight') {
-      this.panCamera('y', 10);
+    if (event.ctrlKey && event.key === 'ArrowLeft') {
+      this.panCamera( -10, 0);
+    } else if (event.ctrlKey && event.key === 'ArrowRight') {
+      this.panCamera( 10, 0);
+    } else if (event.ctrlKey && event.key === 'ArrowUp') {
+      this.panCamera( 0, -10);
+    } else if (event.ctrlKey && event.key === 'ArrowDown') {
+      this.panCamera( 0, 10);
     }
   }
 
@@ -220,15 +227,26 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
    */
 
    private zoomCamera( delta: number ) {
-    this.cameraAdjustments.zoomFactor -= ( delta / 1000 );
-    this.cameraAdjustments.zoomFactor = Math.max( this.cameraAdjustments.zoomFactor, 0.5 );
-    this.cameraAdjustments.zoomFactor = Math.min( this.cameraAdjustments.zoomFactor, 10 );
-    console.log(this.cameraAdjustments.zoomFactor);
+    this.cameraSettings.zoomFactor -= ( delta / 1000 );
+    this.cameraSettings.zoomFactor = Math.max( this.cameraSettings.zoomFactor, 0.5 );
+    this.cameraSettings.zoomFactor = Math.min( this.cameraSettings.zoomFactor, 10 );
+    const newFov = this.cameraSettings.originalFov * this.cameraSettings.zoomFactor;
+    this.camera.fov = newFov;
+    this.camera.updateProjectionMatrix();
   }
 
-  private panCamera( axis: string, distance: number ) {
-    this.cameraAdjustments.offsets[axis] += distance;
-    console.log(this.cameraAdjustments.offsets);
+  private panCamera( xOffset: number, yOffset: number ) {
+    this.cameraSettings.offsets.x += xOffset;
+    this.cameraSettings.offsets.y += yOffset;
+
+    this.camera.setViewOffset(
+      this.viewportSizes.width,
+      this.viewportSizes.height,
+      this.cameraSettings.offsets.x,
+      this.cameraSettings.offsets.y,
+      this.viewportSizes.width,
+      this.viewportSizes.height,
+    );
   }
 
 }

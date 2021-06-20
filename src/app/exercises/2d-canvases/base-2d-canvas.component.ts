@@ -1,4 +1,3 @@
-import { SummaryResolver } from '@angular/compiler';
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter, Injector } from '@angular/core';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
@@ -172,11 +171,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       if( event.button === 0 ) {
         // prevent firing if right button is already clicked
         if(event.buttons === 1) {
-        this.setLineStart(event.clientX, event.clientY);
+          this.setLineStart(event.clientX, event.clientY);
         }
       } else if ( event.button === 2 ) {
-
-        this.saveCurrentStateToUndoHistory();
         this.movePoint(event);
       }
   }
@@ -235,7 +232,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
 
-  public movePoint(event: MouseEvent ) {
+  public movePoint(event: MouseEvent | PointerEvent ) {
+
+    this.saveCurrentStateToUndoHistory();
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
     const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y, true );
@@ -264,25 +263,45 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
  * Touch Handlers
  */
 
+  public touchPress(event) {
+
+    // Cancel the effects of the initial touch
+    this.lastCursorPos = null;
+    this.mouseDownPos = null;
+    this.currentConstraint = null;
+
+    this.movePoint(event.srcEvent);
+  }
+
   public touchStart(event: TouchEvent) {
     this.setLineStart(event.touches[0].clientX, event.touches[0].clientY);
   }
 
   public touchEnd(event: TouchEvent) {
-    this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
+
+    // If a line is being drawn
+    if(this.lastCursorPos) {
+      this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
+    } else {
+      this.pointsToMove = [];
+      this.clearRedoHistory();
+
+      this.clearCanvas();
+      this.drawPreviousLines();
+    }
   }
 
-  private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent) {
+  private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent | PointerEvent ) {
 
     let x: number;
     let y: number;
 
-    if (event instanceof MouseEvent) {
-      x = event.clientX;
-      y = event.clientY;
-    } else {
+    if (event instanceof TouchEvent) {
       x = event.touches[0].clientX;
       y = event.touches[0].clientY;
+    } else {
+      x = event.clientX;
+      y = event.clientY;
     }
 
     return { x, y };

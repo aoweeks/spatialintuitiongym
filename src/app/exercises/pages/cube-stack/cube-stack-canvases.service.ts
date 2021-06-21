@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
+import { BaseCanvasesCommunicatorService } from '../../base-canvases-communicator.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CubeStackCanvasesService {
+export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
 
   private cubeVisibleVertices = [];
 
   private snapPoints = [];
-
-  private cameraAdjustments = {
-    zoomFactor: 1,
-    offsets: {x: 0, y: 0 }
-  };
-
   /*
   *Edge indicator snap point functions
   */

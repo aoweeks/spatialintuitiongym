@@ -23,7 +23,13 @@ export class MathsUtilsService {
     return line;
   }
 
-  //! Need to handle horizontal and vertical lines
+  public distanceBetweenPoints( firstPoint, secondPoint ) {
+    const x = firstPoint.x - secondPoint.x;
+    const y = firstPoint.y - secondPoint.y;
+    const hypot = Math.hypot(x, y);
+    return hypot;
+  }
+
   public closestPointOnLine(point, line) {
 
     let x;

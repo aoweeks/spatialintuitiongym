@@ -30,13 +30,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private snappingOn = true;
   private tempSnappingSwitch = false;
 
-  private mouseDownPos = { x: 0, y : 0};
+  private mouseDownPos = { x: 0, y : 0 };
   private lastCursorPos = null;
   private currentConstraint = null;
 
   private pointsToMove = [];
 
   private lines = [];
+
+  private offsets = { xOffset: 0, yOffset: 0 };
 
   private undoHistory = [];
   private redoHistory = [];
@@ -89,6 +91,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context = this.canvasRef.nativeElement.getContext('2d');
     super.ngAfterViewInit();
     this.updateCanvasSizes();
+
+    this.cubeStackCanvasesService.panChange.subscribe( (offsets: any) => {
+      this.offsets = offsets;
+      this.clearCanvas();
+      this.drawPreviousLines();
+    });
 
     // dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'resetCanvas');
@@ -266,9 +274,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public touchPress( event ) {
 
     // Cancel the effects of the initial touch
-    this.lastCursorPos = null;
-    this.mouseDownPos = null;
-    this.currentConstraint = null;
+    this.cancelLine();
 
     this.movePoint( event.srcEvent );
   }
@@ -291,25 +297,33 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  public touchPan(event): void {
-    // console.log(event.maxPointers);
-  }
+  // public touchPan(event): void {
+  //   // console.log(event.maxPointers)
+  //   if (event.maxPointers === 2) {
+  //     this.cubeStackCanvasesService.updateOffsets(event.deltaX, event.deltaY);
+  //   }
+  // }
 
   public touchTap(event): void {
 
-    // console.log('TAP');
-    // if(event.maxPointers === 2) {
-    //   console.log('TWO');
-    //   this.undo();
-    // } else if(event.maxPointers === 3) {
+    console.log('TAP');
+    if(event.maxPointers === 2) {
+      console.log('TWO');
+      this.undo();
+    } else if(event.maxPointers === 3) {
 
-    //   console.log('THREE');
-    //   this.redo();
-    // }
+      console.log('THREE');
+      this.redo();
+    }
   }
 
   public touchPinch(event): void {
-    console.log('Ouch!');
+    this.cancelLine();
+    if (event.maxPointers === 2) {
+      const xOffset = (event.deltaX / 100) * -1;
+      const yOffset = (event.deltaY / 100) * -1;
+      this.cubeStackCanvasesService.updateOffsets( xOffset, yOffset );
+    }
   }
 
   private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent | PointerEvent ) {
@@ -389,6 +403,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     start: any,
     end: any
   ): void {
+    const offsetStart = this.offsetPoints(start);
+    const offsetEnd = this.offsetPoints(end);
+
+    console.log( offsetStart, offsetEnd );
     this.context.beginPath();
 
     this.context.lineWidth = 5;
@@ -396,8 +414,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context.setLineDash([10, 10]);
     this.context.strokeStyle = 'white';
 
-    this.context.moveTo(start.x, start.y);
-    this.context.lineTo(end.x, end.y);
+    this.context.moveTo( offsetStart.x, offsetStart.y);
+    this.context.lineTo( offsetEnd.x, offsetEnd.y);
     this.context.stroke();
   }
 
@@ -407,7 +425,14 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  private saveCurrentStateToUndoHistory() {
+  private offsetPoints( point: any ): any {
+    const offsetPoint = {...point};
+    offsetPoint.x -= this.offsets.xOffset;
+    offsetPoint.y -= this.offsets.yOffset;
+    return offsetPoint;
+  }
+
+  private saveCurrentStateToUndoHistory(): void {
     const undoHistoryItem = [];
     for(const line of this.lines) {
       undoHistoryItem.push( {...line} );
@@ -421,6 +446,14 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.redoHistoryEvent.emit(false);
   }
 
+  private cancelLine(): void {
+    this.lastCursorPos = null;
+    this.mouseDownPos = null;
+    this.currentConstraint = null;
+
+    this.clearCanvas();
+    this.drawPreviousLines();
+  }
 
   /**
    * Other canvas based functions
@@ -487,6 +520,5 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     const snappingOn = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
     this.snappingChangeEvent.emit(snappingOn);
   }
-
 
 }

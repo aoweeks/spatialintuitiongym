@@ -36,7 +36,7 @@ export class BaseCanvasesCommunicatorService {
     this.zoomChange.next(newZoomFactor);
   }
 
-  public updateOffset(xOffset: number, yOffset: number) {
+  public updateOffsets(xOffset: number, yOffset: number) {
     this.cameraSettings.offsets.x += xOffset;
     this.cameraSettings.offsets.y += yOffset;
 

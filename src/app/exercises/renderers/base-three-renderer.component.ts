@@ -69,13 +69,13 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   @HostListener('window:keydown', ['$event'])
   public keyPress( event: KeyboardEvent ) {
     if (event.ctrlKey && event.key === 'ArrowLeft') {
-      this.cubeStackCanvasesService.updateOffset( -10, 0);
+      this.cubeStackCanvasesService.updateOffsets( -10, 0);
     } else if (event.ctrlKey && event.key === 'ArrowRight') {
-      this.cubeStackCanvasesService.updateOffset( 10, 0);
+      this.cubeStackCanvasesService.updateOffsets( 10, 0);
     } else if (event.ctrlKey && event.key === 'ArrowUp') {
-      this.cubeStackCanvasesService.updateOffset( 0, -10);
+      this.cubeStackCanvasesService.updateOffsets( 0, -10);
     } else if (event.ctrlKey && event.key === 'ArrowDown') {
-      this.cubeStackCanvasesService.updateOffset( 0, 10);
+      this.cubeStackCanvasesService.updateOffsets( 0, 10);
     }
   }
 

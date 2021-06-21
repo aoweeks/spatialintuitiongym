@@ -84,12 +84,8 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     this.initialSetup();
     this.updateCanvasSizes();
 
-    this.cubeStackCanvasesService.zoomChange.subscribe( (zoomFactor: number) => {
-      this.zoomCamera( zoomFactor) ;
-    });
-
-    this.cubeStackCanvasesService.panChange.subscribe( (offsets: any) => {
-      this.panCamera( offsets.xOffset, offsets.yOffset) ;
+    this.cubeStackCanvasesService.cameraChange.subscribe( ( settings: any) => {
+      this.panAndZoomCamera( settings.xOffset, settings.yOffset, settings.zoomFactor ) ;
     });
 
   }
@@ -234,10 +230,10 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     this.camera.updateProjectionMatrix();
   }
 
-  private panCamera( xOffset: number, yOffset: number ) {
+  private panAndZoomCamera( xOffset: number, yOffset: number, zoomFactor: number) {
     this.camera.setViewOffset(
-      this.viewportSizes.width,
-      this.viewportSizes.height,
+      this.viewportSizes.width * zoomFactor,
+      this.viewportSizes.height * zoomFactor,
       xOffset,
       yOffset,
       this.viewportSizes.width,

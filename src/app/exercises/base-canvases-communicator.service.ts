@@ -6,8 +6,7 @@ import { Subject } from 'rxjs';
 })
 export class BaseCanvasesCommunicatorService {
 
-  public zoomChange = new Subject();
-  public panChange = new Subject();
+  public cameraChange = new Subject();
 
   private cameraSettings = {
     originalFov: 45,
@@ -33,13 +32,21 @@ export class BaseCanvasesCommunicatorService {
     newZoomFactor = Math.min( newZoomFactor, 10 );
     this.cameraSettings.zoomFactor = newZoomFactor;
 
-    this.zoomChange.next(newZoomFactor);
+    this.cameraChange.next({
+      xOffset: this.cameraSettings.offsets.x,
+      yOffset: this.cameraSettings.offsets.y,
+      zoomFactor: this.cameraSettings.zoomFactor
+    });
   }
 
   public updateOffsets(xOffset: number, yOffset: number) {
     this.cameraSettings.offsets.x += xOffset;
     this.cameraSettings.offsets.y += yOffset;
 
-    this.panChange.next({ xOffset: this.cameraSettings.offsets.x, yOffset: this.cameraSettings.offsets.y });
+    this.cameraChange.next({
+      xOffset: this.cameraSettings.offsets.x,
+      yOffset: this.cameraSettings.offsets.y,
+      zoomFactor: this.cameraSettings.zoomFactor
+    });
   }
 }

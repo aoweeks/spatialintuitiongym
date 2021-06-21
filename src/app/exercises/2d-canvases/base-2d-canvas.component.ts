@@ -92,8 +92,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     super.ngAfterViewInit();
     this.updateCanvasSizes();
 
-    this.cubeStackCanvasesService.panChange.subscribe( (offsets: any) => {
-      this.offsets = offsets;
+    this.cubeStackCanvasesService.cameraChange.subscribe( (offsets: any) => {
+      this.offsets.xOffset = offsets.xOffset;
+      this.offsets.yOffset = offsets.yOffset;
       this.clearCanvas();
       this.drawPreviousLines();
     });

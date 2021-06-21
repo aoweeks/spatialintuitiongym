@@ -69,19 +69,20 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   @HostListener('window:mousewheel',['$event'])
   public mouseWheel( event: WheelEvent ) {
-    this.zoomCamera(event.deltaY);
+    const zoomIncrease = event.deltaY / 1000;
+    this.cubeStackCanvasesService.updateZoom( zoomIncrease );
   }
 
   @HostListener('window:keydown', ['$event'])
   public keyPress( event: KeyboardEvent ) {
     if (event.ctrlKey && event.key === 'ArrowLeft') {
-      this.panCamera( -10, 0);
+      this.cubeStackCanvasesService.updateOffset( -10, 0);
     } else if (event.ctrlKey && event.key === 'ArrowRight') {
-      this.panCamera( 10, 0);
+      this.cubeStackCanvasesService.updateOffset( 10, 0);
     } else if (event.ctrlKey && event.key === 'ArrowUp') {
-      this.panCamera( 0, -10);
+      this.cubeStackCanvasesService.updateOffset( 0, -10);
     } else if (event.ctrlKey && event.key === 'ArrowDown') {
-      this.panCamera( 0, 10);
+      this.cubeStackCanvasesService.updateOffset( 0, 10);
     }
   }
 
@@ -89,6 +90,15 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     super.ngAfterViewInit();
     this.initialSetup();
     this.updateCanvasSizes();
+
+    this.cubeStackCanvasesService.zoomChange.subscribe( (zoomFactor: number) => {
+      this.zoomCamera( zoomFactor) ;
+    });
+
+    this.cubeStackCanvasesService.panChange.subscribe( (offsets: any) => {
+      this.panCamera( offsets.xOffset, offsets.yOffset) ;
+    });
+
   }
 
   public updateCanvasSizes(): void {
@@ -226,24 +236,19 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
    *  Camera Controls
    */
 
-   private zoomCamera( delta: number ) {
-    this.cameraSettings.zoomFactor -= ( delta / 1000 );
-    this.cameraSettings.zoomFactor = Math.max( this.cameraSettings.zoomFactor, 0.5 );
-    this.cameraSettings.zoomFactor = Math.min( this.cameraSettings.zoomFactor, 10 );
-    const newFov = this.cameraSettings.originalFov * this.cameraSettings.zoomFactor;
+   private zoomCamera( zoomFactor: number) {
+
+    const newFov = this.cubeStackCanvasesService.getZoom().originalFov * zoomFactor;
     this.camera.fov = newFov;
     this.camera.updateProjectionMatrix();
   }
 
   private panCamera( xOffset: number, yOffset: number ) {
-    this.cameraSettings.offsets.x += xOffset;
-    this.cameraSettings.offsets.y += yOffset;
-
     this.camera.setViewOffset(
       this.viewportSizes.width,
       this.viewportSizes.height,
-      this.cameraSettings.offsets.x,
-      this.cameraSettings.offsets.y,
+      xOffset,
+      yOffset,
       this.viewportSizes.width,
       this.viewportSizes.height,
     );

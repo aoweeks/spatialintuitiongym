@@ -252,7 +252,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   }
 
-  public rightClick(event: MouseEvent) {
+  public rightClick( event: MouseEvent ) {
 
     event.stopImmediatePropagation();
     event.preventDefault();
@@ -263,25 +263,25 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
  * Touch Handlers
  */
 
-  public touchPress(event) {
+  public touchPress( event ) {
 
     // Cancel the effects of the initial touch
     this.lastCursorPos = null;
     this.mouseDownPos = null;
     this.currentConstraint = null;
 
-    this.movePoint(event.srcEvent);
+    this.movePoint( event.srcEvent );
   }
 
-  public touchStart(event: TouchEvent) {
+  public touchStart( event: TouchEvent ) {
     this.setLineStart(event.touches[0].clientX, event.touches[0].clientY);
   }
 
-  public touchEnd(event: TouchEvent) {
+  public touchEnd( event: TouchEvent ) {
 
     // If a line is being drawn
     if(this.lastCursorPos) {
-      this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
+      this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y );
     } else {
       this.pointsToMove = [];
       this.clearRedoHistory();
@@ -447,7 +447,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     let nearestPoint = {x: originPointX, y: originPointY, constraint: null};
 
     for ( const pointToCompare of pointsToCompare ) {
-      const distance = this.distanceBetweenPoints(nearestPoint, pointToCompare);
+      const distance = this.mathsUtilsService.distanceBetweenPoints(nearestPoint, pointToCompare);
       if( distance < radius) {
         nearestPoint = pointToCompare;
         radius = distance;
@@ -480,13 +480,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       pointsArray.push( line.end );
     }
     return pointsArray;
-  }
-
-  private distanceBetweenPoints(firstPoint, secondPoint) {
-    const x = firstPoint.x - secondPoint.x;
-    const y = firstPoint.y - secondPoint.y;
-    const hypot = Math.hypot(x, y);
-    return hypot;
   }
 
   private emitTempSnappingEvent() {

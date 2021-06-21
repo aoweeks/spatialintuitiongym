@@ -37,13 +37,6 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   oldElapsedTime = 0;
   objectsToUpdate = [];
 
-  private cameraSettings = {
-    originalFov: 45,
-    zoomFactor: 1,
-    offsets: {x: 0, y: 0 }
-  };
-
-
   private guiBaseParams = {
     soundOff: () => {
       this.soundsService.setSoundsEnabled('none');
@@ -222,8 +215,6 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
     this.physicsInitialSetup();
   }
-
-
 
   // Initial Setup for Cannon.js scene
   private physicsInitialSetup(): void {

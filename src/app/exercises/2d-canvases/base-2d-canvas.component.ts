@@ -190,6 +190,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseMove( event: MouseEvent | TouchEvent ): void {
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
+    const offsetPoint = this.offsetPoint( cursorPos );
 
     // If a line is being drawn
     if( this.lastCursorPos ) {
@@ -199,9 +200,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       let snapPoint;
       if ( this.currentConstraint ) {
-        snapPoint = this.mathsUtilsService.closestPointOnLine(cursorPos, this.currentConstraint);
+        snapPoint = this.mathsUtilsService.closestPointOnLine(offsetPoint, this.currentConstraint);
       } else {
-        snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y );
+        snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
       }
 
 
@@ -216,9 +217,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       for(const point of this.pointsToMove ) {
         if ( point.pos === 'start') {
-          this.lines[point.index].start = cursorPos;
+          this.lines[point.index].start = offsetPoint;
         } else {
-          this.lines[point.index].end = cursorPos;
+          this.lines[point.index].end = offsetPoint;
         }
       }
 
@@ -246,7 +247,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.saveCurrentStateToUndoHistory();
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
-    const snapPoint = this.checkForSnapPoint( cursorPos.x, cursorPos.y, true );
+    const offsetPoint = this.offsetPoint(cursorPos);
+    const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y, true );
 
     // for( const [index, line] of this.lines.entries() ) {
     this.lines.forEach( (line, index) => {
@@ -307,7 +309,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public touchTap(event): void {
 
-    console.log('TAP');
     if(event.maxPointers === 2) {
       console.log('TWO');
       this.undo();
@@ -319,6 +320,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public touchPinch(event): void {
+    console.log(event);
     this.cancelLine();
     if (event.maxPointers === 2) {
       const xOffset = (event.deltaX / 100) * -1;
@@ -340,8 +342,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       y = event.clientY;
     }
 
-    return { x, y };
 
+    return { x, y };
   }
 
   /**
@@ -350,7 +352,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private setLineStart(cursorPosX, cursorPosY) {
 
-    const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
+    const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY });
+    const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
     if(snapPoint.constraint) {
       this.currentConstraint = snapPoint.constraint;
     }
@@ -359,7 +362,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   private setLineEnd( cursorPosX, cursorPosY ) {
+
     const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
+    // console.log(offsetPoint, snapPoint);
+
     this.currentConstraint = null;
 
     if ( this.mouseDownPos !== snapPoint ) {
@@ -404,10 +410,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     start: any,
     end: any
   ): void {
-    const offsetStart = this.offsetPoints(start);
-    const offsetEnd = this.offsetPoints(end);
+    const offsetStart = this.unoffsetPoint(start);
+    const offsetEnd = this.unoffsetPoint(end);
 
-    console.log( offsetStart, offsetEnd );
     this.context.beginPath();
 
     this.context.lineWidth = 5;
@@ -415,8 +420,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context.setLineDash([10, 10]);
     this.context.strokeStyle = 'white';
 
-    this.context.moveTo( offsetStart.x, offsetStart.y);
-    this.context.lineTo( offsetEnd.x, offsetEnd.y);
+    this.context.moveTo( offsetStart.x, offsetStart.y );
+    this.context.lineTo( offsetEnd.x, offsetEnd.y );
     this.context.stroke();
   }
 
@@ -426,10 +431,19 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  private offsetPoints( point: any ): any {
+  private offsetPoint( point: any ): any {
+    const offsetPoint = { ...point };
+    offsetPoint.x -= (this.viewportSizes.width / 2);
+    offsetPoint.y -= (this.viewportSizes.height / 2);
+    return offsetPoint;
+  }
+
+  private unoffsetPoint( point: any ): any {
     const offsetPoint = {...point};
-    offsetPoint.x -= this.offsets.xOffset;
-    offsetPoint.y -= this.offsets.yOffset;
+    offsetPoint.x += (this.viewportSizes.width / 2);
+    offsetPoint.y += (this.viewportSizes.height / 2);
+    // offsetPoint.x -= this.offsets.xOffset;
+    // offsetPoint.y -= this.offsets.yOffset;
     return offsetPoint;
   }
 
@@ -442,7 +456,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.undoHistoryEvent.emit(true);
   }
 
-  private clearRedoHistory() {
+  private clearRedoHistory(): void {
     this.redoHistory = [];
     this.redoHistoryEvent.emit(false);
   }

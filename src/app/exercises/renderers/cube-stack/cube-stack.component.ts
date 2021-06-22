@@ -266,8 +266,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
   private convertToScreenSpace(point): {x: number; y: number} {
-    const x = ( point.x + 1) * this.viewportSizes.width / 2;
-    const y = - ( point.y - 1) * this.viewportSizes.height / 2;
+    const x = point.x * this.viewportSizes.width / 2;
+    const y = - point.y * this.viewportSizes.height / 2;
     return {x , y};
   }
 

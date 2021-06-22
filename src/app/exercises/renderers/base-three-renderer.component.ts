@@ -76,9 +76,16 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
       this.cubeStackCanvasesService.updateOffsets( 0, -10);
     } else if (event.ctrlKey && event.key === 'ArrowDown') {
       this.cubeStackCanvasesService.updateOffsets( 0, 10);
+    } else if (event.ctrlKey && event.key === 'Add') {
+      console.log('plus');
+      event.preventDefault();
+      this.cubeStackCanvasesService.updateZoom( .1 );
+    }else if (event.ctrlKey && event.key === 'Subtract') {
+      event.preventDefault();
+      console.log('minus');
+      this.cubeStackCanvasesService.updateZoom( -.1 );
     }
-  }
-
+}
   ngAfterViewInit() {
     super.ngAfterViewInit();
     this.initialSetup();
@@ -222,13 +229,6 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   /**
    *  Camera Controls
    */
-
-   private zoomCamera( zoomFactor: number) {
-
-    const newFov = this.cubeStackCanvasesService.getZoom().originalFov * zoomFactor;
-    this.camera.fov = newFov;
-    this.camera.updateProjectionMatrix();
-  }
 
   private panAndZoomCamera( xOffset: number, yOffset: number, zoomFactor: number) {
     this.camera.setViewOffset(

@@ -435,22 +435,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  private offsetPoint( point: any ): any {
-    const offsetPoint = { ...point };
-    offsetPoint.x -= (this.viewportSizes.width / 2);
-    offsetPoint.y -= (this.viewportSizes.height / 2);
-    return offsetPoint;
-  }
-
-  private unoffsetPoint( point: any ): any {
-    const offsetPoint = {...point};
-    offsetPoint.x += (this.viewportSizes.width / 2);
-    offsetPoint.y += (this.viewportSizes.height / 2);
-    // offsetPoint.x -= this.offsets.xOffset;
-    // offsetPoint.y -= this.offsets.yOffset;
-    return offsetPoint;
-  }
-
   private saveCurrentStateToUndoHistory(): void {
     const undoHistoryItem = [];
     for(const line of this.lines) {
@@ -520,6 +504,26 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else{
       return {x, y, constraint: null};
     }
+  }
+
+  private offsetPoint( point: any ): any {
+    const offsetPoint = { ...point };
+    offsetPoint.x -= (this.viewportSizes.width / 2);
+    offsetPoint.x += this.offsets.xOffset;
+    offsetPoint.y -= (this.viewportSizes.height / 2);
+    offsetPoint.y += this.offsets.yOffset;
+    return offsetPoint;
+  }
+
+  private unoffsetPoint( point: any ): any {
+    const offsetPoint = {...point};
+    offsetPoint.x += (this.viewportSizes.width / 2);
+    offsetPoint.x -= this.offsets.xOffset;
+    offsetPoint.y += (this.viewportSizes.height / 2);
+    offsetPoint.y -= this.offsets.yOffset;
+    // offsetPoint.x -= this.offsets.xOffset;
+    // offsetPoint.y -= this.offsets.yOffset;
+    return offsetPoint;
   }
 
   private arrayOfLinePoints() {

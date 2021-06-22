@@ -62,7 +62,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   @HostListener('window:mousewheel',['$event'])
   public mouseWheel( event: WheelEvent ) {
-    const zoomIncrease = event.deltaY / 1000;
+    const zoomIncrease = (event.deltaY / 1000) * -1;
     this.cubeStackCanvasesService.updateZoom( zoomIncrease );
   }
 
@@ -76,14 +76,14 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
       this.cubeStackCanvasesService.updateOffsets( 0, -10);
     } else if (event.ctrlKey && event.key === 'ArrowDown') {
       this.cubeStackCanvasesService.updateOffsets( 0, 10);
-    } else if (event.ctrlKey && event.key === 'Add') {
-      console.log('plus');
+    } else if (event.key === '+') {
       event.preventDefault();
       this.cubeStackCanvasesService.updateZoom( .1 );
-    }else if (event.ctrlKey && event.key === 'Subtract') {
+    }else if (event.ctrlKey && event.key === '-') {
       event.preventDefault();
-      console.log('minus');
       this.cubeStackCanvasesService.updateZoom( -.1 );
+    } else{
+      console.log(event);
     }
   }
 

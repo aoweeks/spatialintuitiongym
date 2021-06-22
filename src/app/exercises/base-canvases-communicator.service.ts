@@ -27,7 +27,7 @@ export class BaseCanvasesCommunicatorService {
   }
 
   public updateZoom( zoomIncrease: number ): void {
-    let newZoomFactor = this.cameraSettings.zoomFactor -= zoomIncrease;
+    let newZoomFactor = this.cameraSettings.zoomFactor += zoomIncrease;
     newZoomFactor = Math.max( newZoomFactor, 0.5 );
     newZoomFactor = Math.min( newZoomFactor, 10 );
     this.cameraSettings.zoomFactor = newZoomFactor;

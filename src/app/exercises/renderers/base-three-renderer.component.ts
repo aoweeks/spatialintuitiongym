@@ -83,7 +83,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
       event.preventDefault();
       this.cubeStackCanvasesService.updateZoom( -.1 );
     } else{
-      console.log(event);
+      // console.log(event);
     }
   }
 
@@ -232,14 +232,22 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
    */
 
   private panAndZoomCamera( xOffset: number, yOffset: number, zoomFactor: number) {
+
+    const zoomedWidth = this.viewportSizes.width * zoomFactor;
+    const zoomedHeight = this.viewportSizes.height * zoomFactor;
+
+    const leftOffset = (zoomedWidth / 2) - (this.viewportSizes.width / 2) + xOffset;
+    const topOffset = (zoomedHeight / 2) - (this.viewportSizes.height / 2) + yOffset;
+
     this.camera.setViewOffset(
-      this.viewportSizes.width * zoomFactor,
-      this.viewportSizes.height * zoomFactor,
-      xOffset,
-      yOffset,
+      zoomedWidth,
+      zoomedHeight,
+      leftOffset,
+      topOffset,
       this.viewportSizes.width,
       this.viewportSizes.height,
     );
+    console.log( this.viewportSizes, {xOffset, yOffset, zoomFactor});
   }
 
 }

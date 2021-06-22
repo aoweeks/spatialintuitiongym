@@ -85,7 +85,8 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
       console.log('minus');
       this.cubeStackCanvasesService.updateZoom( -.1 );
     }
-}
+  }
+
   ngAfterViewInit() {
     super.ngAfterViewInit();
     this.initialSetup();

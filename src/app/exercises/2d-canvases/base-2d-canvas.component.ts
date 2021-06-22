@@ -107,8 +107,14 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public updateCanvasSizes(): void {
-    this.canvasRef.nativeElement.height = this.viewportSizes.height;
-    this.canvasRef.nativeElement.width = this.viewportSizes.width;
+
+    const pixelDensity = Math.min(window.devicePixelRatio, 2);
+    console.log({pixelDensity, ctx: this.context});
+    this.context.scale(pixelDensity, pixelDensity);
+    this.context.save();
+    console.log(this.context);
+    this.canvasRef.nativeElement.height = this.viewportSizes.height * pixelDensity;
+    this.canvasRef.nativeElement.width = this.viewportSizes.width * pixelDensity;
 
     this.drawPreviousLines();
   }

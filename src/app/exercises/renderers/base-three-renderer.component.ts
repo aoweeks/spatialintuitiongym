@@ -236,8 +236,12 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     const zoomedWidth = this.viewportSizes.width * zoomFactor;
     const zoomedHeight = this.viewportSizes.height * zoomFactor;
 
-    const leftOffset = (zoomedWidth / 2) - (this.viewportSizes.width / 2) + xOffset;
-    const topOffset = (zoomedHeight / 2) - (this.viewportSizes.height / 2) + yOffset;
+    const zoomedXOffset = xOffset * zoomFactor;
+    const zoomedYOffset = yOffset * zoomFactor;
+
+    // Find top-left corner of sub-render
+    const leftOffset = (zoomedWidth / 2) + zoomedXOffset- (this.viewportSizes.width / 2);
+    const topOffset = (zoomedHeight / 2) + zoomedYOffset - (this.viewportSizes.height / 2);
 
     this.camera.setViewOffset(
       zoomedWidth,

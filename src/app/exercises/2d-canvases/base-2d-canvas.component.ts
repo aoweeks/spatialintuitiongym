@@ -514,12 +514,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     const offsetPoint = { ...point };
 
     let zoomedX = point.x / this.cameraSettings.zoomFactor;
-    zoomedX -= this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
-    zoomedX += (this.viewportSizes.width / 2);
+    zoomedX += this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
+    zoomedX -= (this.viewportSizes.width / 2);
 
     let zoomedY = point.y / this.cameraSettings.zoomFactor;
-    zoomedY -= this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
-    zoomedY += (this.viewportSizes.height / 2);
+    zoomedY += this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
+    zoomedY -= (this.viewportSizes.height / 2);
 
     offsetPoint.x = zoomedX;
     offsetPoint.y = zoomedY;
@@ -531,12 +531,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     const offsetPoint = { ...point };
     // Multiply by zoom factor, add zoomed offset, minus viewport/2
     let zoomedX = point.x * this.cameraSettings.zoomFactor;
-    zoomedX += this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
-    zoomedX -= (this.viewportSizes.width / 2);
+    zoomedX -= this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
+    zoomedX += (this.viewportSizes.width / 2);
 
     let zoomedY = point.y * this.cameraSettings.zoomFactor;
-    zoomedY += this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
-    zoomedY -= (this.viewportSizes.height / 2);
+    zoomedY -= this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
+    zoomedY += (this.viewportSizes.height / 2);
 
     offsetPoint.x = zoomedX;
     offsetPoint.y = zoomedY;

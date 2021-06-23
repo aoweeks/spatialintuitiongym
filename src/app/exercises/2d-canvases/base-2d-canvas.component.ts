@@ -38,7 +38,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private lines = [];
 
-  private offsets = { xOffset: 0, yOffset: 0 };
+  private cameraSettings = {
+    zoomFactor: 1,
+    offsets: { xOffset: 0, yOffset: 0 }
+  };
 
   private undoHistory = [];
   private redoHistory = [];
@@ -92,9 +95,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     super.ngAfterViewInit();
     this.updateCanvasSizes();
 
-    this.cubeStackCanvasesService.cameraChange.subscribe( (offsets: any) => {
-      this.offsets.xOffset = offsets.xOffset;
-      this.offsets.yOffset = offsets.yOffset;
+    this.cubeStackCanvasesService.cameraChange.subscribe( (cameraSettings: any) => {
+      this.cameraSettings.zoomFactor = cameraSettings.zoomFactor;
+      this.cameraSettings.offsets.xOffset = cameraSettings.xOffset;
+      this.cameraSettings.offsets.yOffset = cameraSettings.yOffset;
       this.clearCanvas();
       this.drawPreviousLines();
     });
@@ -109,10 +113,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public updateCanvasSizes(): void {
 
     const pixelDensity = Math.min(window.devicePixelRatio, 2);
-    // console.log(this.context.getTransform());
     this.canvasRef.nativeElement.height = this.viewportSizes.height * pixelDensity;
     this.canvasRef.nativeElement.width = this.viewportSizes.width * pixelDensity;
-    this.context.scale(pixelDensity, pixelDensity);
+    this.context.scale( pixelDensity, pixelDensity );
 
     this.drawPreviousLines();
   }
@@ -155,14 +158,14 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.undoHistory.push( this.lines );
       this.lines = this.redoHistory.pop();
 
-      this.undoHistoryEvent.emit(true);
-      this.canvasEmptyEvent.emit(false);
+      this.undoHistoryEvent.emit( true );
+      this.canvasEmptyEvent.emit( false );
 
       this.clearCanvas();
       this.drawPreviousLines();
 
       if ( !this.redoHistory.length ) {
-        this.redoHistoryEvent.emit(false);
+        this.redoHistoryEvent.emit( false );
       }
     }
   }
@@ -304,12 +307,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  // public touchPan(event): void {
-  //   // console.log(event.maxPointers)
-  //   if (event.maxPointers === 2) {
-  //     this.cubeStackCanvasesService.updateOffsets(event.deltaX, event.deltaY);
-  //   }
-  // }
+  public touchPan(event): void {
+    console.log(event);
+    // console.log(event.maxPointers)
+    if (event.maxPointers === 2) {
+      this.cubeStackCanvasesService.updateOffsets(event.deltaX, event.deltaY);
+    }
+  }
 
   public touchTap(event): void {
 
@@ -508,21 +512,35 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private offsetPoint( point: any ): any {
     const offsetPoint = { ...point };
-    offsetPoint.x -= (this.viewportSizes.width / 2);
-    offsetPoint.x += this.offsets.xOffset;
-    offsetPoint.y -= (this.viewportSizes.height / 2);
-    offsetPoint.y += this.offsets.yOffset;
+
+    let zoomedX = point.x / this.cameraSettings.zoomFactor;
+    zoomedX -= this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
+    zoomedX += (this.viewportSizes.width / 2);
+
+    let zoomedY = point.y / this.cameraSettings.zoomFactor;
+    zoomedY -= this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
+    zoomedY += (this.viewportSizes.height / 2);
+
+    offsetPoint.x = zoomedX;
+    offsetPoint.y = zoomedY;
+
     return offsetPoint;
   }
 
   private unoffsetPoint( point: any ): any {
-    const offsetPoint = {...point};
-    offsetPoint.x += (this.viewportSizes.width / 2);
-    offsetPoint.x -= this.offsets.xOffset;
-    offsetPoint.y += (this.viewportSizes.height / 2);
-    offsetPoint.y -= this.offsets.yOffset;
-    // offsetPoint.x -= this.offsets.xOffset;
-    // offsetPoint.y -= this.offsets.yOffset;
+    const offsetPoint = { ...point };
+    // Multiply by zoom factor, add zoomed offset, minus viewport/2
+    let zoomedX = point.x * this.cameraSettings.zoomFactor;
+    zoomedX += this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
+    zoomedX -= (this.viewportSizes.width / 2);
+
+    let zoomedY = point.y * this.cameraSettings.zoomFactor;
+    zoomedY += this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
+    zoomedY -= (this.viewportSizes.height / 2);
+
+    offsetPoint.x = zoomedX;
+    offsetPoint.y = zoomedY;
+
     return offsetPoint;
   }
 

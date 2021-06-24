@@ -7,19 +7,26 @@ export class MathsUtilsService {
 
   constructor() {};
 
-  public getLineFromPoints(point1, point2) {
+  public getLineFromPoints( point1, point2 ) {
     const slope = (point1.y - point2.y) / (point1.x - point2.x);
     const intercept = this.calculateIntercept(slope, point1);
 
     let x = null;
     let y = null;
 
-    if(slope === -Infinity) {
+    let positive = false;
+    if (point1.x > point2.x) {
+      positive = true;
+    }
+    if (slope === -Infinity) {
       x = point1.x;
+      if (point1.y > point2.y) {
+        positive = true;
+      }
     } else if (slope === 0 ) {
       y = point1.y;
     }
-    const line = { slope, intercept, x, y };
+    const line = { slope, intercept, x, y, positive, start: point1 };
     return line;
   }
 
@@ -35,14 +42,23 @@ export class MathsUtilsService {
     let x;
     let y;
 
-    if(line.slope === -Infinity) {
+    if( line.slope === -Infinity ) {
       x = line.x;
-      y = point.y;
-    } else if(line.slope === 0) {
-      x = point.x;
+
+      if (line.positive) {
+        y = point.y > line.start.y ? point.y : line.start.y;
+      } else {
+        y = point.y < line.start.y ? point.y : line.start.y;
+      }
+    } else if( line.slope === 0 ) {
+      if (line.positive) {
+        x = point.x > line.start.x ? point.x : line.start.x;
+      } else {
+        x = point.x < line.start.x ? point.x : line.start.x;
+      }
+
       y = line.y;
     } else {
-
 
       const perpSlope = (1 / line.slope) * -1;
       const perpIntercept = this.calculateIntercept(perpSlope, point);
@@ -52,8 +68,19 @@ export class MathsUtilsService {
       const xSlopes = line.slope - perpSlope;
       const xIntercepts = perpIntercept - line.intercept;
       x = xIntercepts / xSlopes;
-
       y = this.yPosOnLine(line, x);
+
+      if (line.positive) {
+        if (x < line.start.x) {
+          x = line.start.x;
+          y = line.start.y;
+        }
+      } else {
+        if (x > line.start.x) {
+          x = line.start.x;
+          y = line.start.y;
+        }
+      }
     }
 
     return {x,y};

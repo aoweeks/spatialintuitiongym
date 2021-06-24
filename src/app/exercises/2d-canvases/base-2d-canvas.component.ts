@@ -132,6 +132,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public undo(): void {
     if ( this.undoHistory.length ) {
 
+      this.cancelLine();
+
       this.redoHistory.push( this.lines );
       this.lines = this.undoHistory.pop();
 
@@ -154,6 +156,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public redo(): void {
     if ( this.redoHistory.length ) {
+
+      this.cancelLine();
 
       this.undoHistory.push( this.lines );
       this.lines = this.redoHistory.pop();
@@ -207,7 +211,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       let snapPoint;
       if ( this.currentConstraint ) {
-        snapPoint = this.mathsUtilsService.closestPointOnLine(offsetPoint, this.currentConstraint);
+        snapPoint = this.mathsUtilsService.closestPointOnLine( offsetPoint, this.currentConstraint );
       } else {
         snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
       }
@@ -237,7 +241,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseUp( event: MouseEvent ) {
     if ( event.button === 0 ) {
-      this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y);
+      this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint);
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
@@ -257,7 +261,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     const offsetPoint = this.offsetPoint(cursorPos);
     const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y, true );
 
-    // for( const [index, line] of this.lines.entries() ) {
     this.lines.forEach( (line, index) => {
 
       // ? Workaround: line.start === snappoint was only firing once per loop?!
@@ -266,11 +269,18 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       } else if ( line.end.x === snapPoint.x && line.end.y === snapPoint.y ) {
         this.pointsToMove.push( { index, pos: 'end' } );
       }
+
+      if( line.start.constraint || line.end.constraint) {
+        this.currentConstraint = line.start.constraint || line.end.constraint;
+        console.log(this.currentConstraint);
+      }
     });
 
   }
 
   public rightClick( event: MouseEvent ) {
+
+    this.cancelLine();
 
     event.stopImmediatePropagation();
     event.preventDefault();
@@ -297,7 +307,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     // If a line is being drawn
     if(this.lastCursorPos) {
-      this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y );
+      this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
     } else {
       this.pointsToMove = [];
       this.clearRedoHistory();
@@ -308,11 +318,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public touchPan(event): void {
-    console.log(event);
+    // console.log(event);
     // console.log(event.maxPointers)
-    if (event.maxPointers === 2) {
-      this.cubeStackCanvasesService.updateOffsets(event.deltaX, event.deltaY);
-    }
+    // if (event.maxPointers === 2) {
+    //   this.cubeStackCanvasesService.updateOffsets(event.deltaX, event.deltaY);
+    // }
   }
 
   public touchTap(event): void {
@@ -369,10 +379,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.lastCursorPos = snapPoint;
   }
 
-  private setLineEnd( cursorPosX, cursorPosY ) {
+  private setLineEnd( cursorPosX, cursorPosY, constraint ) {
 
     const snapPoint = this.checkForSnapPoint( cursorPosX, cursorPosY );
-    // console.log(offsetPoint, snapPoint);
 
     this.currentConstraint = null;
 
@@ -399,12 +408,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
           start: {
             x: this.mouseDownPos.x,
             y: this.mouseDownPos.y,
-            constraint: null
+            constraint
           },
           end: {
             x: snapPoint.x,
             y: snapPoint.y,
-            constraint: null
+            constraint
           }
         });
         this.clearRedoHistory();

@@ -201,7 +201,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseMove( event: MouseEvent | TouchEvent ): void {
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
-    const offsetPoint = this.offsetPoint( cursorPos );
+    let offsetPoint = this.offsetPoint( cursorPos );
 
     // If a line is being drawn
     if( this.lastCursorPos ) {
@@ -226,6 +226,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     // If a point is being moved
     if ( this.pointsToMove.length ) {
 
+      if( this.currentConstraint ){
+        offsetPoint = this.mathsUtilsService.closestPointOnLine( offsetPoint, this.currentConstraint );
+      }
+
       for(const point of this.pointsToMove ) {
         if ( point.pos === 'start') {
           this.lines[point.index].start = offsetPoint;
@@ -241,7 +245,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseUp( event: MouseEvent ) {
     if ( event.button === 0 ) {
-      this.setLineEnd(this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint);
+      this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
@@ -272,6 +276,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       if( line.start.constraint || line.end.constraint) {
         this.currentConstraint = line.start.constraint || line.end.constraint;
+        this.currentConstraint.axisIndicator = false;
         console.log(this.currentConstraint);
       }
     });
@@ -372,8 +377,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY });
     const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
-    if(snapPoint.constraint) {
+    if( snapPoint.constraint?.axisIndicator ) {
       this.currentConstraint = snapPoint.constraint;
+      this.currentConstraint.axisIndicator = false;
     }
     this.mouseDownPos = snapPoint;
     this.lastCursorPos = snapPoint;
@@ -556,7 +562,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private arrayOfLinePoints() {
     const pointsArray = [];
     for(  const point of this.cubeStackCanvasesService.getSnapPoints() ) {
-      pointsArray.push(point);
+      pointsArray.push( point );
     }
     for ( const line of this.lines ) {
       pointsArray.push( line.start );
@@ -568,7 +574,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private emitTempSnappingEvent() {
 
     const snappingOn = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
-    this.snappingChangeEvent.emit(snappingOn);
+    this.snappingChangeEvent.emit( snappingOn );
   }
 
 }

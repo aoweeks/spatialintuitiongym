@@ -251,7 +251,6 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
       this.viewportSizes.width,
       this.viewportSizes.height,
     );
-    console.log( this.viewportSizes, {xOffset, yOffset, zoomFactor});
   }
 
 }

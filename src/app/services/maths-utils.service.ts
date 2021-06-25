@@ -7,9 +7,9 @@ export class MathsUtilsService {
 
   constructor() {};
 
-  public getLineFromPoints( point1, point2 ) {
-    const slope = (point1.y - point2.y) / (point1.x - point2.x);
-    const intercept = this.calculateIntercept(slope, point1);
+  public getLineFromPoints( point1, point2, axisIndicator = false ) {
+    const slope = ( point1.y - point2.y ) / ( point1.x - point2.x );
+    const intercept = this.calculateIntercept( slope, point1 );
 
     let x = null;
     let y = null;
@@ -26,18 +26,18 @@ export class MathsUtilsService {
     } else if (slope === 0 ) {
       y = point1.y;
     }
-    const line = { slope, intercept, x, y, positive, start: point1 };
+    const line = { slope, intercept, x, y, positive, start: point1, axisIndicator };
     return line;
   }
 
   public distanceBetweenPoints( firstPoint, secondPoint ) {
     const x = firstPoint.x - secondPoint.x;
     const y = firstPoint.y - secondPoint.y;
-    const hypot = Math.hypot(x, y);
+    const hypot = Math.hypot( x, y );
     return hypot;
   }
 
-  public closestPointOnLine(point, line) {
+  public closestPointOnLine( point, line ) {
 
     let x;
     let y;

@@ -228,6 +228,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       if( this.currentConstraint ){
         offsetPoint = this.mathsUtilsService.closestPointOnLine( offsetPoint, this.currentConstraint );
+        offsetPoint.constraint = this.currentConstraint;
       }
 
       for(const point of this.pointsToMove ) {
@@ -259,6 +260,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public movePoint(event: MouseEvent | PointerEvent ) {
 
+    this.currentConstraint = null;
     this.saveCurrentStateToUndoHistory();
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
@@ -267,20 +269,31 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     this.lines.forEach( (line, index) => {
 
+      console.log(line);
+      // let constrained = null;
       // ? Workaround: line.start === snappoint was only firing once per loop?!
       if ( line.start.x === snapPoint.x && line.start.y === snapPoint.y) {
+        if ( line.start.constraint ) {
+          this.currentConstraint = line.start.constraint;
+        }
         this.pointsToMove.push( { index, pos: 'start' } );
       } else if ( line.end.x === snapPoint.x && line.end.y === snapPoint.y ) {
+        if ( line.end.constraint ) {
+          this.currentConstraint = line.end.constraint;
+        }
         this.pointsToMove.push( { index, pos: 'end' } );
       }
 
-      if( line.start.constraint || line.end.constraint) {
-        this.currentConstraint = line.start.constraint || line.end.constraint;
-        this.currentConstraint.axisIndicator = false;
-        console.log(this.currentConstraint);
-      }
+      // if( constrained ) {
+      //   this.currentConstraint = line.start.constraint || line.end.constraint;
+      //   if( this.currentConstraint?.axisIndicator === true ) {
+      //     console.log()
+      //     this.currentConstraint = null;
+      //     this.pointsToMove = [];
+      //     return;
+      //   }
+      // }
     });
-
   }
 
   public rightClick( event: MouseEvent ) {
@@ -315,6 +328,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
     } else {
       this.pointsToMove = [];
+      this.currentConstraint = null;
       this.clearRedoHistory();
 
       this.clearCanvas();
@@ -375,9 +389,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private setLineStart(cursorPosX, cursorPosY) {
 
-    const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY });
+    const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY } );
     const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
     if( snapPoint.constraint?.axisIndicator ) {
+      console.log('axisIndicator');
       this.currentConstraint = snapPoint.constraint;
       this.currentConstraint.axisIndicator = false;
     }
@@ -503,9 +518,17 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     for ( const pointToCompare of pointsToCompare ) {
       const distance = this.mathsUtilsService.distanceBetweenPoints(nearestPoint, pointToCompare);
-      if( distance < radius) {
+      if ( distance < radius ) {
         nearestPoint = pointToCompare;
         radius = distance;
+      }
+
+      if ( pointToCompare.constraint?.axisIndicator === true ) {
+        if ( distance <= radius ) {
+          // console.log('axisIndicator');
+          nearestPoint = pointToCompare;
+          radius = distance;
+        }
       }
     }
 

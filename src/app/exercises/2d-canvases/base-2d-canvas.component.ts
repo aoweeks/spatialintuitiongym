@@ -629,33 +629,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         linePointsArray.push( line.end );
       }
     }
-    // for ( const line of this.lines ) {
-    //   for ( const point of axisIndicatorPointsArray ) {
-    //     if( line.start.x === point.x && line.start.y === point.y ) {
-    //       aiPointsCopyArray = aiPointsCopyArray.filter(
-    //         (copyPoint) => ( copyPoint.x !== line.start.x ) && ( copyPoint.y !== line.start.y )
-    //       );
-    //     } else {
-    //       linePointsArray.push( line.start );
-    //     }
-
-    //     if( line.end.x === point.x && line.end.y === point.y ) {
-    //       aiPointsCopyArray = aiPointsCopyArray.filter(
-    //         (copyPoint) => ( copyPoint.x !== line.end.x ) && ( copyPoint.y !== line.end.y )
-    //       );
-    //     } else {
-    //       linePointsArray.push( line.end );
-    //     }
-    //   }
-    // }
-    console.log('points', aiPointsCopyArray);
-    console.log('lines', linePointsArray);
     const pointsArray = aiPointsCopyArray.concat( linePointsArray );
     return pointsArray;
   }
 
   private emitTempSnappingEvent() {
-
     const snappingOn = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
     this.snappingChangeEvent.emit( snappingOn );
   }

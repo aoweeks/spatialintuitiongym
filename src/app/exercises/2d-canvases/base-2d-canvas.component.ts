@@ -269,7 +269,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     this.lines.forEach( (line, index) => {
 
-      console.log(line);
       // let constrained = null;
       // ? Workaround: line.start === snappoint was only firing once per loop?!
       if ( line.start.x === snapPoint.x && line.start.y === snapPoint.y) {
@@ -392,7 +391,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY } );
     const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
     if( snapPoint.constraint?.axisIndicator ) {
-      console.log('axisIndicator');
       this.currentConstraint = snapPoint.constraint;
       this.currentConstraint.axisIndicator = false;
     }
@@ -411,10 +409,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       // Check line doesn't already exist
       let lineDuplicated = false;
       for ( const line of this.lines ) {
-        if ( (    (this.mouseDownPos.x === line.start.x && this.mouseDownPos.y === line.start.y ) ||
-                  (this.mouseDownPos.x === line.end.x && this.mouseDownPos.y === line.end.y ) )
-            && (  (snapPoint.x === line.start.x && snapPoint.y === line.start.y ) ||
-                  (snapPoint.x === line.end.x && snapPoint.y === line.end.y ) )
+        if ( (    ( this.mouseDownPos.x === line.start.x && this.mouseDownPos.y === line.start.y ) ||
+                  ( this.mouseDownPos.x === line.end.x && this.mouseDownPos.y === line.end.y ) )
+            && (  ( snapPoint.x === line.start.x && snapPoint.y === line.start.y ) ||
+                  ( snapPoint.x === line.end.x && snapPoint.y === line.end.y ) )
         ) {
           lineDuplicated = true;
         }
@@ -583,14 +581,76 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   private arrayOfLinePoints() {
-    const pointsArray = [];
+    const axisIndicatorPointsArray = [];
     for(  const point of this.cubeStackCanvasesService.getSnapPoints() ) {
-      pointsArray.push( point );
+      axisIndicatorPointsArray.push( point );
     }
+
+    // Filter out the end of the axisIndicators if there is already a line connected to them
+    const aiPointsCopyArray = axisIndicatorPointsArray.filter(
+      ( point, index ) => {
+
+        // Ignore the corner point
+        if ( index === 0 ) {
+          return true;
+        }
+        for ( const line of this.lines ) {
+          if( line.start.x === point.x && line.start.y === point.y ) {
+            return false;
+          }
+          if( line.end.x === point.x && line.end.y === point.y ) {
+            return false;
+          }
+        }
+        return true;
+      }
+    );
+
+    const linePointsArray = [];
+    // Filter out the end of thelines if they come from axisIndicators
     for ( const line of this.lines ) {
-      pointsArray.push( line.start );
-      pointsArray.push( line.end );
+      let startUnique = true;
+      let endUnique = true;
+
+      for ( const point of axisIndicatorPointsArray ) {
+        if ( line.start.x === point.x && line.start.y === point.y ) {
+          startUnique = false;
+        }
+        if ( line.end.x === point.x && line.end.y === point.y ) {
+          endUnique = false;
+        }
+      }
+
+      if ( startUnique ) {
+        linePointsArray.push( line.start );
+      }
+
+      if ( endUnique ) {
+        linePointsArray.push( line.end );
+      }
     }
+    // for ( const line of this.lines ) {
+    //   for ( const point of axisIndicatorPointsArray ) {
+    //     if( line.start.x === point.x && line.start.y === point.y ) {
+    //       aiPointsCopyArray = aiPointsCopyArray.filter(
+    //         (copyPoint) => ( copyPoint.x !== line.start.x ) && ( copyPoint.y !== line.start.y )
+    //       );
+    //     } else {
+    //       linePointsArray.push( line.start );
+    //     }
+
+    //     if( line.end.x === point.x && line.end.y === point.y ) {
+    //       aiPointsCopyArray = aiPointsCopyArray.filter(
+    //         (copyPoint) => ( copyPoint.x !== line.end.x ) && ( copyPoint.y !== line.end.y )
+    //       );
+    //     } else {
+    //       linePointsArray.push( line.end );
+    //     }
+    //   }
+    // }
+    console.log('points', aiPointsCopyArray);
+    console.log('lines', linePointsArray);
+    const pointsArray = aiPointsCopyArray.concat( linePointsArray );
     return pointsArray;
   }
 

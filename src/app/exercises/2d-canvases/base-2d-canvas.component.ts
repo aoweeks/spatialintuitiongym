@@ -200,7 +200,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     let offsetPoint = this.offsetPoint( cursorPos );
 
     // If a line is being drawn
-    if( this.lastCursorPos ) {
+    if ( this.lastCursorPos ) {
 
       this.clearCanvas();
       this.drawPreviousLines();
@@ -214,7 +214,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
 
       // Draw current line
-      this.drawLine(this.mouseDownPos, snapPoint );
+      this.drawLine( this.mouseDownPos, snapPoint );
 
       this.lastCursorPos = snapPoint;
     }
@@ -392,11 +392,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    * Line Drawing Functions
    */
 
-  private setLineStart(cursorPosX, cursorPosY) {
+  private setLineStart( cursorPosX, cursorPosY ) {
 
     this.snapPoints = this.arrayOfLinePoints();
 
-    const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY } );
+    const offsetPoint = this.offsetPoint( { x: cursorPosX, y: cursorPosY } );
     const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
     if( snapPoint.constraint?.axisIndicator ) {
       this.currentConstraint = snapPoint.constraint;
@@ -412,7 +412,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     this.currentConstraint = null;
 
-    if ( this.mouseDownPos !== snapPoint ) {
+    // To prevent extremely short lines forming on clicks
+    if ( this.mathsUtilsService.distanceBetweenPoints( this.mouseDownPos, snapPoint ) > 3 ) {
 
       // Check line doesn't already exist
       let lineDuplicated = false;
@@ -523,7 +524,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     let nearestPoint = {x: originPointX, y: originPointY, constraint: null};
 
     for ( const pointToCompare of pointsToCompare ) {
-      const distance = this.mathsUtilsService.distanceBetweenPoints(nearestPoint, pointToCompare);
+      const distance = this.mathsUtilsService.distanceBetweenPoints( nearestPoint, pointToCompare );
       if ( distance < radius ) {
         nearestPoint = pointToCompare;
         radius = distance;
@@ -545,7 +546,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     const snappingOn  = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
     if( ( snappingOn ) || overrideSnappingBehaviour ) {
-      const nearestPoint = this.getNearestPoint(x, y, this.snapPoints);
+      const nearestPoint = this.getNearestPoint(x, y, this.snapPoints, 50 / this.cameraSettings.zoomFactor );
 
       return nearestPoint;
     } else{

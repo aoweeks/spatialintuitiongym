@@ -37,6 +37,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private pointsToMove = [];
 
   private lines = [];
+  private snapPoints = [];
 
   private cameraSettings = {
     zoomFactor: 1,
@@ -45,11 +46,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private undoHistory = [];
   private redoHistory = [];
-
-  // @Input()
-  // undoButtonPressed() {
-
-  // }
 
   constructor(  injector: Injector,
                 private mathsUtilsService: MathsUtilsService,
@@ -260,6 +256,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public movePoint(event: MouseEvent | PointerEvent ) {
 
+    this.snapPoints = this.arrayOfLinePoints();
     this.currentConstraint = null;
     this.saveCurrentStateToUndoHistory();
 
@@ -387,6 +384,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    */
 
   private setLineStart(cursorPosX, cursorPosY) {
+
+    this.snapPoints = this.arrayOfLinePoints();
 
     const offsetPoint = this.offsetPoint( {x: cursorPosX, y: cursorPosY } );
     const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
@@ -537,8 +536,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
     const snappingOn  = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
     if( ( snappingOn ) || overrideSnappingBehaviour ) {
-      const pointsArray = this.arrayOfLinePoints();
-      const nearestPoint = this.getNearestPoint(x, y, pointsArray);
+      const nearestPoint = this.getNearestPoint(x, y, this.snapPoints);
 
       return nearestPoint;
     } else{

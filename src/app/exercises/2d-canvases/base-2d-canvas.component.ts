@@ -549,13 +549,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private offsetPoint( point: any ): any {
     const offsetPoint = { ...point };
 
-    let zoomedX = point.x / this.cameraSettings.zoomFactor;
+    let zoomedX = point.x - (this.viewportSizes.width / 2);
     zoomedX += this.cameraSettings.offsets.xOffset * this.cameraSettings.zoomFactor;
-    zoomedX -= (this.viewportSizes.width / 2);
+    zoomedX = zoomedX / this.cameraSettings.zoomFactor;
 
-    let zoomedY = point.y / this.cameraSettings.zoomFactor;
+    let zoomedY = point.y - (this.viewportSizes.height / 2);
     zoomedY += this.cameraSettings.offsets.yOffset * this.cameraSettings.zoomFactor;
-    zoomedY -= (this.viewportSizes.height / 2);
+    zoomedY = zoomedY / this.cameraSettings.zoomFactor;
 
     offsetPoint.x = zoomedX;
     offsetPoint.y = zoomedY;

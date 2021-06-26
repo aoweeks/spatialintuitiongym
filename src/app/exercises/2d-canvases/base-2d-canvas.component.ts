@@ -246,6 +246,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
+      // Delete lines that have been reduced to 0 length
+      this.lines = this.lines.filter( ( line ) => {
+        if ( line.start.x === line.end.x && line.start.y === line.end.y ) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+
       this.clearRedoHistory();
     }
 

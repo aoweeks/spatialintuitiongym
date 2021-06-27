@@ -6,11 +6,15 @@ import { Subject } from 'rxjs';
 })
 export class BaseCanvasesCommunicatorService {
 
+  static minZoomFactor = .5;
+  static maxZoomFactor = 10;
+
   public cameraChange = new Subject();
 
   private cameraSettings = {
     originalFov: 45,
     zoomFactor: 1,
+    tempZoomScale: 1, // the amount currently being scaled by pinching
     offsets: { x: 0, y: 0 }
   };
 
@@ -28,25 +32,62 @@ export class BaseCanvasesCommunicatorService {
 
   public updateZoom( zoomIncrease: number ): void {
     let newZoomFactor = this.cameraSettings.zoomFactor += zoomIncrease;
-    newZoomFactor = Math.max( newZoomFactor, 0.5 );
-    newZoomFactor = Math.min( newZoomFactor, 10 );
+    newZoomFactor = Math.max( newZoomFactor, BaseCanvasesCommunicatorService.minZoomFactor );
+    newZoomFactor = Math.min( newZoomFactor, BaseCanvasesCommunicatorService.maxZoomFactor );
     this.cameraSettings.zoomFactor = newZoomFactor;
 
-    this.cameraChange.next({
-      xOffset: this.cameraSettings.offsets.x,
-      yOffset: this.cameraSettings.offsets.y,
-      zoomFactor: this.cameraSettings.zoomFactor
-    });
+    this.broadcastCameraSettings();
   }
 
-  public updateOffsets(xOffset: number, yOffset: number) {
+  public scaleZoom( scale: number ) {
+
+    // if (  scale * this.cameraSettings.zoomFactor > BaseCanvasesCommunicatorService.maxZoomFactor ||
+    //       scale * this.cameraSettings.zoomFactor < BaseCanvasesCommunicatorService.minZoomFactor ) {
+    //   //       console.log(BaseCanvasesCommunicatorService.maxZoomFactor / this.cameraSettings.zoomFactor);
+    //   // this.cameraSettings.tempZoomScale = BaseCanvasesCommunicatorService.maxZoomFactor / this.cameraSettings.zoomFactor;
+
+    //   this.cameraSettings.tempZoomScale = scale;
+    // } else {
+    //   console.log( scale );
+      this.cameraSettings.tempZoomScale = scale;
+    // }
+    this.broadcastCameraSettings();
+  }
+
+  public bakeScaleZoom( scale ): void {
+    let newZoomFactor = this.cameraSettings.zoomFactor * scale;
+    newZoomFactor = Math.max( newZoomFactor, BaseCanvasesCommunicatorService.minZoomFactor );
+    newZoomFactor = Math.min( newZoomFactor, BaseCanvasesCommunicatorService.maxZoomFactor );
+
+    this.cameraSettings.zoomFactor = newZoomFactor;
+    this.cameraSettings.tempZoomScale = 1;
+
+    this.broadcastCameraSettings();
+  }
+
+  public updateOffsets(xOffset: number, yOffset: number): void {
+
     this.cameraSettings.offsets.x += xOffset;
     this.cameraSettings.offsets.y += yOffset;
 
+    this.broadcastCameraSettings();
+  }
+
+  public setOffsets( xOffset: number, yOffset: number ): void {
+
+    this.cameraSettings.offsets.x = xOffset;
+    this.cameraSettings.offsets.y = yOffset;
+
+    this.broadcastCameraSettings();
+  }
+
+  private broadcastCameraSettings(): void {
+    console.log('camera settings updated');
+    const zoom = this.cameraSettings.zoomFactor * this.cameraSettings.tempZoomScale;
     this.cameraChange.next({
       xOffset: this.cameraSettings.offsets.x,
       yOffset: this.cameraSettings.offsets.y,
-      zoomFactor: this.cameraSettings.zoomFactor
+      zoomFactor: zoom
     });
   }
 }

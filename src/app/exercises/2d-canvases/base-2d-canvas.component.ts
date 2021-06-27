@@ -361,15 +361,25 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   }
 
-  public touchPinch(event): void {
-    console.log(event);
+  public touchPinchMove(event): void {
+    // console.log(event);
     this.cancelLine();
     if (event.maxPointers === 2) {
-      const xOffset = (event.deltaX / 100) * -1;
-      const yOffset = (event.deltaY / 100) * -1;
-      this.cubeStackCanvasesService.updateOffsets( xOffset, yOffset );
+      // const xOffset = (event.deltaX / 100) * -1;
+      // const yOffset = (event.deltaY / 100) * -1;
+      const xOffset = this.offsetPoint( event.center ).x * -1;
+      const yOffset = this.offsetPoint( event.center ).y * -1;
+      // this.cubeStackCanvasesService.setOffsets( xOffset, yOffset );
+      const scale = event.scale;
+      this.cubeStackCanvasesService.scaleZoom( scale );
     }
   }
+
+  public touchPinchEnd(event): void {
+    this.cubeStackCanvasesService.bakeScaleZoom( event.scale );
+  }
+
+
 
   private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent | PointerEvent ) {
 
@@ -549,8 +559,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       const nearestPoint = this.getNearestPoint(x, y, this.snapPoints, 50 / this.cameraSettings.zoomFactor );
 
       return nearestPoint;
-    } else{
-      return {x, y, constraint: null};
+    } else {
+      return { x, y, constraint: null };
     }
   }
 

@@ -22,7 +22,11 @@ const routes: Routes = [
   {
     path: 'test',
     loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
+  },  {
+    path: 'home',
+    loadChildren: () => import('./home-page/home/home.module').then( m => m.HomePageModule)
   },
+
   // {
   //   path: 'cube-stack',
   //   // loadChildren: () => import('./exercises/pages/cube-stack/cube-stack.module').then( m => m.CubeStackPageModule)

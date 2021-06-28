@@ -2,6 +2,8 @@ ion-tabs{
   background-color: var(--background-primary);
 }
 
-ion-tab-bar{
+ion-tab-bar, ion-tab-button{
   background-color: var(--background-secondary);
+
+  color: var(--content-primary);
 }

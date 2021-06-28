@@ -22,9 +22,10 @@ const routes: Routes = [
   {
     path: 'test',
     loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
-  },  {
+  },
+  {
     path: 'home',
-    loadChildren: () => import('./home-page/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./pages/home-page/home.module').then( m => m.HomePageModule)
   },
 
   // {

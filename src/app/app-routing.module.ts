@@ -8,7 +8,7 @@ const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'base-exercise',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -27,6 +27,15 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () => import('./pages/home-page/home.module').then( m => m.HomePageModule)
   },
+  {
+    path: 'achievements',
+    loadChildren: () => import('./pages/achievements/achievements.module').then( m => m.AchievementsPageModule)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
+  },
+
 
   // {
   //   path: 'cube-stack',

@@ -1,9 +1,20 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Settings</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <ion-radio-group value="feedback">
 
+    <ion-label>None</ion-label>
+    <ion-radio value="none"></ion-radio>
+
+    <ion-label>Feedback Only</ion-label>
+    <ion-radio value="feedback"></ion-radio>
+
+    <ion-label>All</ion-label>
+    <ion-radio value="all"></ion-radio>
+
+  </ion-radio-group>
+
+  <ion-label>Volume</ion-label>
+  <ion-range min="0" max="10" step="1" snaps="true" ticks="false">
+    <ion-icon slot="start" name="volume-off-outline"></ion-icon>
+    <ion-icon slot="end" name="volume-high-outline"></ion-icon>
+  </ion-range>
 </ion-content>

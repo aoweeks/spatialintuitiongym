@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SoundsService } from 'src/app/services/sounds.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,9 +11,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsPage implements OnInit {
 
-  public volume = 10;
-
-  constructor() { }
+  constructor( public soundsService: SoundsService ) { }
 
   ngOnInit() {
   }
@@ -21,7 +20,7 @@ export class SettingsPage implements OnInit {
 
     let iconName = 'volume-';
 
-    switch (this.volume) {
+    switch (this.soundsService.getVolume()) {
 
       case 0:
         iconName += 'off';
@@ -48,4 +47,7 @@ export class SettingsPage implements OnInit {
     return iconName;
   }
 
+  public volumeRangeChange( event ): void {
+    this.soundsService.setVolume( event.detail.value );
+  }
 }

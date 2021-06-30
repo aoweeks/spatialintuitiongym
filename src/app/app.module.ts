@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ComponentsModule } from './components.module';
 import { SoundsService } from './services/sounds.service';
 import { DebugService } from './services/debug.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +17,7 @@ import { DebugService } from './services/debug.service';
   imports: [
     AppRoutingModule,
     BrowserModule,
+    FormsModule,
     IonicModule.forRoot(),
     HammerModule,
     ComponentsModule

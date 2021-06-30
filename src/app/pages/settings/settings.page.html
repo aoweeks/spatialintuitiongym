@@ -13,7 +13,15 @@
   </ion-radio-group>
 
   <ion-label>Volume</ion-label>
-  <ion-range min="0" max="10" step="1" snaps="true" ticks="false">
+  <ion-range
+    (ionChange)="volumeRangeChange($event)"
+    [value]="soundsService.getVolume()"
+    min="0"
+    max="10"
+    step="1"
+    snaps="true"
+    ticks="false"
+  >
     <ion-icon slot="start" [name]="getVolumeIcon()" size="medium"></ion-icon>
   </ion-range>
 </ion-content>

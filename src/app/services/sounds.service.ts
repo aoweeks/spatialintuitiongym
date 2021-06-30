@@ -7,6 +7,7 @@ import { PitchShifter } from 'soundtouchjs';
 export class SoundsService {
 
   private soundsEnabled = 'none'; //'all';
+  private volume = 10;
 
   // Set up audio/SoundTouchJS
   private audioContext =  new window.AudioContext(); //|| new window.webkitAudioContext() ;
@@ -16,6 +17,18 @@ export class SoundsService {
 
   constructor() {
     this.loadSoundfile();
+  }
+
+  /**
+   * Getters/Setters
+   */
+
+  public getVolume(): number {
+    return this.volume;
+  }
+
+  public setVolume( volume: number ): void {
+    this.volume = volume;
   }
 
   // Play a sound at a particular pitch to indicate accuracy rating

@@ -14,7 +14,6 @@
 
   <ion-label>Volume</ion-label>
   <ion-range min="0" max="10" step="1" snaps="true" ticks="false">
-    <ion-icon slot="start" name="volume-off-outline"></ion-icon>
-    <ion-icon slot="end" name="volume-high-outline"></ion-icon>
+    <ion-icon slot="start" [name]="getVolumeIcon()" size="medium"></ion-icon>
   </ion-range>
 </ion-content>

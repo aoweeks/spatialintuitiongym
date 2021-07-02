@@ -251,7 +251,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseUp( event: MouseEvent ) {
     if ( event.button === 0 ) {
-      this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
+      if ( this.lastCursorPos ){
+        this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
+      }
     } else if ( event.button === 2 ) {
       this.pointsToMove = [];
 
@@ -338,7 +340,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public touchEnd( event: TouchEvent ) {
 
     // If a line is being drawn
-    if(this.lastCursorPos) {
+    if ( this.lastCursorPos ) {
       this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
     } else {
       this.pointsToMove = [];

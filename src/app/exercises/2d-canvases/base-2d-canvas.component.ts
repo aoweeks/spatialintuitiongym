@@ -25,6 +25,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     toggleSnapping: () => this.toggleSnapping(),
   };
 
+  private orthographicMode: boolean;
+
   private context: CanvasRenderingContext2D;
 
   private snappingOn = true;
@@ -38,6 +40,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private lines = [];
   private snapPoints = [];
+  private maxLines: number;
 
   private cameraSettings = {
     zoomFactor: 1,
@@ -98,6 +101,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.clearCanvas();
       this.drawPreviousLines();
     });
+
+    if ( this.orthographicMode ) {
+      this.maxLines = 3;
+    } else {
+      this.maxLines = 12;
+    }
 
     // dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'resetCanvas');
@@ -404,16 +413,21 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private setLineStart( cursorPosX, cursorPosY ) {
 
-    this.snapPoints = this.arrayOfLinePoints();
+    if ( this.lines.length < this.maxLines ) {
+      this.snapPoints = this.arrayOfLinePoints();
 
-    const offsetPoint = this.offsetPoint( { x: cursorPosX, y: cursorPosY } );
-    const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
-    if( snapPoint.constraint?.axisIndicator ) {
-      this.currentConstraint = snapPoint.constraint;
-      this.currentConstraint.axisIndicator = false;
+      const offsetPoint = this.offsetPoint( { x: cursorPosX, y: cursorPosY } );
+      const snapPoint = this.checkForSnapPoint( offsetPoint.x, offsetPoint.y );
+      if ( snapPoint.constraint?.axisIndicator ) {
+        this.currentConstraint = snapPoint.constraint;
+        this.currentConstraint.axisIndicator = false;
+      }
+      this.mouseDownPos = snapPoint;
+      this.lastCursorPos = snapPoint;
+    } else {
+      console.log('Too many lines');
     }
-    this.mouseDownPos = snapPoint;
-    this.lastCursorPos = snapPoint;
+
   }
 
   private setLineEnd( cursorPosX, cursorPosY, constraint ) {

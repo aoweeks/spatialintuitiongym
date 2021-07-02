@@ -174,6 +174,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     requestAnimationFrame( () =>  {
       this.addEdgeIndicator();
 
+      //! Temp
+      this.projectCubeEdges( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh );
+
       this.cubeStackCanvasesService.saveCubeVisibleVertices(
         this.projectVisibleVertices( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh )
       );
@@ -271,7 +274,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     return {x , y};
   }
 
-  private projectVisibleVertices(object: THREE.Mesh): {x: number; y: number}[] {
+  private projectVisibleVertices( object: THREE.Mesh ): { x: number; y: number }[] {
 
     const positionsArray = [
       [.5, .5, .5], [-.5, .5, .5], [.5, -.5,.5], [-.5,-.5, -.5],
@@ -310,5 +313,49 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     }
     return finalPointsArray;
+  }
+
+  private projectCubeEdges( object: THREE.Mesh ): void {
+
+    const convertFromWorldToScreenSpace = ( point ) => {
+      const localPoint = object.localToWorld( point );
+      const screenPoint = this.convertToScreenSpace( localPoint );
+      return screenPoint;
+    };
+
+    const getEdgesOfFace = ( y: number ): any[] => {
+
+      const subArrayOfProjectedEdges = [];
+
+      const bottomLeft = convertFromWorldToScreenSpace( new THREE.Vector3( -.5, y, -.5 ) );
+      const bottomRight = convertFromWorldToScreenSpace( new THREE.Vector3( .5, y, -.5 ) );
+      const topLeft = convertFromWorldToScreenSpace( new THREE.Vector3( .5, y, -.5 ) );
+      const topRight = convertFromWorldToScreenSpace( new THREE.Vector3( .5, y, .5 ) );
+
+      subArrayOfProjectedEdges.push( { start: bottomLeft, end: bottomRight } );
+      subArrayOfProjectedEdges.push( { start: bottomLeft, end: topLeft } );
+      subArrayOfProjectedEdges.push( { start: topRight, end: bottomRight } );
+      subArrayOfProjectedEdges.push( { start: topRight, end: topLeft } );
+
+      return subArrayOfProjectedEdges;
+    };
+
+    const getVerticalEdge = ( x: number, z: number ) => {
+      const start = convertFromWorldToScreenSpace( new THREE.Vector3( x, -.5, z ) );
+      const end = convertFromWorldToScreenSpace( new THREE.Vector3( x, .5, z ) );
+
+      return { start, end };
+    };
+
+    let arrayOfProjectedEdges = getEdgesOfFace( -.5 );
+    arrayOfProjectedEdges = arrayOfProjectedEdges.concat( getEdgesOfFace( -.5 ) );
+
+    arrayOfProjectedEdges.push( getVerticalEdge( -.5, -.5 ) );
+    arrayOfProjectedEdges.push( getVerticalEdge( -.5, .5 ) );
+    arrayOfProjectedEdges.push( getVerticalEdge( .5, -.5 ) );
+    arrayOfProjectedEdges.push( getVerticalEdge( .5, .5 ) );
+
+    console.log(arrayOfProjectedEdges);
+
   }
 }

@@ -30,6 +30,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   };
 
+  public lines = [];
+  public maxLines: number;
+
   private orthographicMode: boolean;
 
   private context: CanvasRenderingContext2D;
@@ -43,9 +46,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private pointsToMove = [];
 
-  private lines = [];
   private snapPoints = [];
-  private maxLines: number;
 
   private cameraSettings = {
     zoomFactor: 1,
@@ -396,6 +397,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.cubeStackCanvasesService.bakeScaleZoom( event.scale );
   }
 
+
+  public submitLinesForEvalutation(): void {
+    console.log('submitted');
+  }
 
 
   private extractPosFromMouseOrTouchEvent(event: MouseEvent | TouchEvent | PointerEvent ) {

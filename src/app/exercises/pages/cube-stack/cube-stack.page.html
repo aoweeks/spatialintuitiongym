@@ -1,5 +1,65 @@
 <ion-content>
-  <app-cube-stack></app-cube-stack>
-  <app-base-2d-canvas></app-base-2d-canvas>
-</ion-content>
 
+  <div id="button-layer">
+    <ion-button
+      id="undo-button"
+      *ngIf="this.undoHistoryPresent"
+      (click)="undoButtonClick()"
+      slot="icon-only"
+      fill="clear"
+    >
+      <ion-icon
+        name="arrow-undo-outline"
+      ></ion-icon>
+    </ion-button>
+    <ion-button
+      id="redo-button"
+      *ngIf="this.redoHistoryPresent"
+      (click)="redoButtonClick()"
+      slot="icon-only"
+      fill="clear"
+    >
+      <ion-icon
+        name="arrow-redo-outline"
+      ></ion-icon>
+    </ion-button>
+    <ion-button
+      id="clear-canvas-button"
+      *ngIf="!this.canvasIsEmpty"
+      (click)="clearCanvasButtonClick()"
+      slot="icon-only"
+      fill="clear"
+    >
+      <ion-icon name="refresh-outline"></ion-icon>
+    </ion-button>
+    <ion-button
+      id="snapping-button"
+      *ngIf="this.snappable"
+      [ngClass]=" { 'inactive' : !this.snapping} "
+      (click)="snappingButtonClick()"
+      slot="icon-only"
+      fill="clear"
+    >
+      <ion-icon name="magnet-outline"></ion-icon>
+    </ion-button>
+    <ion-button
+      id="submit-button"
+      *ngIf="drawingCanvas.lines.length === drawingCanvas.maxLines"
+      (click)="submitButtonClick()"
+      slot="icon-only"
+      fill="clear"
+    >
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+
+  <app-base-2d-canvas #drawingCanvas
+    (undoHistoryEvent)="updateUndoHistory($event)"
+    (redoHistoryEvent)="updateRedoHistory($event)"
+    (canvasEmptyEvent)="updateCanvasIsEmpty($event)"
+    (snappingChangeEvent)="updateSnapping($event)"
+  >
+  </app-base-2d-canvas>
+  <app-cube-stack></app-cube-stack>
+</ion-content>

@@ -175,11 +175,12 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       this.addEdgeIndicator();
 
       //! Temp
-      this.projectCubeEdges( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh );
+      const cubeEdges = this.projectCubeEdges( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh );
+      this.cubeStackCanvasesService.saveCubeProjectedEdges( cubeEdges );
 
-      this.cubeStackCanvasesService.saveCubeVisibleVertices(
-        this.projectVisibleVertices( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh )
-      );
+      // this.cubeStackCanvasesService.saveCubeVisibleVertices(
+      //   this.projectVisibleVertices( this.objectsToUpdate[this.objectsToUpdate.length - 2]?.mesh )
+      // );
     } );
 
     this.moveCamera();
@@ -274,52 +275,53 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     return {x , y};
   }
 
-  private projectVisibleVertices( object: THREE.Mesh ): { x: number; y: number }[] {
+  // private projectVisibleVertices( object: THREE.Mesh ): { x: number; y: number }[] {
 
-    const positionsArray = [
-      [.5, .5, .5], [-.5, .5, .5], [.5, -.5,.5], [-.5,-.5, -.5],
-      [.5,.5, -.5], [.5,-.5, -.5], [-.5,.5,-.5], [-.5, -.5, .5]
-    ];
-    const finalPointsArray = [];
+  //   const positionsArray = [
+  //     [.5, .5, .5], [-.5, .5, .5], [.5, -.5,.5], [-.5,-.5, -.5],
+  //     [.5,.5, -.5], [.5,-.5, -.5], [-.5,.5,-.5], [-.5, -.5, .5]
+  //   ];
+  //   const finalPointsArray = [];
 
-    // Iterate through cube, vertex positions, convert each to world space and
-    // project onto camera plane
+  //   // Iterate through cube, vertex positions, convert each to world space and
+  //   // project onto camera plane
 
-    for(const position of positionsArray) {
-      const localPoint = new THREE.Vector3( position[0], position[1], position[2] );
-      const worldPoint = object.localToWorld( localPoint );
+  //   for(const position of positionsArray) {
+  //     const localPoint = new THREE.Vector3( position[0], position[1], position[2] );
+  //     const worldPoint = object.localToWorld( localPoint );
 
-      // const localDirection = new THREE.Vector3();
-      // localDirection.subVectors( localPoint, this.camera.position ).normalize();
-      // console.log(localDirection);
+  //     // const localDirection = new THREE.Vector3();
+  //     // localDirection.subVectors( localPoint, this.camera.position ).normalize();
+  //     // console.log(localDirection);
 
-      const direction = new THREE.Vector3();
-      direction.subVectors( worldPoint, this.camera.position ).normalize();
-      // console.log(direction);
-      this.raycaster.set( this.camera.position, direction);
+  //     const direction = new THREE.Vector3();
+  //     direction.subVectors( worldPoint, this.camera.position ).normalize();
+  //     // console.log(direction);
+  //     this.raycaster.set( this.camera.position, direction);
 
-      const intersectPoint = this.raycaster.intersectObject(object)[0]?.point;
+  //     const intersectPoint = this.raycaster.intersectObject(object)[0]?.point;
 
-      const distanceFromTarget = new THREE.Vector3();
-      if (intersectPoint) {
-        distanceFromTarget.subVectors( worldPoint, intersectPoint );
-      };
+  //     const distanceFromTarget = new THREE.Vector3();
+  //     if (intersectPoint) {
+  //       distanceFromTarget.subVectors( worldPoint, intersectPoint );
+  //     };
 
-      if (distanceFromTarget.length() < .01) {
-        const projectedPoint = worldPoint.project( this.camera );
-        const screenPoint = this.convertToScreenSpace( projectedPoint );
-        finalPointsArray.push( screenPoint );
-      }
+  //     if (distanceFromTarget.length() < .01) {
+  //       const projectedPoint = worldPoint.project( this.camera );
+  //       const screenPoint = this.convertToScreenSpace( projectedPoint );
+  //       finalPointsArray.push( screenPoint );
+  //     }
 
-    }
-    return finalPointsArray;
-  }
+  //   }
+  //   return finalPointsArray;
+  // }
 
-  private projectCubeEdges( object: THREE.Mesh ): void {
+  private projectCubeEdges( object: THREE.Mesh ): { start: {x: number; y: number}; end: {x: number; y: number} }[] {
 
     const convertFromWorldToScreenSpace = ( point ) => {
       const localPoint = object.localToWorld( point );
-      const screenPoint = this.convertToScreenSpace( localPoint );
+      const projectedPoint = localPoint.project( this.camera );
+      const screenPoint = this.convertToScreenSpace( projectedPoint );
       return screenPoint;
     };
 
@@ -329,7 +331,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
       const bottomLeft = convertFromWorldToScreenSpace( new THREE.Vector3( -.5, y, -.5 ) );
       const bottomRight = convertFromWorldToScreenSpace( new THREE.Vector3( .5, y, -.5 ) );
-      const topLeft = convertFromWorldToScreenSpace( new THREE.Vector3( .5, y, -.5 ) );
+      const topLeft = convertFromWorldToScreenSpace( new THREE.Vector3( -.5, y, .5 ) );
       const topRight = convertFromWorldToScreenSpace( new THREE.Vector3( .5, y, .5 ) );
 
       subArrayOfProjectedEdges.push( { start: bottomLeft, end: bottomRight } );
@@ -348,14 +350,14 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     };
 
     let arrayOfProjectedEdges = getEdgesOfFace( -.5 );
-    arrayOfProjectedEdges = arrayOfProjectedEdges.concat( getEdgesOfFace( -.5 ) );
+    arrayOfProjectedEdges = arrayOfProjectedEdges.concat( getEdgesOfFace( .5 ) );
 
     arrayOfProjectedEdges.push( getVerticalEdge( -.5, -.5 ) );
     arrayOfProjectedEdges.push( getVerticalEdge( -.5, .5 ) );
     arrayOfProjectedEdges.push( getVerticalEdge( .5, -.5 ) );
     arrayOfProjectedEdges.push( getVerticalEdge( .5, .5 ) );
 
-    console.log(arrayOfProjectedEdges);
+    return arrayOfProjectedEdges;
 
   }
 }

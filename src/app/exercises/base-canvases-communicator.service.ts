@@ -40,17 +40,7 @@ export class BaseCanvasesCommunicatorService {
   }
 
   public scaleZoom( scale: number ) {
-
-    // if (  scale * this.cameraSettings.zoomFactor > BaseCanvasesCommunicatorService.maxZoomFactor ||
-    //       scale * this.cameraSettings.zoomFactor < BaseCanvasesCommunicatorService.minZoomFactor ) {
-    //   //       console.log(BaseCanvasesCommunicatorService.maxZoomFactor / this.cameraSettings.zoomFactor);
-    //   // this.cameraSettings.tempZoomScale = BaseCanvasesCommunicatorService.maxZoomFactor / this.cameraSettings.zoomFactor;
-
-    //   this.cameraSettings.tempZoomScale = scale;
-    // } else {
-    //   console.log( scale );
-      this.cameraSettings.tempZoomScale = scale;
-    // }
+    this.cameraSettings.tempZoomScale = scale;
     this.broadcastCameraSettings();
   }
 
@@ -82,7 +72,6 @@ export class BaseCanvasesCommunicatorService {
   }
 
   private broadcastCameraSettings(): void {
-    console.log('camera settings updated');
     const zoom = this.cameraSettings.zoomFactor * this.cameraSettings.tempZoomScale;
     this.cameraChange.next({
       xOffset: this.cameraSettings.offsets.x,

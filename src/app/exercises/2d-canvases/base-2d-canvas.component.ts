@@ -23,6 +23,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     undo: () => this.undo(),
     redo: () => this.redo(),
     toggleSnapping: () => this.toggleSnapping(),
+    showProjectedEdges: () => {
+      const edges = this.cubeStackCanvasesService.getCubeProjectedEdges();
+      edges.forEach( (edge) => this.drawLine(edge.start, edge.end) );
+      console.log(edges);
+    }
   };
 
   private orthographicMode: boolean;
@@ -113,6 +118,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.debugService.gui.add(this.guiParams, 'undo');
     this.debugService.gui.add(this.guiParams, 'redo');
     this.debugService.gui.add(this.guiParams, 'toggleSnapping');
+    this.debugService.gui.add(this.guiParams, 'showProjectedEdges');
   }
 
   public updateCanvasSizes(): void {

@@ -6,7 +6,8 @@ import { BaseCanvasesCommunicatorService } from '../../base-canvases-communicato
 })
 export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
 
-  private cubeVisibleVertices = [];
+  // private cubeVisibleVertices = [];
+  private cubeProjectedEdges: { start: {x: number; y: number}; end: {x: number; y: number} }[] = [];
 
   private snapPoints = [];
   /*
@@ -27,12 +28,21 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
   /*
   * Vertex comparison Functions
   */
-  public saveCubeVisibleVertices( cubeVisibleVertices: {x: number; y: number}[] ): void {
-    this.cubeVisibleVertices = cubeVisibleVertices;
+  // public saveCubeVisibleVertices( cubeVisibleVertices: {x: number; y: number}[] ): void {
+  //   this.cubeVisibleVertices = cubeVisibleVertices;
+  // }
+
+  // public getCubeVisibleVertices(): {x: number; y: number}[] {
+  //   return this.cubeVisibleVertices;
+  // }
+
+
+  public saveCubeProjectedEdges( cubeProjectedEdges: { start: {x: number; y: number}; end: {x: number; y: number} }[] ): void {
+    this.cubeProjectedEdges = cubeProjectedEdges;
   }
 
-  public getCubeVisibleVertices(): {x: number; y: number}[] {
-    return this.cubeVisibleVertices;
+  public getCubeProjectedEdges(): { start: {x: number; y: number}; end: {x: number; y: number} }[] {
+    console.log(this.cubeProjectedEdges);
+    return this.cubeProjectedEdges;
   }
-
 }

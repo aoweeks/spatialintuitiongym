@@ -399,7 +399,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
 
   public submitLinesForEvalutation(): void {
-    console.log('submitted');
+    this.cubeStackCanvasesService.compareCubeEdges( this.lines );
   }
 
 

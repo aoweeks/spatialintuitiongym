@@ -37,12 +37,26 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
   // }
 
 
-  public saveCubeProjectedEdges( cubeProjectedEdges: { start: {x: number; y: number}; end: {x: number; y: number} }[] ): void {
+  public saveCubeProjectedEdges( cubeProjectedEdges: { start: { x: number; y: number }; end: { x: number; y: number } }[] ): void {
     this.cubeProjectedEdges = cubeProjectedEdges;
   }
 
-  public getCubeProjectedEdges(): { start: {x: number; y: number}; end: {x: number; y: number} }[] {
+  public getCubeProjectedEdges(): { start: { x: number; y: number }; end: { x: number; y: number } }[] {
     console.log(this.cubeProjectedEdges);
     return this.cubeProjectedEdges;
   }
+
+  public compareCubeEdges( drawnCubeEdges ): void {
+
+    drawnCubeEdges.forEach( ( drawnEdge ) => {
+
+      // Complete lines that start from axis indicators
+      if ( drawnEdge.constraint ) {
+        drawnEdge.start = this.snapPoints[0];
+      }
+
+    });
+  }
+
+
 }

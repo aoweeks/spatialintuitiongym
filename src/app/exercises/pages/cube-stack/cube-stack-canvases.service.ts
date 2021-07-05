@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasesCommunicatorService } from '../../base-canvases-communicator.service';
 
 @Injectable({
@@ -10,6 +11,12 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
   private cubeProjectedEdges: { start: {x: number; y: number}; end: {x: number; y: number} }[] = [];
 
   private snapPoints = [];
+
+  constructor( private mathsUtilsService: MathsUtilsService ) {
+    super();
+  }
+
+
   /*
   *Edge indicator snap point functions
   */
@@ -54,6 +61,15 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
       if ( drawnEdge.constraint ) {
         drawnEdge.start = this.snapPoints[0];
       }
+
+      let startToStartDistance;
+      let endToStartDistance;
+      let startToEndtDistance;
+      let endToEndDistance;
+
+      this.cubeProjectedEdges.forEach( ( projectedEdge ) => {
+
+      });
 
     });
   }

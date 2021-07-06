@@ -55,6 +55,8 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
 
   public compareCubeEdges( drawnCubeEdges ): void {
 
+    let totalScore = 0;
+
     drawnCubeEdges.forEach( ( drawnEdge ) => {
 
       // Complete lines that start from axis indicators
@@ -62,16 +64,33 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
         drawnEdge.start = this.snapPoints[0];
       }
 
-      let startToStartDistance;
-      let endToStartDistance;
-      let startToEndtDistance;
-      let endToEndDistance;
+      let closestMatch = 1000000;
 
       this.cubeProjectedEdges.forEach( ( projectedEdge ) => {
 
-      });
+        console.log( projectedEdge.start, drawnEdge.start, projectedEdge.end, drawnEdge.end);
 
+        const startToStartDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.start, drawnEdge.start );
+        const endToStartDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.end, drawnEdge.start );
+        const startToEndDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.start, drawnEdge.end );
+        const endToEndDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.end, drawnEdge.end );
+
+        let tempClosestMatch;
+        if ( ( startToStartDistance + endToEndDistance ) >= ( startToEndDistance + endToStartDistance ) ) {
+          tempClosestMatch = ( startToStartDistance + endToEndDistance );
+        } else {
+          tempClosestMatch = ( startToEndDistance + endToStartDistance );
+        }
+
+        if ( tempClosestMatch < closestMatch ) {
+          closestMatch = tempClosestMatch;
+        }
+      });
+      console.log(closestMatch);
+      totalScore += closestMatch;
     });
+
+    console.log( totalScore );
   }
 
 

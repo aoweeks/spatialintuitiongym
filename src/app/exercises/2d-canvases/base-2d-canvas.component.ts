@@ -450,7 +450,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.currentConstraint = null;
 
     // To prevent extremely short lines forming on clicks
-    if ( this.mathsUtilsService.distanceBetweenPoints( this.mouseDownPos, snapPoint ) > 3 ) {
+    if ( this.mathsUtilsService.distanceBetweenPoints( this.mouseDownPos, snapPoint ) > 1 ) {
 
       // Check line doesn't already exist
       let lineDuplicated = false;

@@ -85,6 +85,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     this.setUpEnvironment();
     this.animate();
+
+    this.addCube();
+    this.addCube();
   }
 
   public updateCanvasSizes(): void {
@@ -149,7 +152,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.scene.add(cubeMesh);
 
 
-    this.soundsService.playRatingSound( tempRandomRating );
+    //! this.soundsService.playRatingSound( tempRandomRating );
 
     // Create Cannon.js cube, set to Three.js cube position and rotation
     const cubeShape = new CANNON.Box(new CANNON.Vec3(.5, .5, .5));

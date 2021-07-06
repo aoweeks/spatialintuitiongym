@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasesCommunicatorService } from '../../base-canvases-communicator.service';
 
@@ -6,6 +7,8 @@ import { BaseCanvasesCommunicatorService } from '../../base-canvases-communicato
   providedIn: 'root'
 })
 export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
+
+  public progressStage = new Subject();
 
   // private cubeVisibleVertices = [];
   private cubeProjectedEdges: { start: {x: number; y: number}; end: {x: number; y: number} }[] = [];
@@ -68,7 +71,7 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
 
       this.cubeProjectedEdges.forEach( ( projectedEdge ) => {
 
-        console.log( projectedEdge.start, drawnEdge.start, projectedEdge.end, drawnEdge.end);
+        // console.log( projectedEdge.start, drawnEdge.start, projectedEdge.end, drawnEdge.end);
 
         const startToStartDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.start, drawnEdge.start );
         const endToStartDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.end, drawnEdge.start );
@@ -76,7 +79,7 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
         const endToEndDistance = this.mathsUtilsService.distanceBetweenPoints( projectedEdge.end, drawnEdge.end );
 
         let tempClosestMatch;
-        if ( ( startToStartDistance + endToEndDistance ) >= ( startToEndDistance + endToStartDistance ) ) {
+        if ( ( startToStartDistance + endToEndDistance ) <= ( startToEndDistance + endToStartDistance ) ) {
           tempClosestMatch = ( startToStartDistance + endToEndDistance );
         } else {
           tempClosestMatch = ( startToEndDistance + endToStartDistance );
@@ -91,7 +94,7 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
     });
 
     console.log( totalScore );
+
+    this.progressStage.next();
   }
-
-
 }

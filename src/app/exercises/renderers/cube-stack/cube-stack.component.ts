@@ -95,10 +95,11 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
       ( stage ) => {
         switch ( stage ) {
           case 'addCube':
-          this.addCube();
-          break;
+            this.addCube();
+            break;
           case 'showCube':
-          break;
+            this.showCube();
+            break;
         }
       }
     );
@@ -210,7 +211,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
   private showCube(): void {
-    console.log('showCube');
+    this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.material.opacity = 0.5;
+
   }
 
   private addEdgeIndicator(): void {

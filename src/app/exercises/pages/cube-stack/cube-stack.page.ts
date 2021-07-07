@@ -18,4 +18,8 @@ export class CubeStackPage extends BaseExercisePage implements OnInit {
   submitButtonClick() {
 
   }
+
+  nextCubeClick() {
+
+  }
 }

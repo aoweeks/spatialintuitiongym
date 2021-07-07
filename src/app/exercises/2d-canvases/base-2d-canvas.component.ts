@@ -30,6 +30,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
   };
 
+  public answersShowing = false;
+
   public lines = [];
   public maxLines: number;
 
@@ -400,6 +402,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public submitLinesForEvalutation(): void {
     this.cubeStackCanvasesService.compareCubeEdges( this.lines );
+    this.answersShowing = true;
   }
 
 

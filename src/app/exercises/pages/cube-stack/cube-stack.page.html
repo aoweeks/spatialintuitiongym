@@ -44,13 +44,21 @@
     </ion-button>
     <ion-button
       id="submit-button"
-      *ngIf="drawingCanvas.lines.length === drawingCanvas.maxLines"
+      *ngIf=" ( drawingCanvas.lines.length === drawingCanvas.maxLines )
+              && ( !drawingCanvas.answersShowing )"
       (click)="submitButtonClick()"
       slot="icon-only"
       fill="clear"
     >
       <ion-icon name="checkmark-outline"></ion-icon>
     </ion-button>
+    <ion-icon name="arrow-forward-outline"
+      id="next-cube-button"
+      *ngIf="( drawingCanvas.answersShowing )"
+      (click)="nextCubeClick()"
+      slot="icon-only"
+      fill="clear"
+    ></ion-icon>
   </div>
 
 

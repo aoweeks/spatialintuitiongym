@@ -10,5 +10,7 @@ export class DebugService {
 
   gui = new dat.GUI();
 
-  constructor() { }
+  constructor() {
+    this.gui.domElement.id = 'gui';
+   }
 }

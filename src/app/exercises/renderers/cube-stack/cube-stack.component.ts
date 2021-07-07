@@ -22,7 +22,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     guiParams = {
       addCube: () => this.addCube(),
       clearAllCubes: () => this.removeAllPhysicsObjects(),
-      togglePausePhysics: () => this.togglePausePhysics()
+      togglePausePhysics: () => this.togglePausePhysics(),
+      showCube: () => this.showCube()
     };
 
   private backgroundMaterial = new THREE.MeshStandardMaterial( {
@@ -82,12 +83,25 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.debugService.gui.add(this.guiParams, 'addCube');
     this.debugService.gui.add(this.guiParams, 'clearAllCubes');
     this.debugService.gui.add(this.guiParams, 'togglePausePhysics');
+    this.debugService.gui.add(this.guiParams, 'showCube' );
 
     this.setUpEnvironment();
     this.animate();
 
     this.addCube();
     this.addCube();
+
+    this.cubeStackCanvasesService.progressStage.subscribe(
+      ( stage ) => {
+        switch ( stage ) {
+          case 'addCube':
+          this.addCube();
+          break;
+          case 'showCube':
+          break;
+        }
+      }
+    );
   }
 
   public updateCanvasSizes(): void {
@@ -193,6 +207,10 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1];
     this.camera.position.y = lastCube.mesh.position.y;
     this.camera.lookAt(lastCube.mesh.position);
+  }
+
+  private showCube(): void {
+    console.log('showCube');
   }
 
   private addEdgeIndicator(): void {

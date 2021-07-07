@@ -95,6 +95,6 @@ export class CubeStackCanvasesService extends BaseCanvasesCommunicatorService{
 
     console.log( totalScore );
 
-    this.progressStage.next();
+    this.progressStage.next( 'addCube' );
   }
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import * as dat from 'dat.gui';
-import { SoundsService } from './sounds.service';
 
 @Injectable({
   providedIn: 'root'

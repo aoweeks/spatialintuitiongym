@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter, Injector } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
@@ -35,8 +36,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public lines = [];
   public maxLines: number;
 
-  private orthographicMode: boolean;
-
   private context: CanvasRenderingContext2D;
 
   private snappingOn = true;
@@ -60,8 +59,9 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   constructor(  injector: Injector,
                 private mathsUtilsService: MathsUtilsService,
-                private cubeStackCanvasesService: CubeStackCanvasesService) {
-    super(injector);
+                private cubeStackCanvasesService: CubeStackCanvasesService,
+                route: ActivatedRoute ) {
+    super(route, injector);
   }
 
   // Keyboard events
@@ -110,7 +110,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.drawPreviousLines();
     });
 
-    if ( this.orthographicMode ) {
+    if ( this.orthographicCamera ) {
       this.maxLines = 3;
     } else {
       this.maxLines = 12;

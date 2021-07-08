@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, HostListener, Injector } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { DebugService } from '../services/debug.service';
 
 
@@ -8,6 +9,8 @@ import { DebugService } from '../services/debug.service';
 })
 export class BaseCanvasComponent implements AfterViewInit{
 
+  public orthographicCamera: boolean;
+
   viewportSizes = {
     height: 0,
     width: 0
@@ -15,7 +18,8 @@ export class BaseCanvasComponent implements AfterViewInit{
 
   protected debugService: DebugService;
 
-  constructor(injector: Injector) {
+  constructor(  private route: ActivatedRoute,
+                injector: Injector ) {
     this.debugService = injector.get(DebugService);
   }
 
@@ -26,6 +30,11 @@ export class BaseCanvasComponent implements AfterViewInit{
   }
 
   ngAfterViewInit() {
+    if ( this.route.snapshot.paramMap.get('camera') === 'orthographic' ) {
+      this.orthographicCamera = true;
+    } else {
+      this.orthographicCamera = false;
+    }
     this.updateViewportSizes();
   }
 

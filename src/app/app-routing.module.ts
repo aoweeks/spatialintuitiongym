@@ -20,7 +20,7 @@ const routes: Routes = [
     component: BaseExercisePage
   },
   {
-    path: 'test',
+    path: 'test/:camera',
     loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
   },
   {

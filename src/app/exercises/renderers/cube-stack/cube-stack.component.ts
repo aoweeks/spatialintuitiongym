@@ -8,6 +8,7 @@ import { SoundsService } from 'src/app/services/sounds.service';
 import { RatingFeedbackService } from 'src/app/services/rating-feedback.service';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { CubeStackCanvasesService } from '../../pages/cube-stack/cube-stack-canvases.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-cube-stack',
@@ -71,9 +72,10 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
                 soundsService: SoundsService,
                 ratingFeedbackService: RatingFeedbackService,
                 cubeStackCanvasesService: CubeStackCanvasesService,
+                route: ActivatedRoute,
                 private mathsUtilsService: MathsUtilsService,
   ) {
-    super(ratingFeedbackService, soundsService, cubeStackCanvasesService, injector);
+    super(ratingFeedbackService, soundsService, cubeStackCanvasesService, route, injector);
   }
 
   ngAfterViewInit() {

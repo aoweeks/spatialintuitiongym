@@ -8,6 +8,7 @@ import { RatingFeedbackService } from '../../services/rating-feedback.service';
 import { SoundsService } from 'src/app/services/sounds.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-base-three-renderer',
@@ -19,8 +20,6 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   @ViewChild('threeCanvas') canvasRef: ElementRef;
 
   baseColour = new THREE.Color(0x660066);
-
-  orthographicCamera = false;
 
   physicsEnabled = false;
   physicsPaused = false;
@@ -50,9 +49,10 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     public ratingFeedback: RatingFeedbackService,
     public soundsService: SoundsService,
     public cubeStackCanvasesService: CubeStackCanvasesService,
+    route: ActivatedRoute,
     injector: Injector
   ) {
-    super(injector);
+    super( route, injector);
 
     // dat.GUI tweaks
     this.debugService.gui.add(this.guiBaseParams, 'soundOff');
@@ -89,6 +89,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
+
     this.initialSetup();
     this.updateCanvasSizes();
 
@@ -100,7 +101,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   public updateCanvasSizes(): void {
 
-    if(!this.orthographicCamera) {
+    if( !this.orthographicCamera ) {
       this.camera.aspect = this.viewportSizes.width / this.viewportSizes.height;
       this.camera.updateProjectionMatrix();
     }
@@ -178,12 +179,10 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     this.scene.background = this.baseColour;
 
     // Camera setup
-    if (this.orthographicCamera)
-    {
+    if ( this.orthographicCamera ) {
       this.camera = new THREE.OrthographicCamera(1,1,1,1);
     }
-    else
-    {
+    else {
       this.camera = new THREE.PerspectiveCamera(
         75,
         this.viewportSizes.width / this.viewportSizes.height,

@@ -202,6 +202,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public mouseDown( event: MouseEvent): void {
 
+    if(!this.answersShowing){
+
       if( event.button === 0 ) {
         // prevent firing if right button is already clicked
         if(event.buttons === 1) {
@@ -210,6 +212,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       } else if ( event.button === 2 ) {
         this.movePoint(event);
       }
+    }
   }
 
   public mouseMove( event: MouseEvent | TouchEvent ): void {
@@ -335,15 +338,17 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
  */
 
   public touchPress( event ) {
-
-    // Cancel the effects of the initial touch
-    this.cancelLine();
-
-    this.movePoint( event.srcEvent );
+    if ( !this.answersShowing ) {
+      // Cancel the effects of the initial touch
+      this.cancelLine();
+      this.movePoint( event.srcEvent );
+    }
   }
 
   public touchStart( event: TouchEvent ) {
-    this.setLineStart(event.touches[0].clientX, event.touches[0].clientY);
+    if ( !this.answersShowing ) {
+      this.setLineStart(event.touches[0].clientX, event.touches[0].clientY);
+    }
   }
 
   public touchEnd( event: TouchEvent ) {

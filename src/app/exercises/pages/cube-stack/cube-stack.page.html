@@ -52,13 +52,15 @@
     >
       <ion-icon name="checkmark-outline"></ion-icon>
     </ion-button>
-    <ion-icon name="arrow-forward-outline"
+    <ion-button
       id="next-cube-button"
-      *ngIf="( drawingCanvas.answersShowing )"
+      *ngIf="drawingCanvas.answersShowing"
       (click)="nextCubeClick()"
       slot="icon-only"
       fill="clear"
-    ></ion-icon>
+    >
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </ion-button>
   </div>
 
 

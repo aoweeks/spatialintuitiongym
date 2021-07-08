@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Base2dCanvasComponent } from '../exercises/2d-canvases/base-2d-canvas.component';
 import { BaseExercisePage } from '../exercises/pages/base-exercise.page';
+import { CubeStackCanvasesService } from '../exercises/pages/cube-stack/cube-stack-canvases.service';
 
 
 
@@ -14,7 +15,7 @@ export class TestPage extends BaseExercisePage {
   @ViewChild('drawingCanvas')
   drawingCanvas: Base2dCanvasComponent;
 
-  constructor() {
+  constructor( private cubeStackCanvasesService: CubeStackCanvasesService) {
     super();
   }
 
@@ -23,7 +24,10 @@ export class TestPage extends BaseExercisePage {
   }
 
   nextCubeClick(): void {
-
+    this.cubeStackCanvasesService.nextCube();
+    this.drawingCanvas.answersShowing = false;
+    this.drawingCanvas.resetCanvas();
+    this.drawingCanvas.clearUndoHistory();
   }
 
 }

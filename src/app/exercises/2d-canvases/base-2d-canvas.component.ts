@@ -196,6 +196,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.clearRedoHistory();
   }
 
+  public clearUndoHistory(): void {
+    this.undoHistory = [];
+    this.undoHistoryEvent.emit(false);
+  }
+
   /**
    *  Mouse Event Handlers
    */

@@ -18,8 +18,12 @@ export class TestPage extends BaseExercisePage {
     super();
   }
 
-  submitButtonClick() {
+  submitButtonClick(): void {
     this.drawingCanvas.submitLinesForEvalutation();
+  }
+
+  nextCubeClick(): void {
+
   }
 
 }

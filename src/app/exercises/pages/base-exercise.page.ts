@@ -6,6 +6,7 @@ import {
   enableBodyScroll,
   clearAllBodyScrollLocks
 } from 'body-scroll-lock';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-base-exercise',
@@ -24,7 +25,7 @@ export class BaseExercisePage implements AfterViewInit{
   public snappable = true;
   private undoable = true;
 
-  constructor() { }
+  constructor( private location: Location ) { }
 
   ngAfterViewInit() {
     disableBodyScroll(this.drawingCanvasCmp);
@@ -59,6 +60,9 @@ export class BaseExercisePage implements AfterViewInit{
   /**
    * BUTTON CLICK HANDLERS
    */
+  backButtonClick() {
+    this.location.back();
+  }
 
   undoButtonClick() {
     this.drawingCanvasCmp.undo();

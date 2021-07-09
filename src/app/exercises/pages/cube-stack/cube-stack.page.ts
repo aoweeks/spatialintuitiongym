@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { BaseExercisePage } from '../base-exercise.page';
 
@@ -8,8 +9,8 @@ import { BaseExercisePage } from '../base-exercise.page';
 })
 export class CubeStackPage extends BaseExercisePage implements OnInit {
 
-  constructor() {
-    super();
+  constructor( location: Location) {
+    super(location);
   }
 
   ngOnInit() {

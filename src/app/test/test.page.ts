@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { Base2dCanvasComponent } from '../exercises/2d-canvases/base-2d-canvas.component';
 import { BaseExercisePage } from '../exercises/pages/base-exercise.page';
@@ -15,8 +16,11 @@ export class TestPage extends BaseExercisePage {
   @ViewChild('drawingCanvas')
   drawingCanvas: Base2dCanvasComponent;
 
-  constructor( private cubeStackCanvasesService: CubeStackCanvasesService) {
-    super();
+  constructor(
+    location: Location,
+    private cubeStackCanvasesService: CubeStackCanvasesService
+  ) {
+    super( location );
   }
 
   submitButtonClick(): void {

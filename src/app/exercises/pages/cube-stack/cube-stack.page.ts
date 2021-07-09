@@ -1,5 +1,6 @@
-import { Location } from '@angular/common';
+import { LocationStrategy } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BaseExercisePage } from '../base-exercise.page';
 
 @Component({
@@ -9,8 +10,10 @@ import { BaseExercisePage } from '../base-exercise.page';
 })
 export class CubeStackPage extends BaseExercisePage implements OnInit {
 
-  constructor( location: Location) {
-    super(location);
+  constructor(  locationStrategy: LocationStrategy,
+                router: Router
+  ) {
+    super(locationStrategy, router);
   }
 
   ngOnInit() {

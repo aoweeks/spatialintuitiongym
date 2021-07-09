@@ -2,11 +2,10 @@ import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { Base2dCanvasComponent } from '../2d-canvases/base-2d-canvas.component';
 
 import {
-  disableBodyScroll,
-  enableBodyScroll,
-  clearAllBodyScrollLocks
+  disableBodyScroll
 } from 'body-scroll-lock';
-import { Location } from '@angular/common';
+import { LocationStrategy } from '@angular/common';
+import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-base-exercise',
@@ -17,6 +16,7 @@ export class BaseExercisePage implements AfterViewInit{
 
   @ViewChild('drawingCanvas') drawingCanvasCmp: Base2dCanvasComponent;
 
+
   public undoHistoryPresent = false;
   public redoHistoryPresent = false;
   public canvasIsEmpty = true;
@@ -25,10 +25,33 @@ export class BaseExercisePage implements AfterViewInit{
   public snappable = true;
   private undoable = true;
 
-  constructor( private location: Location ) { }
+  constructor(  private locationStrategy: LocationStrategy,
+                private router: Router
+  ) { }
+
+  // @HostListener('window:popstate',['$event'])
+  // public onPopState( event ) {
+  //   console.log('back clicked!');
+  //   this.preventBackNavigation();
+  // }
 
   ngAfterViewInit() {
-    disableBodyScroll(this.drawingCanvasCmp);
+    disableBodyScroll( this.drawingCanvasCmp );
+    // this.router.events
+    //   .subscribe( ( event: NavigationStart ) => {
+    //     console.log('navigation start');
+    //     if ( event.navigationTrigger === 'popstate' ) {
+    //       console.log('popstate');
+    //       this.preventBackNavigation();
+    //     }
+    //   });
+  }
+
+  preventBackNavigation() {
+    history.pushState(null, null, location.href);
+    this.locationStrategy.onPopState(() => {
+      history.pushState(null, null, location.href);
+    });
   }
 
  /**
@@ -61,7 +84,7 @@ export class BaseExercisePage implements AfterViewInit{
    * BUTTON CLICK HANDLERS
    */
   backButtonClick() {
-    this.location.back();
+    //this.location.back();
   }
 
   undoButtonClick() {

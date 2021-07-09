@@ -1,5 +1,6 @@
-import { Location } from '@angular/common';
+import { Location, LocationStrategy } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { Base2dCanvasComponent } from '../exercises/2d-canvases/base-2d-canvas.component';
 import { BaseExercisePage } from '../exercises/pages/base-exercise.page';
 import { CubeStackCanvasesService } from '../exercises/pages/cube-stack/cube-stack-canvases.service';
@@ -17,10 +18,11 @@ export class TestPage extends BaseExercisePage {
   drawingCanvas: Base2dCanvasComponent;
 
   constructor(
-    location: Location,
-    private cubeStackCanvasesService: CubeStackCanvasesService
+    locationStrategy: LocationStrategy,
+    private cubeStackCanvasesService: CubeStackCanvasesService,
+    router: Router
   ) {
-    super( location );
+    super( locationStrategy, router );
   }
 
   submitButtonClick(): void {

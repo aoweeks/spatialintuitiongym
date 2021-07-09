@@ -12,29 +12,13 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'exercises',
-    component:  ExercisesPage
-  },
-  {
-    path: 'base-exercise',
-    component: BaseExercisePage
-  },
-  {
     path: 'test/:camera',
     loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
   },
   {
     path: 'home',
     loadChildren: () => import('./pages/home-page/home.module').then( m => m.HomePageModule)
-  },
-  {
-    path: 'achievements',
-    loadChildren: () => import('./pages/achievements/achievements.module').then( m => m.AchievementsPageModule)
-  },
-  {
-    path: 'settings',
-    loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
-  },
+  }
 
 
   // {

@@ -1,1 +1,21 @@
+.exercise-panel{
 
+  width: 80%;
+
+  border-style: solid;
+  border-color: white;
+  border-radius: 30px;
+  border-width: 5px;
+
+  cursor: pointer;
+
+  .exercise-panel-upper,
+  .exercise-panel-lower {
+    display: block;
+    width: 100%;
+  }
+
+  .exercise-icon{
+    width: 30%;
+  }
+}

@@ -3,13 +3,22 @@
   <ion-grid>
     <ion-row>
       <ion-col size="6">
-        <a (click)="exerciseClick()">
-          Cube stacking
-        </a>
-          <!-- [routerLink]="['/base-exercise']" -->
-            <!-- <ion-button>
-              Exercise
-            </ion-button> -->
+        <div
+          class="exercise-panel"
+          (click)="exerciseClick()"
+          fill="clear"
+        >
+          <div class="exercise-panel-upper">
+            <ion-icon
+              class="exercise-icon"
+              name="cube-outline"
+            >
+            </ion-icon>
+          </div>
+          <div class="exercise-panel-lower">
+            Cube Stacking
+          </div>
+        </div>
       </ion-col>
       <ion-col size="6">
         <div>
@@ -49,3 +58,8 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<!-- [routerLink]="['/base-exercise']" -->
+  <!-- <ion-button>
+    Exercise
+  </ion-button> -->

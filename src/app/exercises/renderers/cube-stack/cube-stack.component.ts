@@ -40,7 +40,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     linewidth: 5,
     resolution: new THREE.Vector2(1920, 1080),
     dashed: true,
-    depthTest: false
+    depthTest: false,
     // dashScale: 1,
     // dashSize: 2,
     // gapSize: 2
@@ -157,9 +157,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private addCube(): void {
 
-    //! Temp test code
     if(this.objectsToUpdate.length){
       this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.material.transparent = false;
+      this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.castShadow = true;
     }
 
     const tempRandomRating = Math.random();
@@ -175,7 +175,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     }
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
 
-    cubeMesh.castShadow = true;
     cubeMesh.receiveShadow = true;
     cubeMesh.renderOrder = 1;
     this.scene.add(cubeMesh);
@@ -283,6 +282,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const line = new Line2( lineGeometry, this.edgeIndicatorMaterial );
     line.renderOrder = 2;
     this.scene.add( line );
+    line.castShadow = false;
     return line;
   }
 

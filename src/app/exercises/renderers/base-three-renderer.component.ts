@@ -26,6 +26,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
   controlsEnabled = true;
 
   scene = new THREE.Scene();
+  textureLoader = new THREE.TextureLoader();
   camera; //: THREE.OrthographicCamera | THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   cameraPointLight: THREE.PointLight;

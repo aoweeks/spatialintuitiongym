@@ -20,12 +20,16 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   physicsEnabled = true;
   physicsPaused = true;
 
-    guiParams = {
-      addCube: () => this.addCube(),
-      clearAllCubes: () => this.removeAllPhysicsObjects(),
-      togglePausePhysics: () => this.togglePausePhysics(),
-      showCube: () => this.showCube()
-    };
+  guiParams = {
+    addCube: () => this.addCube(),
+    clearAllCubes: () => this.removeAllPhysicsObjects(),
+    togglePausePhysics: () => this.togglePausePhysics(),
+    showCube: () => this.showCube()
+  };
+
+
+  private colourMap = this.textureLoader.load('/assets/textures/cube/cubecolour.png');
+  private displacementMap = this.textureLoader.load('/assets/textures/cube/cubedisplacement.png');
 
   private backgroundMaterial = new THREE.MeshStandardMaterial( {
     color: this.baseColour
@@ -43,9 +47,12 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   });
   private cubeMaterial = new THREE.MeshStandardMaterial({
     transparent: true,
+    map: this.colourMap,
+    displacementMap: this.displacementMap,
+    displacementScale: 0.1,
     opacity: 0
   });
-  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
+  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 50, 50);
 
   private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
   private cubesContactMaterial = new CANNON.ContactMaterial(
@@ -80,6 +87,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
+
+    this.colourMap.magFilter = THREE.NearestFilter;
+    this.displacementMap.magFilter = THREE.NearestFilter;
 
     //Dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'addCube');

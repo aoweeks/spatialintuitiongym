@@ -49,10 +49,10 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     transparent: true,
     map: this.colourMap,
     displacementMap: this.displacementMap,
-    displacementScale: 0.1,
+    displacementScale: -0.05,
     opacity: 0
   });
-  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 50, 50);
+  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 100, 100);
 
   private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
   private cubesContactMaterial = new CANNON.ContactMaterial(
@@ -90,6 +90,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     this.colourMap.magFilter = THREE.NearestFilter;
     this.displacementMap.magFilter = THREE.NearestFilter;
+
 
     //Dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'addCube');
@@ -149,6 +150,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const floorGeometry = new THREE.PlaneGeometry( 50, 50);
     const floorMesh = new THREE.Mesh( floorGeometry, this.backgroundMaterial);
     floorMesh.rotation.x = - Math.PI / 2;
+    floorMesh.receiveShadow = true;
     this.scene.add(floorMesh);
   }
 
@@ -173,7 +175,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     }
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
 
-    // /cubeMesh.castShadow = true;
+    cubeMesh.castShadow = true;
     cubeMesh.receiveShadow = true;
     cubeMesh.renderOrder = 1;
     this.scene.add(cubeMesh);

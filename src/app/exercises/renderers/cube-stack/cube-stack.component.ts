@@ -48,8 +48,8 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   private cubeMaterial = new THREE.MeshStandardMaterial({
     transparent: true,
     map: this.colourMap,
-    displacementMap: this.displacementMap,
-    displacementScale: -0.05,
+    // displacementMap: this.displacementMap,
+    // displacementScale: -0.05,
     opacity: 0
   });
   private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 100, 100);

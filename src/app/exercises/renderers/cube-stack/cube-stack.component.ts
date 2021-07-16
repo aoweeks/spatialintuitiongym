@@ -20,12 +20,16 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   physicsEnabled = true;
   physicsPaused = true;
 
-    guiParams = {
-      addCube: () => this.addCube(),
-      clearAllCubes: () => this.removeAllPhysicsObjects(),
-      togglePausePhysics: () => this.togglePausePhysics(),
-      showCube: () => this.showCube()
-    };
+  guiParams = {
+    addCube: () => this.addCube(),
+    clearAllCubes: () => this.removeAllPhysicsObjects(),
+    togglePausePhysics: () => this.togglePausePhysics(),
+    showCube: () => this.showCube()
+  };
+
+
+  private colourMap = this.textureLoader.load('/assets/textures/cube/cubecolour.png');
+  private displacementMap = this.textureLoader.load('/assets/textures/cube/cubedisplacement.png');
 
   private backgroundMaterial = new THREE.MeshStandardMaterial( {
     color: this.baseColour
@@ -36,16 +40,19 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     linewidth: 5,
     resolution: new THREE.Vector2(1920, 1080),
     dashed: true,
-    depthTest: false
+    depthTest: false,
     // dashScale: 1,
     // dashSize: 2,
     // gapSize: 2
   });
   private cubeMaterial = new THREE.MeshStandardMaterial({
     transparent: true,
+    map: this.colourMap,
+    // displacementMap: this.displacementMap,
+    // displacementScale: -0.05,
     opacity: 0
   });
-  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
+  private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 100, 100);
 
   private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
   private cubesContactMaterial = new CANNON.ContactMaterial(
@@ -80,6 +87,10 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
+
+    this.colourMap.magFilter = THREE.NearestFilter;
+    this.displacementMap.magFilter = THREE.NearestFilter;
+
 
     //Dat.GUI tweaks
     this.debugService.gui.add(this.guiParams, 'addCube');
@@ -139,15 +150,16 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const floorGeometry = new THREE.PlaneGeometry( 50, 50);
     const floorMesh = new THREE.Mesh( floorGeometry, this.backgroundMaterial);
     floorMesh.rotation.x = - Math.PI / 2;
+    floorMesh.receiveShadow = true;
     this.scene.add(floorMesh);
   }
 
 
   private addCube(): void {
 
-    //! Temp test code
     if(this.objectsToUpdate.length){
       this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.material.transparent = false;
+      this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.castShadow = true;
     }
 
     const tempRandomRating = Math.random();
@@ -163,7 +175,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     }
     cubeMesh.rotation.y = Math.random() * Math.PI * 2;
 
-    // /cubeMesh.castShadow = true;
     cubeMesh.receiveShadow = true;
     cubeMesh.renderOrder = 1;
     this.scene.add(cubeMesh);
@@ -271,6 +282,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const line = new Line2( lineGeometry, this.edgeIndicatorMaterial );
     line.renderOrder = 2;
     this.scene.add( line );
+    line.castShadow = false;
     return line;
   }
 

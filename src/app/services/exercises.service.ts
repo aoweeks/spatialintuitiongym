@@ -10,7 +10,6 @@ export class ExercisesService {
 
 
   constructor() {
-
-    exercisesList.push( new Exercise( 0, 'cube' ) );
+    this.exercisesList.push( new Exercise( 0, 'cube' ) );
   }
 }

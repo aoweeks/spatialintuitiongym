@@ -18,7 +18,12 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/home-page/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'progress',
+    loadChildren: () => import('./pages/progress/progress.module').then( m => m.ProgressPageModule)
   }
+
 
 
   // {

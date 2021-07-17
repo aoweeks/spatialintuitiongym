@@ -45,6 +45,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     // dashSize: 2,
     // gapSize: 2
   });
+
   private cubeMaterial = new THREE.MeshStandardMaterial({
     transparent: true,
     map: this.colourMap,
@@ -52,6 +53,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     // displacementScale: -0.05,
     opacity: 0
   });
+
   private cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 100, 100);
 
   private cubePhysicsMaterial = new CANNON.Material('cubePhysicsMaterial');
@@ -255,11 +257,11 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
     // Get vertex for line starts/ends in world coordinates, and store in canvases service
     const worldFirstVertex = lastCube.localToWorld( firstVertex );
-    this.addSnapPoint(worldFirstVertex.clone());
+    this.addSnapPoint( worldFirstVertex.clone() );
     const worldVerticalVertex = lastCube.localToWorld( verticalVertex );
-    this.addSnapPoint(worldVerticalVertex.clone(), worldFirstVertex.clone());
+    this.addSnapPoint( worldVerticalVertex.clone(), worldFirstVertex.clone() );
     const worldHorizontalVertex = lastCube.localToWorld( horizontalVertex );
-    this.addSnapPoint(worldHorizontalVertex.clone(), worldFirstVertex.clone());
+    this.addSnapPoint( worldHorizontalVertex.clone(), worldFirstVertex.clone() );
 
 
     this.edgeIndicators.vertical = this.createLine(worldFirstVertex, worldVerticalVertex);
@@ -292,7 +294,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     const convertedCameraPlanePoint = this.convertToScreenSpace(cameraPlanePoint);
 
     let lineConstraint = null;
-    if (lineOriginPoint) {
+    if ( lineOriginPoint ) {
 
       const cameraPlaneLineOriginPoint = lineOriginPoint.project(this.camera);
       const convertedCameraPlaneLineOriginPoint = this.convertToScreenSpace(cameraPlaneLineOriginPoint);
@@ -306,10 +308,11 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.cubeStackCanvasesService.addSnapPoint(snapPoint);
   }
 
-  private convertToScreenSpace(point): {x: number; y: number} {
-    const x = point.x * this.viewportSizes.width / 2;
-    const y = - point.y * this.viewportSizes.height / 2;
-    return {x , y};
+  private convertToScreenSpace( point ): { x: number; y: number } {
+    const zoomFactor  = this.cubeStackCanvasesService.getZoom().zoomFactor;
+    const x = (point.x * ( this.viewportSizes.width / 2 ) ) / zoomFactor;
+    const y = - point.y * ( this.viewportSizes.height / 2 ) / zoomFactor;
+    return { x , y };
   }
 
   // private projectVisibleVertices( object: THREE.Mesh ): { x: number; y: number }[] {

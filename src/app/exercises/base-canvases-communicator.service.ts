@@ -71,6 +71,10 @@ export class BaseCanvasesCommunicatorService {
     this.broadcastCameraSettings();
   }
 
+  public getOffsets(): { x: number; y: number } {
+    return this.cameraSettings.offsets;
+  }
+
   private broadcastCameraSettings(): void {
     const zoom = this.cameraSettings.zoomFactor * this.cameraSettings.tempZoomScale;
     this.cameraChange.next({

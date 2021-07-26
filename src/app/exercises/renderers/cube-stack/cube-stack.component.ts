@@ -227,7 +227,6 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private showCube(): void {
     this.objectsToUpdate[this.objectsToUpdate.length - 1].mesh.material.opacity = 0.5;
-
   }
 
   private addEdgeIndicator(): void {
@@ -249,7 +248,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     let horizontalVertex = new THREE.Vector3();
 
     // 50/50 chance of line being on the X or Z axes
-    if( Math.random() < .5) {
+    if( Math.random() < .5 ) {
       horizontalVertex = new THREE.Vector3(horizontalLength, -.5, -.5);
     } else {
       horizontalVertex = new THREE.Vector3(-.5, -.5, horizontalLength);
@@ -269,7 +268,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
   private randomLength(): number {
-    return (Math.random() * .25) - .4;
+    return ( Math.random() * .25 ) - .4;
   }
 
   private createLine(start: THREE.Vector3, end: THREE.Vector3): Line2 {
@@ -309,9 +308,14 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
   }
 
   private convertToScreenSpace( point ): { x: number; y: number } {
-    const zoomFactor  = this.cubeStackCanvasesService.getZoom().zoomFactor;
-    const x = (point.x * ( this.viewportSizes.width / 2 ) ) / zoomFactor;
-    const y = - point.y * ( this.viewportSizes.height / 2 ) / zoomFactor;
+    const zoomFactor = this.cubeStackCanvasesService.getZoom().zoomFactor;
+
+    //! This needs fixing
+    const xScaledOffset = this.cubeStackCanvasesService.getOffsets().x / zoomFactor;
+    const yScaledOffset = this.cubeStackCanvasesService.getOffsets().y / zoomFactor;
+
+    const x = ( ( point.x * ( this.viewportSizes.width / 2 ) ) / zoomFactor ) + xScaledOffset;
+    const y = ( ( -point.y * ( this.viewportSizes.height / 2 ) ) / zoomFactor ) + yScaledOffset;
     return { x , y };
   }
 

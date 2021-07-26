@@ -41,6 +41,16 @@
     </ion-button>
 
     <ion-button
+      id="delete-button"
+      *ngIf="this.pointSelected"
+      (click)="deleteButtonClick()"
+      slot="icon-only"
+      fill="clear"
+    >
+      <ion-icon name="trash-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button
       id="snapping-button"
       *ngIf="this.snappable"
       [ngClass]=" { 'inactive' : !this.snapping} "
@@ -79,6 +89,7 @@
     (redoHistoryEvent)="updateRedoHistory($event)"
     (canvasEmptyEvent)="updateCanvasIsEmpty($event)"
     (snappingChangeEvent)="updateSnapping($event)"
+    (pointSelectedEvent)="updatePointSelectedEvent($event)"
   >
   </app-base-2d-canvas>
   <app-cube-stack #cubeStackCanvas></app-cube-stack>

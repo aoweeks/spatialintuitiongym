@@ -26,4 +26,8 @@ export class CubeStackPage extends BaseExercisePage implements OnInit {
   nextCubeClick() {
 
   }
+
+  deleteButtonClick() {
+
+  }
 }

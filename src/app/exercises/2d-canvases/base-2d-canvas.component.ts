@@ -17,6 +17,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   @Output() redoHistoryEvent = new EventEmitter<boolean>();
   @Output() canvasEmptyEvent = new EventEmitter<boolean>();
   @Output() snappingChangeEvent = new EventEmitter<boolean>();
+  @Output() pointSelectedEvent = new EventEmitter<boolean>();
 
 
   guiParams = {
@@ -272,7 +273,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
       }
     } else if ( event.button === 2 ) {
-      this.pointsToMove = [];
+      this.cancelMovePoints();
 
       // Delete lines that have been reduced to 0 length
       this.lines = this.lines.filter( ( line ) => {
@@ -310,11 +311,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
           this.currentConstraint = line.start.constraint;
         }
         this.pointsToMove.push( { index, pos: 'start' } );
+        this.pointSelectedEvent.emit( true );
       } else if ( line.end.x === snapPoint.x && line.end.y === snapPoint.y ) {
         if ( line.end.constraint ) {
           this.currentConstraint = line.end.constraint;
         }
         this.pointsToMove.push( { index, pos: 'end' } );
+        this.pointSelectedEvent.emit( true );
       }
 
       // if( constrained ) {
@@ -322,7 +325,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       //   if( this.currentConstraint?.axisIndicator === true ) {
       //     console.log()
       //     this.currentConstraint = null;
-      //     this.pointsToMove = [];
+      //     this.cancelMovePoints();
       //     return;
       //   }
       // }
@@ -362,7 +365,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     if ( this.lastCursorPos ) {
       this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );
     } else {
-      this.pointsToMove = [];
+      this.cancelMovePoints();
       this.currentConstraint = null;
       this.clearRedoHistory();
 
@@ -385,7 +388,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       console.log('TWO');
       this.undo();
     } else if(event.maxPointers === 3) {
-
       console.log('THREE');
       this.redo();
     }
@@ -694,6 +696,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private emitTempSnappingEvent() {
     const snappingOn = this.tempSnappingSwitch ? !this.snappingOn : this.snappingOn;
     this.snappingChangeEvent.emit( snappingOn );
+  }
+
+  private cancelMovePoints() {
+    this.pointsToMove = [];
+    this.pointSelectedEvent.emit( false );
   }
 
 }

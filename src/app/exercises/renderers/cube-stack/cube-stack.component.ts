@@ -122,7 +122,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   public updateCanvasSizes(): void {
     super.updateCanvasSizes();
-    this.edgeIndicatorMaterial.resolution = new THREE.Vector2(this.viewportSizes.width, this.viewportSizes.height);
+    this.edgeIndicatorMaterial.resolution = new THREE.Vector2( this.viewportSizes.width, this.viewportSizes.height );
   }
 
   // public animate() {

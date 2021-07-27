@@ -39,9 +39,10 @@ export class TestPage extends BaseExercisePage {
   /**
    * MOUSE ENTER/LEAVE HANDLERS
    */
-   public mouseOverDelete( hovering: boolean ): void {
+   public mouseOverDelete( hovering: boolean, ): void {
     this.deleteHovering = hovering;
   }
+
 
 
 }

@@ -12,6 +12,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
+import { UtilsService } from 'src/app/services/utils.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
 
@@ -74,7 +75,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   constructor(  injector: Injector,
                 private mathsUtilsService: MathsUtilsService,
                 private cubeStackCanvasesService: CubeStackCanvasesService,
-                route: ActivatedRoute ) {
+                route: ActivatedRoute,
+                private utilsService: UtilsService, ) {
     super( route, injector );
   }
 
@@ -90,7 +92,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
     } else if ( event.key === 'Delete' ) {
-      this.deletePoint();
+      this.deletePoint( null );
     }
   }
 
@@ -348,17 +350,16 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     });
   }
 
-  public deletePoint() {
+  public deletePoint( event: MouseEvent ): boolean {
     console.log('clicked');
+    return this.utilsService.stopPropagation( event );
   }
 
-  public rightClick( event: MouseEvent ) {
+  public rightClick( event: MouseEvent ): boolean {
 
     this.cancelLine();
 
-    event.stopImmediatePropagation();
-    event.preventDefault();
-    return false;
+    return this.utilsService.stopPropagation( event );
   }
 
 /**

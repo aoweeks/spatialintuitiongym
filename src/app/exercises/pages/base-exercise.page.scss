@@ -59,6 +59,13 @@
     &#delete-button{
       right: 0;
       bottom: 160px;
+
+      &.delete-active{
+        --border-color: limegreen;
+        ion-icon{
+          color: limegreen;
+        }
+      }
     }
 
     &#submit-button, &#next-cube-button{

@@ -25,15 +25,23 @@ export class TestPage extends BaseExercisePage {
     super( locationStrategy, router );
   }
 
-  submitButtonClick(): void {
+  public submitButtonClick(): void {
     this.drawingCanvas.submitLinesForEvalutation();
   }
 
-  nextCubeClick(): void {
+  public nextCubeClick(): void {
     this.cubeStackCanvasesService.nextCube();
     this.drawingCanvas.answersShowing = false;
     this.drawingCanvas.resetCanvas();
     this.drawingCanvas.clearUndoHistory();
   }
+
+  /**
+   * MOUSE ENTER/LEAVE HANDLERS
+   */
+   public mouseOverDelete( hovering: boolean ): void {
+    this.deleteHovering = hovering;
+  }
+
 
 }

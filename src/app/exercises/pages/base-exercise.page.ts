@@ -24,6 +24,7 @@ export class BaseExercisePage implements AfterViewInit{
 
   public pointSelected = false;
   public deletePoint = false;
+  public deleteHovering = false;
 
   public snappable = true;
   private undoable = true;
@@ -61,52 +62,52 @@ export class BaseExercisePage implements AfterViewInit{
   * OUTPUT EVENT HANDLERS
   * TODO: Refactor these all into one
   */
-  public updateUndoHistory( event: boolean ) {
+  public updateUndoHistory( event: boolean ): void {
     if ( this.undoable ) {
       this.undoHistoryPresent = event;
     }
   }
 
-  public updateRedoHistory( event: boolean ) {
+  public updateRedoHistory( event: boolean ): void {
     if ( this.undoable ) {
       this.redoHistoryPresent = event;
     }
   }
 
-  public updateCanvasIsEmpty( event: boolean ) {
+  public updateCanvasIsEmpty( event: boolean ): void {
     if ( this.undoable ) {
       this.canvasIsEmpty = event;
     }
   }
 
-  public updateSnapping( event: boolean ) {
+  public updateSnapping( event: boolean ): void {
     this.snapping = event;
   }
 
-  public updatePointSelectedEvent( event: boolean ) {
+  public updatePointSelectedEvent( event: boolean ): void {
     this.pointSelected = event;
   }
 
   /**
    * BUTTON CLICK HANDLERS
    */
-  backButtonClick() {
+  public backButtonClick(): void {
     //this.location.back();
   }
 
-  undoButtonClick() {
+  public undoButtonClick(): void {
     this.drawingCanvasCmp.undo();
   }
 
-  redoButtonClick() {
+  public redoButtonClick(): void {
     this.drawingCanvasCmp.redo();
   }
 
-  clearCanvasButtonClick() {
+  public clearCanvasButtonClick(): void {
     this.drawingCanvasCmp.resetCanvas();
   }
 
-  snappingButtonClick() {
+  public snappingButtonClick(): void {
     this.drawingCanvasCmp.toggleSnapping();
   }
 }

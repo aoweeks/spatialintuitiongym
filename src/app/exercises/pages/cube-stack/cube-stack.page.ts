@@ -30,4 +30,12 @@ export class CubeStackPage extends BaseExercisePage implements OnInit {
   deleteButtonClick() {
 
   }
+
+  /**
+   * MOUSE ENTER/LEAVE HANDLERS
+   */
+   public mouseOverDelete( hovering: boolean ): void {
+    this.deleteHovering = hovering;
+  }
+
 }

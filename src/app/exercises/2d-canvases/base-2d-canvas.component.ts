@@ -75,21 +75,21 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
                 private mathsUtilsService: MathsUtilsService,
                 private cubeStackCanvasesService: CubeStackCanvasesService,
                 route: ActivatedRoute ) {
-    super(route, injector);
+    super( route, injector );
   }
 
   // Keyboard events
-  @HostListener('window:keydown',['$event'])
-  public keyDown(event: KeyboardEvent) {
+  @HostListener( 'window:keydown', [ '$event' ] )
+  public keyDown( event: KeyboardEvent ) {
 
-    if( (event.ctrlKey || event.metaKey) && (event.key === 'z' || event.key === 'Z') ) {
+    if( ( event.ctrlKey || event.metaKey ) && ( event.key === 'z' || event.key === 'Z' ) ) {
       this.undo();
-    } else if( (event.ctrlKey || event.metaKey) && (event.key === 'y' || event.key === 'Y') ) {
+    } else if( ( event.ctrlKey || event.metaKey ) && ( event.key === 'y' || event.key === 'Y' ) ) {
       this.redo();
-    } else if (event.shiftKey) {
+    } else if ( event.shiftKey ) {
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
-    } else if (event.key === 'Delete') {
+    } else if ( event.key === 'Delete' ) {
       this.deletePoint();
     }
   }
@@ -105,21 +105,21 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       //   this.context.stroke();
       // });
 
-  @HostListener('window:keyup',['$event'])
-  public keyUp(event: KeyboardEvent) {
-    if (event.key === 'Shift') {
+  @HostListener( 'window:keyup', [ '$event' ] )
+  public keyUp( event: KeyboardEvent ) {
+    if ( event.key === 'Shift' ) {
       this.tempSnappingSwitch = false;
       this.emitTempSnappingEvent();
     }
   }
 
   ngAfterViewInit() {
-    this.context = this.canvasRef.nativeElement.getContext('2d');
+    this.context = this.canvasRef.nativeElement.getContext( '2d' );
 
     super.ngAfterViewInit();
     this.updateCanvasSizes();
 
-    this.cubeStackCanvasesService.cameraChange.subscribe( (cameraSettings: any) => {
+    this.cubeStackCanvasesService.cameraChange.subscribe( ( cameraSettings: any ) => {
       this.cameraSettings.zoomFactor = cameraSettings.zoomFactor;
       this.cameraSettings.offsets.xOffset = cameraSettings.xOffset;
       this.cameraSettings.offsets.yOffset = cameraSettings.yOffset;
@@ -134,11 +134,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     }
 
     // dat.GUI tweaks
-    this.debugService.gui.add(this.guiParams, 'resetCanvas');
-    this.debugService.gui.add(this.guiParams, 'undo');
-    this.debugService.gui.add(this.guiParams, 'redo');
-    this.debugService.gui.add(this.guiParams, 'toggleSnapping');
-    this.debugService.gui.add(this.guiParams, 'showProjectedEdges');
+    this.debugService.gui.add( this.guiParams, 'resetCanvas' );
+    this.debugService.gui.add( this.guiParams, 'undo' );
+    this.debugService.gui.add( this.guiParams, 'redo' );
+    this.debugService.gui.add( this.guiParams, 'toggleSnapping' );
+    this.debugService.gui.add( this.guiParams, 'showProjectedEdges' );
   }
 
   public updateCanvasSizes(): void {
@@ -153,7 +153,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public toggleSnapping(): void {
     this.snappingOn = !this.snappingOn;
-    this.snappingChangeEvent.emit(this.snappingOn);
+    this.snappingChangeEvent.emit( this.snappingOn );
   }
 
   /**

@@ -36,8 +36,4 @@ export class TestPage extends BaseExercisePage {
     this.drawingCanvas.clearUndoHistory();
   }
 
-  deleteButtonClick() {
-
-  }
-
 }

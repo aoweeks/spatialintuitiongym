@@ -43,7 +43,8 @@
     <ion-button
       id="delete-button"
       *ngIf="this.pointSelected"
-      (click)="deleteButtonClick()"
+      (click)="drawingCanvas.deletePoint()"
+      (mouseup)="drawingCanvas.deletePoint()"
       slot="icon-only"
       fill="clear"
     >

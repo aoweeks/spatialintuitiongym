@@ -6,6 +6,7 @@ import {
 } from 'body-scroll-lock';
 import { LocationStrategy } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-base-exercise',
@@ -16,12 +17,13 @@ export class BaseExercisePage implements AfterViewInit{
 
   @ViewChild('drawingCanvas') drawingCanvasCmp: Base2dCanvasComponent;
 
-
   public undoHistoryPresent = false;
   public redoHistoryPresent = false;
   public canvasIsEmpty = true;
   public snapping = true;
+
   public pointSelected = false;
+  public deletePoint = false;
 
   public snappable = true;
   private undoable = true;

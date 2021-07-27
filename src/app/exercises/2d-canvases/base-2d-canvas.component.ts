@@ -1,5 +1,16 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Output, EventEmitter, Injector } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  HostListener,
+  Input,
+  Output,
+  EventEmitter,
+  Injector
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 import { MathsUtilsService } from 'src/app/services/maths-utils.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
@@ -9,9 +20,11 @@ import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvase
   templateUrl: './base-2d-canvas.component.html',
   styleUrls: ['./base-2d-canvas.component.scss'],
 })
-export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterViewInit{
+export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterViewInit {
 
   @ViewChild('2dCanvas') canvasRef: ElementRef;
+
+  @Input() deleteObservable: Observable<void>;
 
   @Output() undoHistoryEvent = new EventEmitter<boolean>();
   @Output() redoHistoryEvent = new EventEmitter<boolean>();
@@ -100,6 +113,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   ngAfterViewInit() {
     this.context = this.canvasRef.nativeElement.getContext('2d');
+
     super.ngAfterViewInit();
     this.updateCanvasSizes();
 
@@ -330,6 +344,10 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       //   }
       // }
     });
+  }
+
+  public deletePoint() {
+    console.log('clicked');
   }
 
   public rightClick( event: MouseEvent ) {

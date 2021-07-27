@@ -89,6 +89,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     } else if (event.shiftKey) {
       this.tempSnappingSwitch = true;
       this.emitTempSnappingEvent();
+    } else if (event.key === 'Delete') {
+      this.deletePoint();
     }
   }
 

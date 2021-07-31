@@ -123,7 +123,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.cameraSettings.zoomFactor = cameraSettings.zoomFactor;
       this.cameraSettings.offsets.xOffset = cameraSettings.xOffset;
       this.cameraSettings.offsets.yOffset = cameraSettings.yOffset;
-      this.clearCanvas();
+
       this.drawPreviousLines();
     });
 
@@ -170,7 +170,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       this.redoHistoryEvent.emit(true);
 
-      this.clearCanvas();
       this.drawPreviousLines();
 
       if ( !this.undoHistory.length ) {
@@ -196,7 +195,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.undoHistoryEvent.emit( true );
       this.canvasEmptyEvent.emit( false );
 
-      this.clearCanvas();
       this.drawPreviousLines();
 
       if ( !this.redoHistory.length ) {
@@ -245,7 +243,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     // If a line is being drawn
     if ( this.lastCursorPos ) {
 
-      this.clearCanvas();
       this.drawPreviousLines();
 
       let snapPoint;
@@ -278,7 +275,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
         }
       }
 
-      this.clearCanvas();
       this.drawPreviousLines();
     }
   }
@@ -303,7 +299,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.clearRedoHistory();
     }
 
-    this.clearCanvas();
     this.drawPreviousLines();
   }
 
@@ -350,6 +345,26 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   public deletePoint() {
     console.log('clicked');
+
+    const newLinesArray = [];
+
+    this.lines.forEach( ( line, index ) => {
+
+      let matched = false;
+      this.pointsToMove.forEach( ( point ) => {
+        if ( point.index === index) {
+          matched = true;
+        }
+      });
+
+      if ( matched === false ) {
+        newLinesArray.push( line );
+      }
+    });
+
+    this.lines = newLinesArray;
+    this.pointsToMove = [];
+    this.drawPreviousLines();
   }
 
   public rightClick( event: MouseEvent ) {
@@ -389,7 +404,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       this.currentConstraint = null;
       this.clearRedoHistory();
 
-      this.clearCanvas();
       this.drawPreviousLines();
     }
   }
@@ -543,6 +557,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   private drawPreviousLines(): void {
+    this.clearCanvas();
+
     for ( const line of this.lines ) {
       this.drawLine(line.start, line.end);
     }
@@ -567,7 +583,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.mouseDownPos = null;
     this.currentConstraint = null;
 
-    this.clearCanvas();
     this.drawPreviousLines();
   }
 

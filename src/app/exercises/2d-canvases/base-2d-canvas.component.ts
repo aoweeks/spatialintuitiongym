@@ -346,7 +346,6 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public deletePoint( event: MouseEvent ): boolean {
-    console.log('clicked');
 
     const newLinesArray = [];
 
@@ -368,7 +367,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.pointsToMove = [];
     this.drawPreviousLines();
 
+    if ( event ) {
     return this.utilsService.stopPropagation( event );
+    } else {
+      return false;
+    }
   }
 
   public rightClick( event: MouseEvent ): boolean {

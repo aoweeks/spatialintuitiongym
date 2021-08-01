@@ -83,7 +83,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   // Keyboard events
   @HostListener( 'window:keydown', [ '$event' ] )
-  public keyDown( event: KeyboardEvent ) {
+  public keyDown( event: KeyboardEvent ): void {
 
     if( ( event.ctrlKey || event.metaKey ) && ( event.key === 'z' || event.key === 'Z' ) ) {
       this.undo();
@@ -109,11 +109,21 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
       // });
 
   @HostListener( 'window:keyup', [ '$event' ] )
-  public keyUp( event: KeyboardEvent ) {
+  public keyUp( event: KeyboardEvent ): void {
     if ( event.key === 'Shift' ) {
       this.tempSnappingSwitch = false;
       this.emitTempSnappingEvent();
     }
+  }
+
+  @HostListener( 'window:mouseup', [ '$event' ] )
+  public windowMouseUp( event: MouseEvent ): void {
+    this.mouseUp( event );
+  }
+
+  @HostListener( 'window:touchend', [ '$event' ] )
+  public windowTouchEnd( event: TouchEvent ): void {
+    this.touchEnd( event );
   }
 
   ngAfterViewInit() {
@@ -223,14 +233,35 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    *  Mouse Event Handlers
    */
 
+  //  public mouseEnter( event: MouseEvent ): void {
+
+  //   // If line is being drawn
+  //   if ( this.lastCursorPos ) {
+  //     // If left button is down
+  //     if ( event.buttons % 2 === 0 ) {
+  //       this.lastCursorPos = null;
+  //       this.drawPreviousLines();
+  //     }
+  //   }
+
+  //   // If points are being moved
+  //   if ( this.pointsToMove.length ) {
+  //     // ! fix this to include possible other less used mouse buttons
+  //     if ( event.buttons < 2 || event.buttons > 3 ) {
+  //       this.pointsToMove = [];
+  //     }
+  //   }
+
+  // }
+
   public mouseDown( event: MouseEvent): void {
 
     if(!this.answersShowing){
 
       if( event.button === 0 ) {
         // prevent firing if right button is already clicked
-        if(event.buttons === 1) {
-          this.setLineStart(event.clientX, event.clientY);
+        if( event.buttons === 1 ) {
+          this.setLineStart( event.clientX, event.clientY );
         }
       } else if ( event.button === 2 ) {
         this.movePoint(event);
@@ -283,6 +314,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public mouseUp( event: MouseEvent ) {
+
     if ( event.button === 0 ) {
       if ( this.lastCursorPos ){
         this.setLineEnd( this.lastCursorPos.x, this.lastCursorPos.y, this.currentConstraint );

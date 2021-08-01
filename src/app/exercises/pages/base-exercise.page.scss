@@ -61,9 +61,9 @@
       bottom: 160px;
 
       &.delete-active{
-        --border-color: limegreen;
+        --border-color: red;
         ion-icon{
-          color: limegreen;
+          color: red;
         }
       }
     }

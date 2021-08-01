@@ -41,8 +41,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     toggleSnapping: () => this.toggleSnapping(),
     showProjectedEdges: () => {
       const edges = this.cubeStackCanvasesService.getCubeProjectedEdges();
-      edges.forEach( (edge) => this.drawLine(edge.start, edge.end) );
-      console.log(edges);
+      edges.forEach( ( edge ) => this.drawLine( edge.start, edge.end ) );
+      console.log( edges );
     }
   };
 
@@ -61,6 +61,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private currentConstraint = null;
 
   private pointsToMove = [];
+  private deleteHovering = false;
 
   private snapPoints = [];
 
@@ -353,6 +354,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
       let matched = false;
       this.pointsToMove.forEach( ( point ) => {
+
         if ( point.index === index) {
           matched = true;
         }
@@ -368,10 +370,15 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.drawPreviousLines();
 
     if ( event ) {
-    return this.utilsService.stopPropagation( event );
+      return this.utilsService.stopPropagation( event );
     } else {
       return false;
     }
+  }
+
+  public hoverDelete( deleteHovering: boolean ): void {
+    this.deleteHovering = deleteHovering;
+    this.drawPreviousLines();
   }
 
   public rightClick( event: MouseEvent ): boolean {
@@ -544,7 +551,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   private drawLine(
     start: any,
-    end: any
+    end: any,
+    warning = false
   ): void {
     const offsetStart = this.unoffsetPoint(start);
     const offsetEnd = this.unoffsetPoint(end);
@@ -554,7 +562,11 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.context.lineWidth = 5;
     this.context.lineCap = 'round';
     this.context.setLineDash([10, 10]);
-    this.context.strokeStyle = 'white';
+    if ( warning ) {
+      this.context.strokeStyle = 'red';
+    } else {
+      this.context.strokeStyle = 'white';
+    }
 
     this.context.moveTo( offsetStart.x, offsetStart.y );
     this.context.lineTo( offsetEnd.x, offsetEnd.y );
@@ -564,9 +576,20 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   private drawPreviousLines(): void {
     this.clearCanvas();
 
-    for ( const line of this.lines ) {
-      this.drawLine(line.start, line.end);
-    }
+    this.lines.forEach( ( line, index ) => {
+
+      let warning = false;
+      if ( this.deleteHovering ){
+        this.pointsToMove.forEach( ( point ) => {
+          if ( point.index === index) {
+            warning = true;
+          }
+        });
+      }
+
+
+      this.drawLine( line.start, line.end, warning );
+    });
   }
 
   private saveCurrentStateToUndoHistory(): void {

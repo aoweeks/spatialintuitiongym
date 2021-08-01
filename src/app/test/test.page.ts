@@ -41,6 +41,7 @@ export class TestPage extends BaseExercisePage {
    */
    public mouseOverDelete( hovering: boolean, ): void {
     this.deleteHovering = hovering;
+    this.drawingCanvas.hoverDelete( hovering );
   }
 
 

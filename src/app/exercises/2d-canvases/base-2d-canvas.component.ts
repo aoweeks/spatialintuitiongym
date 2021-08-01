@@ -272,6 +272,20 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public mouseMove( event: MouseEvent | TouchEvent ): void {
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
+
+    // Constrain cursor to canvas parameters
+    if ( cursorPos.x < 0 ) {
+      cursorPos.x = 0;
+    } else if ( cursorPos.x > this.viewportSizes.width ) {
+      cursorPos.x = this.viewportSizes.width;
+    }
+
+    if ( cursorPos.y < 0 ) {
+      cursorPos.y = 0;
+    } else if ( cursorPos.y > this.viewportSizes.height ) {
+      cursorPos.y = this.viewportSizes.height;
+    }
+
     let offsetPoint = this.offsetPoint( cursorPos );
 
     // If a line is being drawn

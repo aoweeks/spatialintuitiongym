@@ -118,6 +118,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
 
   @HostListener( 'window:mouseup', [ '$event' ] )
   public windowMouseUp( event: MouseEvent ): void {
+    this.deletePoint( event );
     this.mouseUp( event );
   }
 
@@ -125,6 +126,12 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   public windowTouchEnd( event: TouchEvent ): void {
     this.touchEnd( event );
   }
+
+
+  // @HostListener( 'pointerenter', [ '$event' ] )
+  // public pointer( event: PointerEvent ): void {
+  //   console.log( event );
+  // }
 
   ngAfterViewInit() {
     this.context = this.canvasRef.nativeElement.getContext( '2d' );
@@ -357,6 +364,8 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
     this.snapPoints = this.arrayOfLinePoints();
     this.currentConstraint = null;
     this.saveCurrentStateToUndoHistory();
+
+    this.deleteHovering = false;
 
     const cursorPos = this.extractPosFromMouseOrTouchEvent( event );
     const offsetPoint = this.offsetPoint(cursorPos);

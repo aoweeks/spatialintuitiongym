@@ -48,6 +48,7 @@
       (contextmenu)="drawingCanvas.deletePoint( $event )"
       (mouseover)="this.mouseOverDelete( true )"
       (mouseleave)="this.mouseOverDelete( false )"
+      (pointerover)="this.pointerEnter( $event )"
       slot="icon-only"
       fill="clear"
     >
@@ -59,6 +60,7 @@
       *ngIf="this.snappable"
       [ngClass]=" { 'inactive' : !this.snapping} "
       (click)="snappingButtonClick()"
+
       slot="icon-only"
       fill="clear"
     >

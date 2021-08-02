@@ -110,4 +110,11 @@ export class BaseExercisePage implements AfterViewInit{
   public snappingButtonClick(): void {
     this.drawingCanvasCmp.toggleSnapping();
   }
+
+
+  /******************************* */
+
+  public pointerEnter( event: PointerEvent ): void {
+    console.log('enter');
+  }
 }

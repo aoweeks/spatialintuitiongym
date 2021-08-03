@@ -57,10 +57,10 @@
 
     <ion-button
       id="snapping-button"
+      appPointerDetector
       *ngIf="this.snappable"
       [ngClass]=" { 'inactive' : !this.snapping} "
       (click)="snappingButtonClick()"
-
       slot="icon-only"
       fill="clear"
     >

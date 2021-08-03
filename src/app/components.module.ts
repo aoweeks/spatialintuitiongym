@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseThreeRendererComponent } from './exercises/renderers/base-three-renderer.component';
 import { CubeStackComponent } from './exercises/renderers/cube-stack/cube-stack.component';
 import { Base2dCanvasComponent } from './exercises/2d-canvases/base-2d-canvas.component';
+import { DirectivesModule } from './directives/directives.module';
 
 
 
@@ -13,7 +14,8 @@ import { Base2dCanvasComponent } from './exercises/2d-canvases/base-2d-canvas.co
     Base2dCanvasComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    DirectivesModule
   ],
   exports: [
     BaseThreeRendererComponent,

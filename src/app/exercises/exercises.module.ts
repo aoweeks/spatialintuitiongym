@@ -9,6 +9,7 @@ import { BaseExercisePage } from './pages/base-exercise.page';
 import { AppRoutingModule } from '../app-routing.module';
 import { ComponentsModule } from '../components.module';
 import { CubeStackPage } from './pages/cube-stack/cube-stack.page';
+import { DirectivesModule } from '../directives/directives.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { CubeStackPage } from './pages/cube-stack/cube-stack.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    ComponentsModule
+    ComponentsModule,
+    DirectivesModule
   ],
   declarations: [
     ExercisesPage,

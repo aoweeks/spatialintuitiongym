@@ -272,6 +272,15 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
     const surfacePoint = { x: 0, y: 0, z: 0 };
 
+    const randomVerticalAngle = Math.random() * (Math.PI / 2);
+    surfacePoint.z = Math.sin( randomVerticalAngle ) * radius;
+
+    const surfaceCircleRadius = Math.cos( randomVerticalAngle ) * radius;
+
+    const randomHorizontalAngle = Math.random() * (Math.PI * 2);
+    surfacePoint.x =  Math.cos( randomHorizontalAngle ) * surfaceCircleRadius;
+    surfacePoint.y =  Math.sin( randomHorizontalAngle ) * surfaceCircleRadius;
+
     return surfacePoint;
   }
 }

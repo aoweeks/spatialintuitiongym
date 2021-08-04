@@ -12,7 +12,7 @@
 
     <ion-button
       id="undo-button"
-      *ngIf="this.undoHistoryPresent"
+      *ngIf="this.undoHistoryPresent && !drawingCanvas.answersShowing"
       (click)="undoButtonClick()"
       slot="icon-only"
       fill="clear"
@@ -22,7 +22,7 @@
 
     <ion-button
       id="redo-button"
-      *ngIf="this.redoHistoryPresent"
+      *ngIf="this.redoHistoryPresent && !drawingCanvas.answersShowing"
       (click)="redoButtonClick()"
       slot="icon-only"
       fill="clear"
@@ -32,7 +32,7 @@
 
     <ion-button
       id="clear-canvas-button"
-      *ngIf="!this.canvasIsEmpty"
+      *ngIf="!this.canvasIsEmpty && !drawingCanvas.answersShowing"
       (click)="clearCanvasButtonClick()"
       slot="icon-only"
       fill="clear"
@@ -42,7 +42,7 @@
 
     <ion-button
       id="delete-button"
-      *ngIf="this.pointSelected"
+      *ngIf="this.pointSelected && !drawingCanvas.answersShowing"
       [ngClass]="{ 'delete-active': this.deleteHovering }"
       (click)="drawingCanvas.deletePoint( $event )"
       (contextmenu)="drawingCanvas.deletePoint( $event )"

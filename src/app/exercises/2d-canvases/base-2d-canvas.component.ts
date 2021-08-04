@@ -181,7 +181,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
    */
 
   public undo(): void {
-    if ( this.undoHistory.length ) {
+    if ( this.undoHistory.length && !this.answersShowing ) {
 
       this.cancelLine();
 
@@ -205,7 +205,7 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public redo(): void {
-    if ( this.redoHistory.length ) {
+    if ( this.redoHistory.length && !this.answersShowing ) {
 
       this.cancelLine();
 
@@ -224,11 +224,13 @@ export class Base2dCanvasComponent extends BaseCanvasComponent implements AfterV
   }
 
   public resetCanvas(): void {
-    this.saveCurrentStateToUndoHistory();
-    this.clearCanvas();
-    this.lines = [];
-    this.canvasEmptyEvent.emit(true);
-    this.clearRedoHistory();
+    if ( !this.answersShowing ) {
+      this.saveCurrentStateToUndoHistory();
+      this.clearCanvas();
+      this.lines = [];
+      this.canvasEmptyEvent.emit(true);
+      this.clearRedoHistory();
+    }
   }
 
   public clearUndoHistory(): void {

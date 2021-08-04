@@ -221,7 +221,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
 
   private moveCamera(): void {
     const lastCube = this.objectsToUpdate[this.objectsToUpdate.length - 1];
-    this.camera.position.y = lastCube.mesh.position.y;
+    this.camera.position.y = lastCube.mesh.position.y + 1;
     this.camera.lookAt(lastCube.mesh.position);
   }
 

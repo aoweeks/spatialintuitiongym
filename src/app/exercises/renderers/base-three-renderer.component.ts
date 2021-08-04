@@ -9,6 +9,7 @@ import { SoundsService } from 'src/app/services/sounds.service';
 import { BaseCanvasComponent } from '../base-canvas.component';
 import { CubeStackCanvasesService } from '../pages/cube-stack/cube-stack-canvases.service';
 import { ActivatedRoute } from '@angular/router';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-base-three-renderer',
@@ -102,10 +103,15 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
   public updateCanvasSizes(): void {
 
+    const aspectRatio = this.viewportSizes.width / this.viewportSizes.height;
+
     if( !this.orthographicCamera ) {
       this.camera.aspect = this.viewportSizes.width / this.viewportSizes.height;
-      this.camera.updateProjectionMatrix();
+    } else {
+      this.camera.left = -1 * aspectRatio;
+      this.camera.right = 1 * aspectRatio;
     }
+    this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(
       this.viewportSizes.width,
@@ -179,19 +185,28 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
 
     this.scene.background = this.baseColour;
 
+    const aspectRatio = this.viewportSizes.width / this.viewportSizes.height;
+
     // Camera setup
     if ( this.orthographicCamera ) {
-      this.camera = new THREE.OrthographicCamera(1,1,1,1);
-    }
-    else {
-      this.camera = new THREE.PerspectiveCamera(
-        75,
-        this.viewportSizes.width / this.viewportSizes.height,
+      this.camera = new THREE.OrthographicCamera(
+        -1 * aspectRatio,
+        1 * aspectRatio,
+        1,
+        -1,
         0.1,
         50
       );
     }
-    this.camera.position.set(0, 1, 3);
+    else {
+      this.camera = new THREE.PerspectiveCamera(
+        75,
+        aspectRatio,
+        0.1,
+        50
+      );
+    }
+    this.camera.position.set(0, 13, 3);
     this.scene.add(this.camera);
 
     //Lights setup
@@ -253,4 +268,10 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     );
   }
 
+  private pointOnHemisphere( radius: number = 1 ): { x: number; y: number; z: number } {
+
+    const surfacePoint = { x: 0, y: 0, z: 0 };
+
+    return surfacePoint;
+  }
 }

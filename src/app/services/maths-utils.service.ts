@@ -87,11 +87,11 @@ export class MathsUtilsService {
   }
 
 
-  public pointOnHemisphere( radius: number = 1 ): { x: number; y: number; z: number } {
+  public pointOnHemisphere( radius: number = 1, upperAngleLimit: number = Math.PI / 2): { x: number; y: number; z: number } {
 
     const surfacePoint = { x: 0, y: 0, z: 0 };
 
-    const randomVerticalAngle = Math.random() * (Math.PI / 2);
+    const randomVerticalAngle = Math.random() * upperAngleLimit;
     surfacePoint.y = Math.sin( randomVerticalAngle ) * radius;
 
     const surfaceCircleRadius = Math.cos( randomVerticalAngle ) * radius;

@@ -224,7 +224,7 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     this.camera.position.copy(  lastCube.mesh.position );
 
     const randomRadius = (Math.random() * 3) + 1;
-    const cameraPositionOffset = this.mathsUtilsService.pointOnHemisphere( randomRadius );
+    const cameraPositionOffset = this.mathsUtilsService.pointOnHemisphere( randomRadius, Math.PI / 2.5 );
     this.camera.position.x += cameraPositionOffset.x;
     this.camera.position.y += cameraPositionOffset.y;
     this.camera.position.z += cameraPositionOffset.z;

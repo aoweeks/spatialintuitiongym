@@ -1,4 +1,5 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { trigger, animate, transition, style } from '@angular/animations';
 import { Base2dCanvasComponent } from '../2d-canvases/base-2d-canvas.component';
 
 import {
@@ -6,10 +7,23 @@ import {
 } from 'body-scroll-lock';
 import { LocationStrategy } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-base-exercise',
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style( { opacity: 0 } ),
+          animate('300ms', style( { opacity: 1 } ))
+        ]),
+        transition(':leave', [
+          style( { opacity: 1 } ),
+          animate('300ms', style( { opacity: 0 } ))
+        ])
+      ]
+    )
+  ],
   templateUrl: './base-exercise.page.html',
   styleUrls: ['./base-exercise.page.scss'],
 })

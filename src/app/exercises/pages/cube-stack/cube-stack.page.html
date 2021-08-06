@@ -6,6 +6,7 @@
       slot="icon-only"
       fill="clear"
       (click)="backButtonClick()"
+      @fadeAnimation
     >
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
@@ -16,6 +17,7 @@
       slot="icon-only"
       fill="clear"
       (click)="undoButtonClick()"
+      @fadeAnimation
     >
       <ion-icon name="arrow-undo-outline"></ion-icon>
     </ion-button>
@@ -26,6 +28,7 @@
       slot="icon-only"
       fill="clear"
       (click)="redoButtonClick()"
+      @fadeAnimation
     >
       <ion-icon name="arrow-redo-outline"></ion-icon>
     </ion-button>
@@ -36,6 +39,7 @@
       slot="icon-only"
       fill="clear"
       (click)="clearCanvasButtonClick()"
+      @fadeAnimation
     >
       <ion-icon name="refresh-outline"></ion-icon>
     </ion-button>
@@ -51,6 +55,7 @@
       (pointerover)="this.pointerEnter( $event )"
       slot="icon-only"
       fill="clear"
+      @fadeAnimation
     >
       <ion-icon name="trash-outline"></ion-icon>
     </ion-button>
@@ -63,6 +68,7 @@
       (click)="snappingButtonClick()"
       slot="icon-only"
       fill="clear"
+      @fadeAnimation
     >
       <ion-icon name="magnet-outline"></ion-icon>
     </ion-button>
@@ -74,6 +80,7 @@
       (click)="submitButtonClick()"
       slot="icon-only"
       fill="clear"
+      @fadeAnimation
     >
       <ion-icon name="checkmark-outline"></ion-icon>
     </ion-button>
@@ -84,6 +91,7 @@
       (click)="nextCubeClick()"
       slot="icon-only"
       fill="clear"
+      @fadeAnimation
     >
       <ion-icon name="arrow-forward-outline"></ion-icon>
     </ion-button>

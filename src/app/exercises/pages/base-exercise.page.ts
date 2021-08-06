@@ -12,7 +12,7 @@ import { NavigationStart, Router } from '@angular/router';
   selector: 'app-base-exercise',
   animations: [
     trigger(
-      'enterAnimation', [
+      'fadeAnimation', [
         transition(':enter', [
           style( { opacity: 0 } ),
           animate('300ms', style( { opacity: 1 } ))

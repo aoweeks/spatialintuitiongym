@@ -4,6 +4,7 @@ import { BaseThreeRendererComponent } from './exercises/renderers/base-three-ren
 import { CubeStackComponent } from './exercises/renderers/cube-stack/cube-stack.component';
 import { Base2dCanvasComponent } from './exercises/2d-canvases/base-2d-canvas.component';
 import { DirectivesModule } from './directives/directives.module';
+import { IonicModule } from '@ionic/angular';
 
 
 
@@ -15,7 +16,8 @@ import { DirectivesModule } from './directives/directives.module';
   ],
   imports: [
     CommonModule,
-    DirectivesModule
+    DirectivesModule,
+    IonicModule
   ],
   exports: [
     BaseThreeRendererComponent,

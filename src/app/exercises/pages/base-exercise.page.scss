@@ -2,13 +2,16 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  z-index: 10;
+  z-index: 1000;
 
   pointer-events: none;
 
   ion-button{
 
     position: absolute;
+    pointer-events: all;
+
+    z-index: 1000;
 
     height: 60px;
     width: 60px;

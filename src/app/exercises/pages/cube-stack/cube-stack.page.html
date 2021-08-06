@@ -3,9 +3,9 @@
   <div id="button-layer">
     <ion-button
       id="back-button"
-      (click)="backButtonClick()"
       slot="icon-only"
       fill="clear"
+      (click)="backButtonClick()"
     >
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-button>
@@ -13,9 +13,9 @@
     <ion-button
       id="undo-button"
       *ngIf="this.undoHistoryPresent && !drawingCanvas.answersShowing"
-      (click)="undoButtonClick()"
       slot="icon-only"
       fill="clear"
+      (click)="undoButtonClick()"
     >
       <ion-icon name="arrow-undo-outline"></ion-icon>
     </ion-button>
@@ -23,9 +23,9 @@
     <ion-button
       id="redo-button"
       *ngIf="this.redoHistoryPresent && !drawingCanvas.answersShowing"
-      (click)="redoButtonClick()"
       slot="icon-only"
       fill="clear"
+      (click)="redoButtonClick()"
     >
       <ion-icon name="arrow-redo-outline"></ion-icon>
     </ion-button>
@@ -33,9 +33,9 @@
     <ion-button
       id="clear-canvas-button"
       *ngIf="!this.canvasIsEmpty && !drawingCanvas.answersShowing"
-      (click)="clearCanvasButtonClick()"
       slot="icon-only"
       fill="clear"
+      (click)="clearCanvasButtonClick()"
     >
       <ion-icon name="refresh-outline"></ion-icon>
     </ion-button>

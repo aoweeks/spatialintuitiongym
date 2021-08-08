@@ -213,7 +213,13 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
     const ambientLight = new THREE.AmbientLight( 0xffffff, 0.333 );
 
     const directionalLight = new THREE.DirectionalLight( 0xffffff );
+
     directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = .1;
+    directionalLight.shadow.camera.far = 20;
+
     directionalLight.position.set(1, 1, 1);
 
     this.cameraPointLight = new THREE.PointLight( 0xffffff, 1, 100, 10 );
@@ -230,6 +236,7 @@ export class BaseThreeRendererComponent extends BaseCanvasComponent implements A
       antialias: true
     });
     this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.updateCanvasSizes();
 
     this.physicsInitialSetup();

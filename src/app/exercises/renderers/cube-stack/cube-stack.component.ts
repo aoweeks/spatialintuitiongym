@@ -91,7 +91,9 @@ export class CubeStackComponent extends BaseThreeRendererComponent implements Af
     super.ngAfterViewInit();
 
     this.colourMap.magFilter = THREE.NearestFilter;
+    this.colourMap.minFilter = THREE.LinearMipMapLinearFilter;
     this.displacementMap.magFilter = THREE.NearestFilter;
+    this.displacementMap.minFilter = THREE.LinearMipMapLinearFilter;
 
 
     //Dat.GUI tweaks
